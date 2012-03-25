@@ -28,6 +28,8 @@ class dmLastCommentsBehaviors
 		$params = array();
 		if ((integer) $nb > 0) {
 			$params['limit'] = (integer) $nb;
+		} else {
+			$params['limit'] = 30;	// As in first page of comments' list
 		}
 		$rs = $core->blog->getComments($params,false);
 		if (!$rs->isEmpty()) {
