@@ -27,3 +27,9 @@ msgstr "Nombre de commentaires à afficher :"
 
 msgid "Display last comments in large section (under favorites)"
 msgstr "Afficher les derniers commentaires dans la partie large (sous les favoris)"
+
+msgid "on"
+msgstr "le"
+
+msgid "by"
+msgstr "par"
