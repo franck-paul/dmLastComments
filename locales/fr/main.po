@@ -1,0 +1,29 @@
+msgid "Last Comments Dashboard Module"
+msgstr "Module d'affichage des derniers commentaires"
+
+msgid "Display last comments on dashboard"
+msgstr "Affiche les derniers commentaires sur le tableau de bord"
+
+msgid "See all comments"
+msgstr "Voir tous les commentaires"
+
+msgid "Last comments"
+msgstr "Derniers commentaires"
+
+msgid "Last comments on dashboard"
+msgstr "Derniers commentaires sur le tableau de bord"
+
+msgid "Display last comments"
+msgstr "Affiche les derniers commentaires"
+
+msgid "Number of last comments displayed"
+msgstr "Nombre de commentaires à afficher"
+
+msgid "Large display"
+msgstr "Affichage large"
+
+msgid "Number of last comments to display:"
+msgstr "Nombre de commentaires à afficher :"
+
+msgid "Display last comments in large section (under favorites)"
+msgstr "Afficher les derniers commentaires dans la partie large (sous les favoris)"
