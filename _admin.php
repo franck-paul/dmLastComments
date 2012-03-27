@@ -22,7 +22,7 @@ $core->addBehavior('adminPreferencesForm',array('dmLastCommentsBehaviors','admin
 # BEHAVIORS
 class dmLastCommentsBehaviors
 {
-	private static function getLastComments($core,$nb,$large)
+	private static function getLastComments($core,$nb,$large,$author,$date,$time)
 	{
 		// Get last $nb comments
 		$params = array();
@@ -37,11 +37,30 @@ class dmLastCommentsBehaviors
 			while ($rs->fetch()) {
 				$ret .= '<li>';
 				$ret .= '<a href="comment.php?id='.$rs->comment_id.'">'.$rs->post_title.'</a>';
+				$info = array();
 				if ($large) {
-					$ret .= ' ('.
-						__('by').' '.$rs->comment_author.' '.__('on').' '.
-						dt::dt2str($core->blog->settings->system->date_format,$rs->comment_upddt).' '.
-						dt::dt2str($core->blog->settings->system->time_format,$rs->comment_upddt).')';
+					if ($author) {
+						$info[] = __('by').' '.$rs->comment_author;
+					}
+					if ($date) {
+						$info[] = __('on').' '.dt::dt2str($core->blog->settings->system->date_format,$rs->comment_upddt);
+					}
+					if ($time) {
+						$info[] = __('at').' '.dt::dt2str($core->blog->settings->system->time_format,$rs->comment_upddt);
+					}
+				} else {
+					if ($author) {
+						$info[] = $rs->comment_author;
+					}
+					if ($date) {
+						$info[] = dt::dt2str(__('%Y-%m-%d'),$rs->comment_upddt);
+					}
+					if ($time) {
+						$info[] = dt::dt2str(__('%H:%M'),$rs->comment_upddt);
+					}
+				}
+				if (count($info)) {
+					$ret .= ' ('.implode(' ',$info).')';
 				}
 				$ret .= '</li>';
 			}
@@ -59,7 +78,12 @@ class dmLastCommentsBehaviors
 		$core->auth->user_prefs->addWorkspace('dmlastcomments');
 		if ($core->auth->user_prefs->dmlastcomments->last_comments && !$core->auth->user_prefs->dmlastcomments->last_comments_large) {
 			$ret = '<div id="last-comments">'.'<h3>'.'<img src="index.php?pf=dmLastComments/icon.png" alt="" />'.' '.__('Last comments').'</h3>';
-			$ret .= dmLastCommentsBehaviors::getLastComments($core,$core->auth->user_prefs->dmlastcomments->last_comments_nb,false);
+			$ret .= dmLastCommentsBehaviors::getLastComments($core,
+				$core->auth->user_prefs->dmlastcomments->last_comments_nb,
+				false,
+				$core->auth->user_prefs->dmlastcomments->last_comments_author,
+				$core->auth->user_prefs->dmlastcomments->last_comments_date,
+				$core->auth->user_prefs->dmlastcomments->last_comments_time);
 			$ret .= '</div>';
 			$items[] = new ArrayObject(array($ret));
 		}
@@ -71,7 +95,12 @@ class dmLastCommentsBehaviors
 		$core->auth->user_prefs->addWorkspace('dmlastcomments');
 		if ($core->auth->user_prefs->dmlastcomments->last_comments && $core->auth->user_prefs->dmlastcomments->last_comments_large) {
 			$ret = '<div id="last-comments">'.'<h3>'.'<img src="index.php?pf=dmLastComments/icon.png" alt="" />'.' '.__('Last comments').'</h3>';
-			$ret .= dmLastCommentsBehaviors::getLastComments($core,$core->auth->user_prefs->dmlastcomments->last_comments_nb,true);
+			$ret .= dmLastCommentsBehaviors::getLastComments($core,
+				$core->auth->user_prefs->dmlastcomments->last_comments_nb,
+				true,
+				$core->auth->user_prefs->dmlastcomments->last_comments_author,
+				$core->auth->user_prefs->dmlastcomments->last_comments_date,
+				$core->auth->user_prefs->dmlastcomments->last_comments_time);
 			$ret .= '</div>';
 			$contents[] = new ArrayObject(array($ret));
 		}
@@ -88,6 +117,9 @@ class dmLastCommentsBehaviors
 			$core->auth->user_prefs->dmlastcomments->put('last_comments',!empty($_POST['dmlast_comments']),'boolean');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_nb',(integer)$_POST['dmlast_comments_nb'],'integer');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_large',!empty($_POST['dmlast_comments_large']),'boolean');
+			$core->auth->user_prefs->dmlastcomments->put('last_comments_author',!empty($_POST['dmlast_comments_author']),'boolean');
+			$core->auth->user_prefs->dmlastcomments->put('last_comments_date',!empty($_POST['dmlast_comments_date']),'boolean');
+			$core->auth->user_prefs->dmlastcomments->put('last_comments_time',!empty($_POST['dmlast_comments_time']),'boolean');
 		} 
 		catch (Exception $e)
 		{
@@ -115,6 +147,18 @@ class dmLastCommentsBehaviors
 		'<p><label for"dmlast_comments_large" class="classic">'.
 		form::checkbox('dmlast_comments_large',1,$core->auth->user_prefs->dmlastcomments->last_comments_large).' '.
 		__('Display last comments in large section (under favorites)').'</label></p>'.
+
+		'<p><label for"dmlast_comments_author" class="classic">'.
+		form::checkbox('dmlast_comments_author',1,$core->auth->user_prefs->dmlastcomments->last_comments_author).' '.
+		__('Show authors').'</label></p>'.
+
+		'<p><label for"dmlast_comments_date" class="classic">'.
+		form::checkbox('dmlast_comments_date',1,$core->auth->user_prefs->dmlastcomments->last_comments_date).' '.
+		__('Show dates').'</label></p>'.
+
+		'<p><label for"dmlast_comments_time" class="classic">'.
+		form::checkbox('dmlast_comments_time',1,$core->auth->user_prefs->dmlastcomments->last_comments_time).' '.
+		__('Show times').'</label></p>'.
 
 		'<br class="clear" />'. //Opera sucks
 		'</fieldset>';

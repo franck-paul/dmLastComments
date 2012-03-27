@@ -25,6 +25,9 @@ try
 	$core->auth->user_prefs->dmlastcomments->put('last_comments',false,'boolean','Display last comments',false,true);
 	$core->auth->user_prefs->dmlastcomments->put('last_comments_nb',5,'integer','Number of last comments displayed',false,true);
 	$core->auth->user_prefs->dmlastcomments->put('last_comments_large',true,'boolean','Large display',false,true);
+	$core->auth->user_prefs->dmlastcomments->put('last_comments_author',true,'boolean','Show authors',false,true);
+	$core->auth->user_prefs->dmlastcomments->put('last_comments_date',true,'boolean','Show dates',false,true);
+	$core->auth->user_prefs->dmlastcomments->put('last_comments_time',true,'boolean','Show times',false,true);
 
 	$core->setVersion('dmLastComments',$new_version);
 	

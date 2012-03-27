@@ -28,8 +28,26 @@ msgstr "Nombre de commentaires à afficher :"
 msgid "Display last comments in large section (under favorites)"
 msgstr "Afficher les derniers commentaires dans la partie large (sous les favoris)"
 
+msgid "Show authors"
+msgstr "Afficher les auteurs"
+
+msgid "Show dates"
+msgstr "Afficher les dates"
+
+msgid "Show times"
+msgstr "Afficher les heures"
+
 msgid "on"
 msgstr "le"
 
 msgid "by"
 msgstr "par"
+
+msgid "at"
+msgstr "à"
+
+msgid "%Y-%m-%d"
+msgstr "%d/%m/%Y"
+
+msgid "%H:%M"
+msgstr "%H:%M"
