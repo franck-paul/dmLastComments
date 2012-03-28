@@ -43,20 +43,20 @@ class dmLastCommentsBehaviors
 						$info[] = __('by').' '.$rs->comment_author;
 					}
 					if ($date) {
-						$info[] = __('on').' '.dt::dt2str($core->blog->settings->system->date_format,$rs->comment_upddt);
+						$info[] = __('on').' '.dt::dt2str($core->blog->settings->system->date_format,$rs->comment_dt);
 					}
 					if ($time) {
-						$info[] = __('at').' '.dt::dt2str($core->blog->settings->system->time_format,$rs->comment_upddt);
+						$info[] = __('at').' '.dt::dt2str($core->blog->settings->system->time_format,$rs->comment_dt);
 					}
 				} else {
 					if ($author) {
 						$info[] = $rs->comment_author;
 					}
 					if ($date) {
-						$info[] = dt::dt2str(__('%Y-%m-%d'),$rs->comment_upddt);
+						$info[] = dt::dt2str(__('%Y-%m-%d'),$rs->comment_dt);
 					}
 					if ($time) {
-						$info[] = dt::dt2str(__('%H:%M'),$rs->comment_upddt);
+						$info[] = dt::dt2str(__('%H:%M'),$rs->comment_dt);
 					}
 				}
 				if (count($info)) {
