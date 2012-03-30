@@ -37,6 +37,9 @@ msgstr "Afficher les dates"
 msgid "Show times"
 msgstr "Afficher les heures"
 
+msgid "Exclude junk comments"
+msgstr "Exclure les commentaires indésirables"
+
 msgid "on"
 msgstr "le"
 
