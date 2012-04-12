@@ -40,6 +40,12 @@ msgstr "Afficher les heures"
 msgid "Exclude junk comments"
 msgstr "Exclure les commentaires indésirables"
 
+msgid "Max age of comments to display (in hours):"
+msgstr "Âge maximum des commentaires à afficher (en heures) :"
+
+msgid "Leave empty to ignore age of comments"
+msgstr "Laisser vide pour ignorer l'âge des commentaires"
+
 msgid "on"
 msgstr "le"
 

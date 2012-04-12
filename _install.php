@@ -29,6 +29,7 @@ try
 	$core->auth->user_prefs->dmlastcomments->put('last_comments_date',true,'boolean','Show dates',false,true);
 	$core->auth->user_prefs->dmlastcomments->put('last_comments_time',true,'boolean','Show times',false,true);
 	$core->auth->user_prefs->dmlastcomments->put('last_comments_nospam',false,'boolean','Exclude junk comments',false,true);
+	$core->auth->user_prefs->dmlastcomments->put('last_comments_recents',0,'integer','Max age of comments (in hours)',false,true);
 
 	$core->setVersion('dmLastComments',$new_version);
 	

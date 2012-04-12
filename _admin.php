@@ -22,7 +22,7 @@ $core->addBehavior('adminPreferencesForm',array('dmLastCommentsBehaviors','admin
 # BEHAVIORS
 class dmLastCommentsBehaviors
 {
-	private static function getLastComments($core,$nb,$large,$author,$date,$time,$nospam)
+	private static function getLastComments($core,$nb,$large,$author,$date,$time,$nospam,$recents = 0)
 	{
 		// Get last $nb comments
 		$params = array();
@@ -34,6 +34,9 @@ class dmLastCommentsBehaviors
 		if ($nospam) {
 			// Exclude junk comment from list
 			$params['comment_status_not'] = -2;
+		}
+		if ((integer) $recents > 0) {
+			$params['sql'] = ' AND comment_dt >= (NOW() - INTERVAL '.sprintf((integer) $recents).' HOUR) ';
 		}
 		$rs = $core->blog->getComments($params,false);
 		if (!$rs->isEmpty()) {
@@ -88,7 +91,8 @@ class dmLastCommentsBehaviors
 				$core->auth->user_prefs->dmlastcomments->last_comments_author,
 				$core->auth->user_prefs->dmlastcomments->last_comments_date,
 				$core->auth->user_prefs->dmlastcomments->last_comments_time,
-				$core->auth->user_prefs->dmlastcomments->last_comments_nospam);
+				$core->auth->user_prefs->dmlastcomments->last_comments_nospam,
+				$core->auth->user_prefs->dmlastcomments->last_comments_recents);
 			$ret .= '</div>';
 			$items[] = new ArrayObject(array($ret));
 		}
@@ -106,7 +110,8 @@ class dmLastCommentsBehaviors
 				$core->auth->user_prefs->dmlastcomments->last_comments_author,
 				$core->auth->user_prefs->dmlastcomments->last_comments_date,
 				$core->auth->user_prefs->dmlastcomments->last_comments_time,
-				$core->auth->user_prefs->dmlastcomments->last_comments_nospam);
+				$core->auth->user_prefs->dmlastcomments->last_comments_nospam,
+				$core->auth->user_prefs->dmlastcomments->last_comments_recents);
 			$ret .= '</div>';
 			$contents[] = new ArrayObject(array($ret));
 		}
@@ -127,6 +132,7 @@ class dmLastCommentsBehaviors
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_date',!empty($_POST['dmlast_comments_date']),'boolean');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_time',!empty($_POST['dmlast_comments_time']),'boolean');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_nospam',!empty($_POST['dmlast_comments_nospam']),'boolean');
+			$core->auth->user_prefs->dmlastcomments->put('last_comments_recents',(integer)$_POST['dmlast_comments_recents'],'integer');
 		} 
 		catch (Exception $e)
 		{
@@ -170,6 +176,11 @@ class dmLastCommentsBehaviors
 		'<p><label for"dmlast_comments_nospam" class="classic">'.
 		form::checkbox('dmlast_comments_nospam',1,$core->auth->user_prefs->dmlastcomments->last_comments_nospam).' '.
 		__('Exclude junk comments').'</label></p>'.
+
+		'<p><label for"dmlast_comments_recents">'.__('Max age of comments to display (in hours):').
+		form::field('dmlast_comments_recents',2,3,(integer) $core->auth->user_prefs->dmlastcomments->last_comments_recents).
+		'</label></p>'.
+		'<p class="form-note">'.__('Leave empty to ignore age of comments').'</p>'.
 
 		'<br class="clear" />'. //Opera sucks
 		'</fieldset>';
