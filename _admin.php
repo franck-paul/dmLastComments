@@ -75,7 +75,7 @@ class dmLastCommentsBehaviors
 			$ret .= '<p><a href="comments.php">'.__('See all comments').'</a></p>';
 			return $ret;
 		} else {
-			return '<p>'.__('No comment').'</p>';
+			return '<p>'.__('No comment').((integer) $recents > 0 ? ' '.sprintf(__('since %d hours'),(integer) $recents) : '').'</p>';
 		}
 	}
 	

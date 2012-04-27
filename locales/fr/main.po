@@ -60,3 +60,6 @@ msgstr "%d/%m/%Y"
 
 msgid "%H:%M"
 msgstr "%H:%M"
+
+msgid "since %d hours"
+msgstr "depuis %d heures"
