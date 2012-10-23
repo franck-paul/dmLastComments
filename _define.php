@@ -15,6 +15,6 @@ $this->registerModule(
 	/* Name */			"Last Comments Dashboard Module",
 	/* Description*/		"Display last comments on dashboard",
 	/* Author */			"Franck Paul",
-	/* Version */			'0.4.1'
+	/* Version */			'0.5'
 );
 ?>
