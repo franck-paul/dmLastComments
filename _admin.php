@@ -16,6 +16,9 @@ $core->addBehavior('adminDashboardItems',array('dmLastCommentsBehaviors','adminD
 $core->addBehavior('adminDashboardContents',array('dmLastCommentsBehaviors','adminDashboardContents'));
 
 // User-preferecences behaviours
+if (version_compare(DC_VERSION,'2.4.4','<=')) {
+	$core->addBehavior('adminBeforeUserUpdate',array('dmLastCommentsBehaviors','adminBeforeUserUpdate'));
+}
 $core->addBehavior('adminBeforeUserOptionsUpdate',array('dmLastCommentsBehaviors','adminBeforeUserUpdate'));
 $core->addBehavior('adminPreferencesForm',array('dmLastCommentsBehaviors','adminPreferencesForm'));
 
