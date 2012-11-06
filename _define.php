@@ -12,8 +12,8 @@
 if (!defined('DC_RC_PATH')) { return; }
 
 $this->registerModule(
-	/* Name */				__("Last Comments Dashboard Module"),
-	/* Description*/		__("Display last comments on dashboard"),
+	/* Name */			"Last Comments Dashboard Module",
+	/* Description*/		"Display last comments on dashboard",
 	/* Author */			"Franck Paul",
 	/* Version */			'0.4.1'
 );
