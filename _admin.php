@@ -152,37 +152,37 @@ class dmLastCommentsBehaviors
 
 		echo '<fieldset><legend>'.__('Last comments on dashboard').'</legend>'.
 		
-		'<p><label for"dmlast_comments" class="classic">'.
+		'<p>'.
 		form::checkbox('dmlast_comments',1,$core->auth->user_prefs->dmlastcomments->last_comments).' '.
-		__('Display last comments').'</label></p>'.
+		'<label for"dmlast_comments" class="classic">'.__('Display last comments').'</label></p>'.
 
-		'<p><label for"dmlast_comments_nb">'.__('Number of last comments to display:').
+		'<p><label for"dmlast_comments_nb">'.__('Number of last comments to display:').'</label>'.
 		form::field('dmlast_comments_nb',2,3,(integer) $core->auth->user_prefs->dmlastcomments->last_comments_nb).
-		'</label></p>'.
+		'</p>'.
 
-		'<p><label for"dmlast_comments_large" class="classic">'.
+		'<p>'.
 		form::checkbox('dmlast_comments_large',1,$core->auth->user_prefs->dmlastcomments->last_comments_large).' '.
-		__('Display last comments in large section (under favorites)').'</label></p>'.
+		'<label for"dmlast_comments_large" class="classic">'.__('Display last comments in large section (under favorites)').'</label></p>'.
 
-		'<p><label for"dmlast_comments_author" class="classic">'.
+		'<p>'.
 		form::checkbox('dmlast_comments_author',1,$core->auth->user_prefs->dmlastcomments->last_comments_author).' '.
-		__('Show authors').'</label></p>'.
+		'<label for"dmlast_comments_author" class="classic">'.__('Show authors').'</label></p>'.
 
-		'<p><label for"dmlast_comments_date" class="classic">'.
+		'<p>'.
 		form::checkbox('dmlast_comments_date',1,$core->auth->user_prefs->dmlastcomments->last_comments_date).' '.
-		__('Show dates').'</label></p>'.
+		'<label for"dmlast_comments_date" class="classic">'.__('Show dates').'</label></p>'.
 
-		'<p><label for"dmlast_comments_time" class="classic">'.
+		'<p>'.
 		form::checkbox('dmlast_comments_time',1,$core->auth->user_prefs->dmlastcomments->last_comments_time).' '.
-		__('Show times').'</label></p>'.
+		'<label for"dmlast_comments_time" class="classic">'.__('Show times').'</label></p>'.
 
-		'<p><label for"dmlast_comments_nospam" class="classic">'.
+		'<p>'.
 		form::checkbox('dmlast_comments_nospam',1,$core->auth->user_prefs->dmlastcomments->last_comments_nospam).' '.
-		__('Exclude junk comments').'</label></p>'.
+		'<label for"dmlast_comments_nospam" class="classic">'.__('Exclude junk comments').'</label></p>'.
 
-		'<p><label for"dmlast_comments_recents">'.__('Max age of comments to display (in hours):').
+		'<p><label for"dmlast_comments_recents">'.__('Max age of comments to display (in hours):').'</label>'.
 		form::field('dmlast_comments_recents',2,3,(integer) $core->auth->user_prefs->dmlastcomments->last_comments_recents).
-		'</label></p>'.
+		'</p>'.
 		'<p class="form-note">'.__('Leave empty to ignore age of comments').'</p>'.
 
 		'<br class="clear" />'. //Opera sucks
