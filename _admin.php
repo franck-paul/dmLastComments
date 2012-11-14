@@ -154,33 +154,33 @@ class dmLastCommentsBehaviors
 		
 		'<p>'.
 		form::checkbox('dmlast_comments',1,$core->auth->user_prefs->dmlastcomments->last_comments).' '.
-		'<label for"dmlast_comments" class="classic">'.__('Display last comments').'</label></p>'.
+		'<label for="dmlast_comments" class="classic">'.__('Display last comments').'</label></p>'.
 
-		'<p><label for"dmlast_comments_nb">'.__('Number of last comments to display:').'</label>'.
+		'<p><label for="dmlast_comments_nb">'.__('Number of last comments to display:').'</label>'.
 		form::field('dmlast_comments_nb',2,3,(integer) $core->auth->user_prefs->dmlastcomments->last_comments_nb).
 		'</p>'.
 
 		'<p>'.
 		form::checkbox('dmlast_comments_large',1,$core->auth->user_prefs->dmlastcomments->last_comments_large).' '.
-		'<label for"dmlast_comments_large" class="classic">'.__('Display last comments in large section (under favorites)').'</label></p>'.
+		'<label for="dmlast_comments_large" class="classic">'.__('Display last comments in large section (under favorites)').'</label></p>'.
 
 		'<p>'.
 		form::checkbox('dmlast_comments_author',1,$core->auth->user_prefs->dmlastcomments->last_comments_author).' '.
-		'<label for"dmlast_comments_author" class="classic">'.__('Show authors').'</label></p>'.
+		'<label for="dmlast_comments_author" class="classic">'.__('Show authors').'</label></p>'.
 
 		'<p>'.
 		form::checkbox('dmlast_comments_date',1,$core->auth->user_prefs->dmlastcomments->last_comments_date).' '.
-		'<label for"dmlast_comments_date" class="classic">'.__('Show dates').'</label></p>'.
+		'<label for="dmlast_comments_date" class="classic">'.__('Show dates').'</label></p>'.
 
 		'<p>'.
 		form::checkbox('dmlast_comments_time',1,$core->auth->user_prefs->dmlastcomments->last_comments_time).' '.
-		'<label for"dmlast_comments_time" class="classic">'.__('Show times').'</label></p>'.
+		'<label for="dmlast_comments_time" class="classic">'.__('Show times').'</label></p>'.
 
 		'<p>'.
 		form::checkbox('dmlast_comments_nospam',1,$core->auth->user_prefs->dmlastcomments->last_comments_nospam).' '.
-		'<label for"dmlast_comments_nospam" class="classic">'.__('Exclude junk comments').'</label></p>'.
+		'<label for="dmlast_comments_nospam" class="classic">'.__('Exclude junk comments').'</label></p>'.
 
-		'<p><label for"dmlast_comments_recents">'.__('Max age of comments to display (in hours):').'</label>'.
+		'<p><label for="dmlast_comments_recents">'.__('Max age of comments to display (in hours):').'</label>'.
 		form::field('dmlast_comments_recents',2,3,(integer) $core->auth->user_prefs->dmlastcomments->last_comments_recents).
 		'</p>'.
 		'<p class="form-note">'.__('Leave empty to ignore age of comments').'</p>'.
