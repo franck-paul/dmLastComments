@@ -15,12 +15,8 @@ if (!defined('DC_CONTEXT_ADMIN')) { return; }
 $core->addBehavior('adminDashboardItems',array('dmLastCommentsBehaviors','adminDashboardItems'));
 $core->addBehavior('adminDashboardContents',array('dmLastCommentsBehaviors','adminDashboardContents'));
 
-// User-preferecences behaviours
-if (version_compare(DC_VERSION,'2.4.4','<=')) {
-	$core->addBehavior('adminBeforeUserUpdate',array('dmLastCommentsBehaviors','adminBeforeUserUpdate'));
-}
-$core->addBehavior('adminBeforeUserOptionsUpdate',array('dmLastCommentsBehaviors','adminBeforeUserUpdate'));
-$core->addBehavior('adminPreferencesForm',array('dmLastCommentsBehaviors','adminPreferencesForm'));
+$core->addBehavior('adminAfterDashboardOptionsUpdate',array('dmLastCommentsBehaviors','adminAfterDashboardOptionsUpdate'));
+$core->addBehavior('adminDashboardOptionsForm',array('dmLastCommentsBehaviors','adminDashboardOptionsForm'));
 
 # BEHAVIORS
 class dmLastCommentsBehaviors
@@ -120,7 +116,7 @@ class dmLastCommentsBehaviors
 		}
 	}
 
-	public static function adminBeforeUserUpdate($cur,$userID)
+	public static function adminAfterDashboardOptionsUpdate($userID)
 	{
 		global $core;
 
@@ -143,14 +139,14 @@ class dmLastCommentsBehaviors
 		}
 	}
 	
-	public static function adminPreferencesForm($core)
+	public static function adminDashboardOptionsForm($core)
 	{
 		// Add fieldset for plugin options
 		$core->auth->user_prefs->addWorkspace('dmlastcomments');
 
-		echo '<div class="col">';
+		echo '<div class="box">';
 
-		echo '<fieldset><legend>'.__('Last comments on dashboard').'</legend>'.
+		echo '<div class="fieldset"><h5>'.__('Last comments on dashboard').'</h5>'.
 		
 		'<p>'.
 		form::checkbox('dmlast_comments',1,$core->auth->user_prefs->dmlastcomments->last_comments).' '.
@@ -185,8 +181,7 @@ class dmLastCommentsBehaviors
 		'</p>'.
 		'<p class="form-note">'.__('Leave empty to ignore age of comments').'</p>'.
 
-		'<br class="clear" />'. //Opera sucks
-		'</fieldset>';
+		'</div>';
 
 		echo '</div>';
 	}
