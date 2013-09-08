@@ -37,8 +37,8 @@ msgstr "Affiche les derniers commentaires"
 msgid "Number of last comments to display:"
 msgstr "Nombre de commentaires à afficher :"
 
-msgid "Display last comments in large section (under favorites)"
-msgstr "Afficher les derniers commentaires dans la partie large (sous les favoris)"
+msgid "Large screen"
+msgstr "Affichage large"
 
 msgid "Show authors"
 msgstr "Afficher les auteurs"
@@ -63,18 +63,3 @@ msgstr "Module d'affichage des derniers commentaires"
 
 msgid "Display last comments on dashboard"
 msgstr "Affiche les derniers commentaires sur le tableau de bord"
-
-#~ msgid "Last comments"
-#~ msgstr "Derniers commentaires"
-
-#~ msgid "Number of last comments displayed"
-#~ msgstr "Nombre de commentaires à afficher"
-
-#~ msgid "Large display"
-#~ msgstr "Affichage large"
-
-#~ msgid "on"
-#~ msgstr "le"
-
-#~ msgid "by"
-#~ msgstr "par"

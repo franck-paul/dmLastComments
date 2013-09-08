@@ -12,7 +12,6 @@
 if (!defined('DC_CONTEXT_ADMIN')) { return; }
 
 // Dashboard behaviours
-$core->addBehavior('adminDashboardItems',array('dmLastCommentsBehaviors','adminDashboardItems'));
 $core->addBehavior('adminDashboardContents',array('dmLastCommentsBehaviors','adminDashboardContents'));
 
 $core->addBehavior('adminAfterDashboardOptionsUpdate',array('dmLastCommentsBehaviors','adminAfterDashboardOptionsUpdate'));
@@ -78,34 +77,15 @@ class dmLastCommentsBehaviors
 		}
 	}
 	
-	public static function adminDashboardItems($core,$items)
-	{
-		// Add small module to the items stack
-		$core->auth->user_prefs->addWorkspace('dmlastcomments');
-		if ($core->auth->user_prefs->dmlastcomments->last_comments && !$core->auth->user_prefs->dmlastcomments->last_comments_large) {
-			$ret = '<div id="last-comments">'.'<h3>'.'<img src="index.php?pf=dmLastComments/icon.png" alt="" />'.' '.__('Last comments').'</h3>';
-			$ret .= dmLastCommentsBehaviors::getLastComments($core,
-				$core->auth->user_prefs->dmlastcomments->last_comments_nb,
-				false,
-				$core->auth->user_prefs->dmlastcomments->last_comments_author,
-				$core->auth->user_prefs->dmlastcomments->last_comments_date,
-				$core->auth->user_prefs->dmlastcomments->last_comments_time,
-				$core->auth->user_prefs->dmlastcomments->last_comments_nospam,
-				$core->auth->user_prefs->dmlastcomments->last_comments_recents);
-			$ret .= '</div>';
-			$items[] = new ArrayObject(array($ret));
-		}
-	}
-
 	public static function adminDashboardContents($core,$contents)
 	{
-		// Add large modules to the contents stack
+		// Add modules to the contents stack
 		$core->auth->user_prefs->addWorkspace('dmlastcomments');
-		if ($core->auth->user_prefs->dmlastcomments->last_comments && $core->auth->user_prefs->dmlastcomments->last_comments_large) {
+		if ($core->auth->user_prefs->dmlastcomments->last_comments) {
 			$ret = '<div id="last-comments">'.'<h3>'.'<img src="index.php?pf=dmLastComments/icon.png" alt="" />'.' '.__('Last comments').'</h3>';
 			$ret .= dmLastCommentsBehaviors::getLastComments($core,
 				$core->auth->user_prefs->dmlastcomments->last_comments_nb,
-				true,
+				$core->auth->user_prefs->dmlastcomments->last_comments_large,
 				$core->auth->user_prefs->dmlastcomments->last_comments_author,
 				$core->auth->user_prefs->dmlastcomments->last_comments_date,
 				$core->auth->user_prefs->dmlastcomments->last_comments_time,
@@ -155,10 +135,6 @@ class dmLastCommentsBehaviors
 		'</p>'.
 
 		'<p>'.
-		form::checkbox('dmlast_comments_large',1,$core->auth->user_prefs->dmlastcomments->last_comments_large).' '.
-		'<label for="dmlast_comments_large" class="classic">'.__('Display last comments in large section (under favorites)').'</label></p>'.
-
-		'<p>'.
 		form::checkbox('dmlast_comments_author',1,$core->auth->user_prefs->dmlastcomments->last_comments_author).' '.
 		'<label for="dmlast_comments_author" class="classic">'.__('Show authors').'</label></p>'.
 
@@ -178,6 +154,10 @@ class dmLastCommentsBehaviors
 		form::field('dmlast_comments_recents',2,3,(integer) $core->auth->user_prefs->dmlastcomments->last_comments_recents).
 		'</p>'.
 		'<p class="form-note">'.__('Leave empty to ignore age of comments').'</p>'.
+
+		'<p>'.
+		form::checkbox('dmlast_comments_large',1,$core->auth->user_prefs->dmlastcomments->last_comments_large).' '.
+		'<label for="dmlast_comments_large" class="classic">'.__('Large screen').'</label></p>'.
 
 		'</div>';
 	}
