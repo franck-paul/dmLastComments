@@ -144,9 +144,7 @@ class dmLastCommentsBehaviors
 		// Add fieldset for plugin options
 		$core->auth->user_prefs->addWorkspace('dmlastcomments');
 
-		echo '<div class="box">';
-
-		echo '<div class="fieldset"><h5>'.__('Last comments on dashboard').'</h5>'.
+		echo '<div class="fieldset"><h4>'.__('Last comments on dashboard').'</h4>'.
 		
 		'<p>'.
 		form::checkbox('dmlast_comments',1,$core->auth->user_prefs->dmlastcomments->last_comments).' '.
@@ -182,8 +180,6 @@ class dmLastCommentsBehaviors
 		'<p class="form-note">'.__('Leave empty to ignore age of comments').'</p>'.
 
 		'</div>';
-
-		echo '</div>';
 	}
 }
 ?>
