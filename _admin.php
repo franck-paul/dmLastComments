@@ -76,7 +76,7 @@ class dmLastCommentsBehaviors
 			return '<p>'.__('No comment').((integer) $recents > 0 ? ' '.sprintf(__('since %d hours'),(integer) $recents) : '').'</p>';
 		}
 	}
-	
+
 	public static function adminDashboardContents($core,$contents)
 	{
 		// Add modules to the contents stack
@@ -106,31 +106,31 @@ class dmLastCommentsBehaviors
 			// Pending comments
 			$core->auth->user_prefs->dmlastcomments->put('last_comments',!empty($_POST['dmlast_comments']),'boolean');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_nb',(integer)$_POST['dmlast_comments_nb'],'integer');
-			$core->auth->user_prefs->dmlastcomments->put('last_comments_large',!empty($_POST['dmlast_comments_large']),'boolean');
+			$core->auth->user_prefs->dmlastcomments->put('last_comments_large',empty($_POST['dmlast_comments_small']),'boolean');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_author',!empty($_POST['dmlast_comments_author']),'boolean');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_date',!empty($_POST['dmlast_comments_date']),'boolean');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_time',!empty($_POST['dmlast_comments_time']),'boolean');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_nospam',!empty($_POST['dmlast_comments_nospam']),'boolean');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_recents',(integer)$_POST['dmlast_comments_recents'],'integer');
-		} 
+		}
 		catch (Exception $e)
 		{
 			$core->error->add($e->getMessage());
 		}
 	}
-	
+
 	public static function adminDashboardOptionsForm($core)
 	{
 		// Add fieldset for plugin options
 		$core->auth->user_prefs->addWorkspace('dmlastcomments');
 
 		echo '<div class="fieldset"><h4>'.__('Last comments on dashboard').'</h4>'.
-		
+
 		'<p>'.
 		form::checkbox('dmlast_comments',1,$core->auth->user_prefs->dmlastcomments->last_comments).' '.
 		'<label for="dmlast_comments" class="classic">'.__('Display last comments').'</label></p>'.
 
-		'<p><label for="dmlast_comments_nb">'.__('Number of last comments to display:').'</label>'.
+		'<p><label for="dmlast_comments_nb" class="classic">'.__('Number of last comments to display:').'</label> '.
 		form::field('dmlast_comments_nb',2,3,(integer) $core->auth->user_prefs->dmlastcomments->last_comments_nb).
 		'</p>'.
 
@@ -150,14 +150,14 @@ class dmLastCommentsBehaviors
 		form::checkbox('dmlast_comments_nospam',1,$core->auth->user_prefs->dmlastcomments->last_comments_nospam).' '.
 		'<label for="dmlast_comments_nospam" class="classic">'.__('Exclude junk comments').'</label></p>'.
 
-		'<p><label for="dmlast_comments_recents">'.__('Max age of comments to display (in hours):').'</label>'.
+		'<p><label for="dmlast_comments_recents" class="classic">'.__('Max age of comments to display (in hours):').'</label> '.
 		form::field('dmlast_comments_recents',2,3,(integer) $core->auth->user_prefs->dmlastcomments->last_comments_recents).
 		'</p>'.
 		'<p class="form-note">'.__('Leave empty to ignore age of comments').'</p>'.
 
 		'<p>'.
-		form::checkbox('dmlast_comments_large',1,$core->auth->user_prefs->dmlastcomments->last_comments_large).' '.
-		'<label for="dmlast_comments_large" class="classic">'.__('Large screen').'</label></p>'.
+		form::checkbox('dmlast_comments_small',1,!$core->auth->user_prefs->dmlastcomments->last_comments_large).' '.
+		'<label for="dmlast_comments_small" class="classic">'.__('Small screen').'</label></p>'.
 
 		'</div>';
 	}

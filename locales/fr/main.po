@@ -37,8 +37,8 @@ msgstr "Affiche les derniers commentaires"
 msgid "Number of last comments to display:"
 msgstr "Nombre de commentaires à afficher :"
 
-msgid "Large screen"
-msgstr "Affichage large"
+msgid "Small screen"
+msgstr "Affichage abrégé"
 
 msgid "Show authors"
 msgstr "Afficher les auteurs"
