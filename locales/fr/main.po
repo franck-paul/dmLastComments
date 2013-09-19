@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 dmLastComments module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-05 17:08+0100\n"
+"POT-Creation-Date: 2013-09-19 15:12+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Franck Paul <carnet.franck.paul@gmail.com>\n"
 "Language-Team: \n"
@@ -24,9 +24,14 @@ msgstr "%H:%M"
 msgid "See all comments"
 msgstr "Voir tous les commentaires"
 
+msgid "No comments"
+msgstr "Aucun commentaire"
+
 #, php-format
-msgid "since %d hours"
-msgstr "depuis %d heures"
+msgid "since %d hour"
+msgid_plural "since %d hours"
+msgstr[0] "depuis %d heure"
+msgstr[1] "depuis %d heures"
 
 msgid "Last comments on dashboard"
 msgstr "Derniers commentaires sur le tableau de bord"
@@ -36,9 +41,6 @@ msgstr "Affiche les derniers commentaires"
 
 msgid "Number of last comments to display:"
 msgstr "Nombre de commentaires à afficher :"
-
-msgid "Small screen"
-msgstr "Affichage abrégé"
 
 msgid "Show authors"
 msgstr "Afficher les auteurs"
@@ -58,8 +60,11 @@ msgstr "Âge maximum des commentaires à afficher (en heures) :"
 msgid "Leave empty to ignore age of comments"
 msgstr "Laisser vide pour ignorer l'âge des commentaires"
 
-msgid "Last Comments Dashboard Module"
-msgstr "Module d'affichage des derniers commentaires"
+msgid "Small screen"
+msgstr "Affichage abrégé"
 
-msgid "Display last comments on dashboard"
-msgstr "Affiche les derniers commentaires sur le tableau de bord"
+#~ msgid "Last Comments Dashboard Module"
+#~ msgstr "Module d'affichage des derniers commentaires"
+
+#~ msgid "Display last comments on dashboard"
+#~ msgstr "Affiche les derniers commentaires sur le tableau de bord"

@@ -32,7 +32,7 @@ try
 	$core->auth->user_prefs->dmlastcomments->put('last_comments_recents',0,'integer','Max age of comments (in hours)',false,true);
 
 	$core->setVersion('dmLastComments',$new_version);
-	
+
 	return true;
 }
 catch (Exception $e)

@@ -23,10 +23,13 @@ class dmLastCommentsBehaviors
 {
 	private static function getLastComments($core,$nb,$large,$author,$date,$time,$nospam,$recents = 0)
 	{
+		$recents = (integer) $recents;
+		$nb = (integer) $nb;
+
 		// Get last $nb comments
 		$params = array();
-		if ((integer) $nb > 0) {
-			$params['limit'] = (integer) $nb;
+		if ($nb > 0) {
+			$params['limit'] = $nb;
 		} else {
 			$params['limit'] = 30;	// As in first page of comments' list
 		}
@@ -34,8 +37,8 @@ class dmLastCommentsBehaviors
 			// Exclude junk comment from list
 			$params['comment_status_not'] = -2;
 		}
-		if ((integer) $recents > 0) {
-			$params['sql'] = ' AND comment_dt >= (NOW() - INTERVAL '.sprintf((integer) $recents).' HOUR) ';
+		if ($recents > 0) {
+			$params['sql'] = ' AND comment_dt >= (NOW() - INTERVAL '.sprintf($recents).' HOUR) ';
 		}
 		$rs = $core->blog->getComments($params,false);
 		if (!$rs->isEmpty()) {
@@ -74,7 +77,8 @@ class dmLastCommentsBehaviors
 			$ret .= '<p><a href="comments.php">'.__('See all comments').'</a></p>';
 			return $ret;
 		} else {
-			return '<p>'.__('No comment').((integer) $recents > 0 ? ' '.sprintf(__('since %d hours'),(integer) $recents) : '').'</p>';
+			return '<p>'.__('No comments').
+				($recents > 0 ? ' '.sprintf(__('since %d hour','since %d hours',$recents),$recents) : '').'</p>';
 		}
 	}
 
