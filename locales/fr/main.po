@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 dmLastComments module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-19 15:12+0200\n"
+"POT-Creation-Date: 2013-09-24 13:30+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Franck Paul <carnet.franck.paul@gmail.com>\n"
 "Language-Team: \n"
@@ -11,6 +11,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.5.4\n"
+
+msgid "Display last comments on dashboard"
+msgstr "Affiche les derniers commentaires sur le tableau de bord"
+
+msgid "Last Comments Dashboard Module"
+msgstr "Module d'affichage des derniers commentaires"
 
 msgid "at"
 msgstr "à"
@@ -62,9 +68,3 @@ msgstr "Laisser vide pour ignorer l'âge des commentaires"
 
 msgid "Small screen"
 msgstr "Affichage abrégé"
-
-#~ msgid "Last Comments Dashboard Module"
-#~ msgstr "Module d'affichage des derniers commentaires"
-
-#~ msgid "Display last comments on dashboard"
-#~ msgstr "Affiche les derniers commentaires sur le tableau de bord"
