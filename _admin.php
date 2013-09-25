@@ -90,7 +90,9 @@ class dmLastCommentsBehaviors
 		// Add modules to the contents stack
 		$core->auth->user_prefs->addWorkspace('dmlastcomments');
 		if ($core->auth->user_prefs->dmlastcomments->last_comments) {
-			$ret = '<div id="last-comments">'.'<h3>'.'<img src="index.php?pf=dmLastComments/icon.png" alt="" />'.' '.__('Last comments').'</h3>';
+			$class = ($core->auth->user_prefs->dmlastcomments->last_comments_large ? 'medium' : 'small');
+			$ret = '<div id="last-comments" class="box '.$class.'">'.
+				'<h3>'.'<img src="index.php?pf=dmLastComments/icon.png" alt="" />'.' '.__('Last comments').'</h3>';
 			$ret .= dmLastCommentsBehaviors::getLastComments($core,
 				$core->auth->user_prefs->dmlastcomments->last_comments_nb,
 				$core->auth->user_prefs->dmlastcomments->last_comments_large,
