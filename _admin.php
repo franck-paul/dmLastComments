@@ -172,4 +172,3 @@ class dmLastCommentsBehaviors
 		'</div>';
 	}
 }
-?>
