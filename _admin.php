@@ -16,6 +16,7 @@ if (!defined('DC_CONTEXT_ADMIN')) { return; }
 __('Last Comments Dashboard Module').__('Display last comments on dashboard');
 
 // Dashboard behaviours
+$core->addBehavior('adminDashboardHeaders',array('dmLastCommentsBehaviors','adminDashboardHeaders'));
 $core->addBehavior('adminDashboardContents',array('dmLastCommentsBehaviors','adminDashboardContents'));
 
 $core->addBehavior('adminAfterDashboardOptionsUpdate',array('dmLastCommentsBehaviors','adminAfterDashboardOptionsUpdate'));
@@ -24,6 +25,11 @@ $core->addBehavior('adminDashboardOptionsForm',array('dmLastCommentsBehaviors','
 # BEHAVIORS
 class dmLastCommentsBehaviors
 {
+	public static function adminDashboardHeaders()
+	{
+		return dcPage::jsLoad('index.php?pf=dmLastComments/js/service.js');
+	}
+
 	private static function getLastComments($core,$nb,$large,$author,$date,$time,$nospam,$recents = 0)
 	{
 		$recents = (integer) $recents;
@@ -47,7 +53,7 @@ class dmLastCommentsBehaviors
 		if (!$rs->isEmpty()) {
 			$ret = '<ul>';
 			while ($rs->fetch()) {
-				$ret .= '<li>';
+				$ret .= '<li class="line" id="dmlc'.$rs->comment_id.'">';
 				$ret .= '<a href="comment.php?id='.$rs->comment_id.'">'.$rs->post_title.'</a>';
 				$info = array();
 				if ($large) {
