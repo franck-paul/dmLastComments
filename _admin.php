@@ -27,7 +27,9 @@ class dmLastCommentsBehaviors
 {
 	public static function adminDashboardHeaders()
 	{
-		return dcPage::jsLoad('index.php?pf=dmLastComments/js/service.js');
+		global $core;
+
+		return dcPage::jsLoad(urldecode(dcPage::getPF('dmLastComments/js/service.js')),$core->getVersion('dmLastComments'));
 	}
 
 	private static function getLastComments($core,$nb,$large,$author,$date,$time,$nospam,$recents = 0)
@@ -98,7 +100,7 @@ class dmLastCommentsBehaviors
 		if ($core->auth->user_prefs->dmlastcomments->last_comments) {
 			$class = ($core->auth->user_prefs->dmlastcomments->last_comments_large ? 'medium' : 'small');
 			$ret = '<div id="last-comments" class="box '.$class.'">'.
-				'<h3>'.'<img src="index.php?pf=dmLastComments/icon.png" alt="" />'.' '.__('Last comments').'</h3>';
+				'<h3>'.'<img src="'.urldecode(dcPage::getPF('dmLastComments/icon.png')).'" alt="" />'.' '.__('Last comments').'</h3>';
 			$ret .= dmLastCommentsBehaviors::getLastComments($core,
 				$core->auth->user_prefs->dmlastcomments->last_comments_nb,
 				$core->auth->user_prefs->dmlastcomments->last_comments_large,
