@@ -29,10 +29,41 @@ class dmLastCommentsBehaviors
 	{
 		global $core;
 
-		return dcPage::jsLoad(urldecode(dcPage::getPF('dmLastComments/js/service.js')),$core->getVersion('dmLastComments'));
+		$sqlp = array(
+			'limit' => 1,					// only the last one
+			'no_content' => true,			// content is not required
+			'order' => 'comment_id DESC'	// get last first
+			);
+
+		$email = $core->auth->getInfo('user_email');
+		$url = $core->auth->getInfo('user_url');
+		if ($email && $url) {
+			// Ignore own comments/trackbacks
+			$sqlp['sql'] = " AND (comment_email <> '".$email."' OR comment_site <> '".$url."')";
+		}
+
+		$rs = $core->blog->getComments($sqlp);
+
+		if ($rs->count()) {
+			$rs->fetch();
+			$last_comment_id = $rs->comment_id;
+		} else {
+			$last_comment_id = -1;
+		}
+
+		$core->auth->user_prefs->addWorkspace('dmlastcomments');
+
+		return
+		'<script type="text/javascript">'."\n".
+		"//<![CDATA[\n".
+		dcPage::jsVar('dotclear.dmLastComment_LastCommentId',$last_comment_id).
+		dcPage::jsVar('dotclear.dmLastComment_AutoRefresh',$core->auth->user_prefs->dmlastcomments->last_comments_autorefresh).
+		"\n//]]>\n".
+		"</script>\n".
+		dcPage::jsLoad(urldecode(dcPage::getPF('dmLastComments/js/service.js')),$core->getVersion('dmLastComments'));
 	}
 
-	private static function getLastComments($core,$nb,$large,$author,$date,$time,$nospam,$recents = 0)
+	public static function getLastComments($core,$nb,$large,$author,$date,$time,$nospam,$recents = 0,$last_id = -1)
 	{
 		$recents = (integer) $recents;
 		$nb = (integer) $nb;
@@ -55,7 +86,8 @@ class dmLastCommentsBehaviors
 		if (!$rs->isEmpty()) {
 			$ret = '<ul>';
 			while ($rs->fetch()) {
-				$ret .= '<li class="line" id="dmlc'.$rs->comment_id.'">';
+				$ret .= '<li class="line'.($last_id != -1 && $rs->comment_id > $last_id ? ' dmlc-new' : '').'"'.
+					' id="dmlc'.$rs->comment_id.'">';
 				$ret .= '<a href="comment.php?id='.$rs->comment_id.'">'.$rs->post_title.'</a>';
 				$info = array();
 				if ($large) {
@@ -121,7 +153,6 @@ class dmLastCommentsBehaviors
 		// Get and store user's prefs for plugin options
 		$core->auth->user_prefs->addWorkspace('dmlastcomments');
 		try {
-			// Pending comments
 			$core->auth->user_prefs->dmlastcomments->put('last_comments',!empty($_POST['dmlast_comments']),'boolean');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_nb',(integer)$_POST['dmlast_comments_nb'],'integer');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_large',empty($_POST['dmlast_comments_small']),'boolean');
@@ -130,6 +161,7 @@ class dmLastCommentsBehaviors
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_time',!empty($_POST['dmlast_comments_time']),'boolean');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_nospam',!empty($_POST['dmlast_comments_nospam']),'boolean');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_recents',(integer)$_POST['dmlast_comments_recents'],'integer');
+			$core->auth->user_prefs->dmlastcomments->put('last_comments_autorefresh',!empty($_POST['dmlast_comments_autorefresh']),'boolean');
 		}
 		catch (Exception $e)
 		{
@@ -176,6 +208,10 @@ class dmLastCommentsBehaviors
 		'<p>'.
 		form::checkbox('dmlast_comments_small',1,!$core->auth->user_prefs->dmlastcomments->last_comments_large).' '.
 		'<label for="dmlast_comments_small" class="classic">'.__('Small screen').'</label></p>'.
+
+		'<p>'.
+		form::checkbox('dmlast_comments_autorefresh',1,$core->auth->user_prefs->dmlastcomments->last_comments_autorefresh).' '.
+		'<label for="dmlast_comments_autorefresh" class="classic">'.__('Auto refresh').'</label></p>'.
 
 		'</div>';
 	}

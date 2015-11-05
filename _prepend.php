@@ -12,13 +12,14 @@
 
 if (!defined('DC_RC_PATH')) { return; }
 
-$this->registerModule(
-	/* Name */			"Last Comments Dashboard Module",
-	/* Description*/		"Display last comments on dashboard",
-	/* Author */			"Franck Paul",
-	/* Version */			'0.8',
-	array(
-		/* Permissions */	'permissions' =>	'admin',
-		/* Type */			'type' =>			'plugin'
-	)
-);
+// Public and Admin mode
+
+if (!defined('DC_CONTEXT_ADMIN')) { return false; }
+
+// Admin mode
+
+$__autoload['dmLastCommentsRest'] = dirname(__FILE__).'/_services.php';
+
+// Register REST methods
+$core->rest->addFunction('dmLastCommentsCheck',array('dmLastCommentsRest','checkNewComments'));
+$core->rest->addFunction('dmLastCommentsRows',array('dmLastCommentsRest','getLastCommentsRows'));

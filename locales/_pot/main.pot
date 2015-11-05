@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Dotclear 2 dmLastComments module\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-09-24 13:30+0200\n"
+"POT-Creation-Date: 2015-11-05 14:16+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,69 +25,69 @@ msgstr ""
 msgid "Last Comments Dashboard Module"
 msgstr ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:61
+#: ../hg-plugins/dmLastComments/_admin.php:101
 msgid "at"
 msgstr ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:68
+#: ../hg-plugins/dmLastComments/_admin.php:108
 msgid "%Y-%m-%d"
 msgstr ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:71
+#: ../hg-plugins/dmLastComments/_admin.php:111
 msgid "%H:%M"
 msgstr ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:80
+#: ../hg-plugins/dmLastComments/_admin.php:120
 msgid "See all comments"
 msgstr ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:83
-msgid "No comments"
-msgstr ""
-
-#: ../hg-plugins/dmLastComments/_admin.php:84
+#: ../hg-plugins/dmLastComments/_admin.php:124
 #, php-format
 msgid "since %d hour"
 msgid_plural "since %d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:135
+#: ../hg-plugins/dmLastComments/_admin.php:177
 msgid "Last comments on dashboard"
 msgstr ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:139
+#: ../hg-plugins/dmLastComments/_admin.php:181
 msgid "Display last comments"
 msgstr ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:141
+#: ../hg-plugins/dmLastComments/_admin.php:183
 msgid "Number of last comments to display:"
 msgstr ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:147
+#: ../hg-plugins/dmLastComments/_admin.php:189
 msgid "Show authors"
 msgstr ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:151
+#: ../hg-plugins/dmLastComments/_admin.php:193
 msgid "Show dates"
 msgstr ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:155
+#: ../hg-plugins/dmLastComments/_admin.php:197
 msgid "Show times"
 msgstr ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:159
+#: ../hg-plugins/dmLastComments/_admin.php:201
 msgid "Exclude junk comments"
 msgstr ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:161
+#: ../hg-plugins/dmLastComments/_admin.php:203
 msgid "Max age of comments to display (in hours):"
 msgstr ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:164
+#: ../hg-plugins/dmLastComments/_admin.php:206
 msgid "Leave empty to ignore age of comments"
 msgstr ""
 
-#: ../hg-plugins/dmLastComments/_admin.php:168
+#: ../hg-plugins/dmLastComments/_admin.php:210
 msgid "Small screen"
+msgstr ""
+
+#: ../hg-plugins/dmLastComments/_admin.php:214
+msgid "Auto refresh"
 msgstr ""
