@@ -71,6 +71,7 @@ class dmLastCommentsRest
 
 		$stored_id = !empty($get['stored_id']) ? $get['stored_id'] : -1;
 		$last_id = !empty($get['last_id']) ? $get['last_id'] : -1;
+		$counter = !empty($get['counter']) ? $get['counter'] : 0;
 
 		$rsp->stored_id = $stored_id;
 		$rsp->last_id = $last_id;
@@ -88,9 +89,10 @@ class dmLastCommentsRest
 			$core->auth->user_prefs->dmlastcomments->last_comments_time,
 			$core->auth->user_prefs->dmlastcomments->last_comments_nospam,
 			$core->auth->user_prefs->dmlastcomments->last_comments_recents,
-			$stored_id);
+			$stored_id,$counter);
 
 		$rsp->list = $ret;
+		$rsp->counter = $counter;
 		$rsp->ret = 1;
 
 		return $rsp;

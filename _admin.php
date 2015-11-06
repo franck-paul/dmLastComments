@@ -58,12 +58,16 @@ class dmLastCommentsBehaviors
 		"//<![CDATA[\n".
 		dcPage::jsVar('dotclear.dmLastComment_LastCommentId',$last_comment_id).
 		dcPage::jsVar('dotclear.dmLastComment_AutoRefresh',$core->auth->user_prefs->dmlastcomments->last_comments_autorefresh).
+		dcPage::jsVar('dotclear.dmLastComment_Badge',$core->auth->user_prefs->dmlastcomments->last_comments_badge).
+		dcPage::jsVar('dotclear.dmLastComment_LastCounter',0).
 		"\n//]]>\n".
 		"</script>\n".
-		dcPage::jsLoad(urldecode(dcPage::getPF('dmLastComments/js/service.js')),$core->getVersion('dmLastComments'));
+		dcPage::jsLoad(urldecode(dcPage::getPF('dmLastComments/js/service.js')),$core->getVersion('dmLastComments')).
+		dcPage::cssLoad(urldecode(dcPage::getPF('dmLastComments/css/style.css')),'screen',$core->getVersion('dmLastComments'));
 	}
 
-	public static function getLastComments($core,$nb,$large,$author,$date,$time,$nospam,$recents = 0,$last_id = -1)
+	public static function getLastComments($core,$nb,$large,$author,$date,$time,$nospam,$recents = 0,
+		$last_id = -1,&$last_counter = 0)
 	{
 		$recents = (integer) $recents;
 		$nb = (integer) $nb;
@@ -86,8 +90,12 @@ class dmLastCommentsBehaviors
 		if (!$rs->isEmpty()) {
 			$ret = '<ul>';
 			while ($rs->fetch()) {
-				$ret .= '<li class="line'.($last_id != -1 && $rs->comment_id > $last_id ? ' dmlc-new' : '').'"'.
-					' id="dmlc'.$rs->comment_id.'">';
+				$ret .= '<li class="line';
+				if ($last_id != -1 && $rs->comment_id > $last_id) {
+					$ret .= ($last_id != -1 && $rs->comment_id > $last_id ? ' dmlc-new' : '');
+					$last_counter++;
+				}
+				$ret .= '" id="dmlc'.$rs->comment_id.'">';
 				$ret .= '<a href="comment.php?id='.$rs->comment_id.'">'.$rs->post_title.'</a>';
 				$info = array();
 				if ($large) {
@@ -118,6 +126,7 @@ class dmLastCommentsBehaviors
 			}
 			$ret .= '</ul>';
 			$ret .= '<p><a href="comments.php">'.__('See all comments').'</a></p>';
+
 			return $ret;
 		} else {
 			return '<p>'.__('No comments').
@@ -162,6 +171,7 @@ class dmLastCommentsBehaviors
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_nospam',!empty($_POST['dmlast_comments_nospam']),'boolean');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_recents',(integer)$_POST['dmlast_comments_recents'],'integer');
 			$core->auth->user_prefs->dmlastcomments->put('last_comments_autorefresh',!empty($_POST['dmlast_comments_autorefresh']),'boolean');
+			$core->auth->user_prefs->dmlastcomments->put('last_comments_badge',!empty($_POST['dmlast_comments_badge']),'boolean');
 		}
 		catch (Exception $e)
 		{
@@ -212,6 +222,10 @@ class dmLastCommentsBehaviors
 		'<p>'.
 		form::checkbox('dmlast_comments_autorefresh',1,$core->auth->user_prefs->dmlastcomments->last_comments_autorefresh).' '.
 		'<label for="dmlast_comments_autorefresh" class="classic">'.__('Auto refresh').'</label></p>'.
+
+		'<p>'.
+		form::checkbox('dmlast_comments_badge',1,$core->auth->user_prefs->dmlastcomments->last_comments_badge).' '.
+		'<label for="dmlast_comments_badge" class="classic">'.__('Display badge (only if Auto refresh is enabled)').'</label></p>'.
 
 		'</div>';
 	}

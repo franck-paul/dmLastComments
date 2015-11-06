@@ -16,7 +16,8 @@ dotclear.dmLastCommentsCheck = function() {
 					f: 'dmLastCommentsRows',
 					xd_check: dotclear.nonce,
 					stored_id: dotclear.dmLastComment_LastCommentId,
-					last_id: $('rsp>check',data).attr('last_id')
+					last_id: $('rsp>check',data).attr('last_id'),
+					last_counter: dotclear.dmLastComment_LastCounter
 				};
 				// Store last comment id
 				dotclear.dmLastComment_LastCommentId = $('rsp>check',data).attr('last_id');
@@ -33,11 +34,28 @@ dotclear.dmLastCommentsCheck = function() {
 							// Replace current list with the new one
 							parser = new DOMParser();
 							list = parser.parseFromString(xml, "text/xml");
+							if ($('#last-comments span.badge').length) {
+								$('#last-comments span.badge').remove();
+							}
 							if ($('#last-comments ul').length) {
 								$('#last-comments ul').remove();
 							}
 							if ($('#last-comments p').length) {
 								$('#last-comments p').remove();
+							}
+							counter = Number($('rsp>rows',data).attr('counter'));
+							if (counter > 0) {
+								dotclear.dmLastComment_LastCounter = Number(dotclear.dmLastComment_LastCounter) + counter;
+								if (dotclear.dmLastComment_Badge) {
+									// Badge on module
+									xml = '<span class="badge badge-block">'+dotclear.dmLastComment_LastCounter+'</span>'+xml;
+									// Badge on menu item
+									if ($('#main-menu li span.badge').length) {
+										$('#main-menu li span.badge').remove();
+									}
+									badge = '<span class="badge badge-inline">'+dotclear.dmLastComment_LastCounter+'</span>';
+									$('#main-menu li a[href="comments.php"]').after(badge);
+								}
 							}
 							$('#last-comments h3').after(xml);
 							// Bind every new lines for viewing comment content
@@ -45,7 +63,7 @@ dotclear.dmLastCommentsCheck = function() {
 								lines: $('#last-comments li.line'),
 								callback: dotclear.dmLastCommentsView
 							});
-							$('#last-comments ul').css('list-style-type', 'none').css('padding-left', '0.5em');
+							$('#last-comments ul').addClass('expandable');
 							// Transition effect for new comments
 							$('.dmlc-new').css('background','#A2CBE9');
 							setTimeout(function () {
@@ -102,10 +120,13 @@ $(function() {
 		lines: $('#last-comments li.line'),
 		callback: dotclear.dmLastCommentsView
 	});
-	$('#last-comments ul').css('list-style-type', 'none').css('padding-left', '0.5em');
+	$('#last-comments ul').addClass('expandable');
 
 	if (dotclear.dmLastComment_AutoRefresh) {
 		// Auto refresh requested : Set 30 seconds interval between two checks for new comments
 		dotclear.dmLastComments_Timer = setInterval(dotclear.dmLastCommentsCheck,30*1000);
+		if (dotclear.dmLastComment_Badge) {
+			$('#last-comments').addClass('badgeable');
+		}
 	}
 });
