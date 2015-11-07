@@ -35,13 +35,6 @@ class dmLastCommentsBehaviors
 			'order' => 'comment_id DESC'	// get last first
 			);
 
-		$email = $core->auth->getInfo('user_email');
-		$url = $core->auth->getInfo('user_url');
-		if ($email && $url) {
-			// Ignore own comments/trackbacks
-			$sqlp['sql'] = " AND (comment_email <> '".$email."' OR comment_site <> '".$url."')";
-		}
-
 		$rs = $core->blog->getComments($sqlp);
 
 		if ($rs->count()) {
