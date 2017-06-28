@@ -48,12 +48,11 @@ class dmLastCommentsBehaviors
 
 		return
 		'<script type="text/javascript">'."\n".
-		"//<![CDATA[\n".
-		dcPage::jsVar('dotclear.dmLastComment_LastCommentId',$last_comment_id).
-		dcPage::jsVar('dotclear.dmLastComment_AutoRefresh',$core->auth->user_prefs->dmlastcomments->last_comments_autorefresh).
-		dcPage::jsVar('dotclear.dmLastComment_Badge',$core->auth->user_prefs->dmlastcomments->last_comments_badge).
-		dcPage::jsVar('dotclear.dmLastComment_LastCounter',0).
-		"\n//]]>\n".
+		dcPage::jsVar('dotclear.dmLastComments_LastCommentId',$last_comment_id).
+		dcPage::jsVar('dotclear.dmLastComments_AutoRefresh',$core->auth->user_prefs->dmlastcomments->last_comments_autorefresh).
+		dcPage::jsVar('dotclear.dmLastComments_Badge',$core->auth->user_prefs->dmlastcomments->last_comments_badge).
+		dcPage::jsVar('dotclear.dmLastComments_LastCounter',0).
+		dcPage::jsVar('dotclear.dmLastComments_SpamCount',-1).
 		"</script>\n".
 		dcPage::jsLoad(urldecode(dcPage::getPF('dmLastComments/js/service.js')),$core->getVersion('dmLastComments')).
 		dcPage::cssLoad(urldecode(dcPage::getPF('dmLastComments/css/style.css')),'screen',$core->getVersion('dmLastComments'));
@@ -218,7 +217,7 @@ class dmLastCommentsBehaviors
 
 		'<p>'.
 		form::checkbox('dmlast_comments_badge',1,$core->auth->user_prefs->dmlastcomments->last_comments_badge).' '.
-		'<label for="dmlast_comments_badge" class="classic">'.__('Display badge (only if Auto refresh is enabled)').'</label></p>'.
+		'<label for="dmlast_comments_badge" class="classic">'.__('Display badges (only if Auto refresh is enabled)').'</label></p>'.
 
 		'</div>';
 	}

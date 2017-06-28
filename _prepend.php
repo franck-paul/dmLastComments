@@ -23,3 +23,4 @@ $__autoload['dmLastCommentsRest'] = dirname(__FILE__).'/_services.php';
 // Register REST methods
 $core->rest->addFunction('dmLastCommentsCheck',array('dmLastCommentsRest','checkNewComments'));
 $core->rest->addFunction('dmLastCommentsRows',array('dmLastCommentsRest','getLastCommentsRows'));
+$core->rest->addFunction('dmLastCommentsSpam',array('dmLastCommentsRest','getSpamCount'));

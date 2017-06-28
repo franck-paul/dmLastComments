@@ -15,6 +15,22 @@ if (!defined('DC_CONTEXT_ADMIN')) { return; }
 class dmLastCommentsRest
 {
 	/**
+	 * Serve method to get number of spams for current blog.
+	 *
+	 * @param 	core 	<b>dcCore</b> 	dcCore instance
+	 * @param 	get 	<b>array</b> 	cleaned $_GET
+	 */
+	public static function getSpamCount($core,$get)
+	{
+		$count = $core->blog->getComments(array('comment_status' => -2),true)->f(0);
+
+		$rsp = new xmlTag('check');
+		$rsp->ret = $count;
+
+		return $rsp;
+	}
+
+	/**
 	 * Serve method to check new comments for current blog.
 	 *
 	 * @param	core	<b>dcCore</b>	dcCore instance
@@ -24,8 +40,6 @@ class dmLastCommentsRest
 	 */
 	public static function checkNewComments($core,$get)
 	{
-		global $core;
-
 		$last_id = !empty($get['last_id']) ? $get['last_id'] : -1;
 
 		$sqlp = array(

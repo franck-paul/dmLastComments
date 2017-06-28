@@ -93,5 +93,5 @@ msgid "Auto refresh"
 msgstr ""
 
 #: ../hg-plugins/dmLastComments/_admin.php:228
-msgid "Display badge (only if Auto refresh is enabled)"
+msgid "Display badges (only if Auto refresh is enabled)"
 msgstr ""

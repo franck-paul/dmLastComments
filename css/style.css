@@ -17,6 +17,10 @@ ul.expandable {
 	top: -10px;
 	right: -10px;
 }
+.badge-block-icon {	/* Dashboard icon */
+	right: 20px;
+	background-color: slategray;
+}
 .badge-inline {	/* Menu item */
 	margin-left: .5em;
 }

@@ -16,7 +16,7 @@ $this->registerModule(
 	/* Name */			"Last Comments Dashboard Module",
 	/* Description*/		"Display last comments on dashboard",
 	/* Author */			"Franck Paul",
-	/* Version */			'1.0',
+	/* Version */			'1.1',
 	array(
 		/* Dependencies */	'requires' =>		array(array('core','2.8')),
 		/* Permissions */	'permissions' =>	'admin',

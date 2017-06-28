@@ -1,8 +1,44 @@
+dotclear.dmLastCommentsSpam = function() {
+	var params = {
+		f: 'dmLastCommentsSpam',
+		xd_check: dotclear.nonce,
+	};
+	$.get('services.php',params,function(data) {
+		if ($('rsp[status=failed]',data).length > 0) {
+			// For debugging purpose only:
+			// console.log($('rsp',data).attr('message'));
+			console.log('Dotclear REST server error');
+		} else {
+			var nb_spams = Number($('rsp>check',data).attr('ret'));
+			if (nb_spams != dotclear.dmLastComments_SpamCount) {
+				// First pass or spam counter changed
+				var icon_com = $('#dashboard-main #icons p a[href="comments.php"]');
+				if (icon_com.length) {
+					// Icon exists on dashboard
+					icon_com = icon_com.parent();
+					// Remove badge if exists
+					var spam_badge = icon_com.children('span.badge');
+					if (spam_badge.length) {
+						spam_badge.remove();
+					}
+					// Add new badge if some spams exist
+					if (nb_spams > 0) {
+						// Badge on icon
+						xml = '<span class="badge badge-block badge-block-icon">'+nb_spams+'</span>';
+						icon_com.append(xml);
+					}
+				}
+				dotclear.dmLastComments_SpamCount = nb_spams;
+			}
+		}
+	});
+}
+
 dotclear.dmLastCommentsCheck = function() {
 	var params = {
 		f: 'dmLastCommentsCheck',
 		xd_check: dotclear.nonce,
-		last_id: dotclear.dmLastComment_LastCommentId
+		last_id: dotclear.dmLastComments_LastCommentId
 	};
 	$.get('services.php',params,function(data) {
 		if ($('rsp[status=failed]',data).length > 0) {
@@ -15,12 +51,12 @@ dotclear.dmLastCommentsCheck = function() {
 				var args = {
 					f: 'dmLastCommentsRows',
 					xd_check: dotclear.nonce,
-					stored_id: dotclear.dmLastComment_LastCommentId,
+					stored_id: dotclear.dmLastComments_LastCommentId,
 					last_id: $('rsp>check',data).attr('last_id'),
-					last_counter: dotclear.dmLastComment_LastCounter
+					last_counter: dotclear.dmLastComments_LastCounter
 				};
 				// Store last comment id
-				dotclear.dmLastComment_LastCommentId = $('rsp>check',data).attr('last_id');
+				dotclear.dmLastComments_LastCommentId = $('rsp>check',data).attr('last_id');
 				// Get new list
 				$.get('services.php',args,function(data) {
 					if ($('rsp[status=failed]',data).length > 0) {
@@ -45,15 +81,15 @@ dotclear.dmLastCommentsCheck = function() {
 							}
 							counter = Number($('rsp>rows',data).attr('counter'));
 							if (counter > 0) {
-								dotclear.dmLastComment_LastCounter = Number(dotclear.dmLastComment_LastCounter) + counter;
-								if (dotclear.dmLastComment_Badge) {
+								dotclear.dmLastComments_LastCounter = Number(dotclear.dmLastComments_LastCounter) + counter;
+								if (dotclear.dmLastComments_Badge) {
 									// Badge on module
-									xml = '<span class="badge badge-block">'+dotclear.dmLastComment_LastCounter+'</span>'+xml;
+									xml = '<span class="badge badge-block">'+dotclear.dmLastComments_LastCounter+'</span>'+xml;
 									// Badge on menu item
 									if ($('#main-menu li span.badge').length) {
 										$('#main-menu li span.badge').remove();
 									}
-									badge = '<span class="badge badge-inline">'+dotclear.dmLastComment_LastCounter+'</span>';
+									badge = '<span class="badge badge-inline">'+dotclear.dmLastComments_LastCounter+'</span>';
 									$('#main-menu li a[href="comments.php"]').after(badge);
 								}
 							}
@@ -67,7 +103,7 @@ dotclear.dmLastCommentsCheck = function() {
 							// Transition effect for new comments
 							$('.dmlc-new').css('background','#A2CBE9');
 							setTimeout(function () {
-								$('.dmlc-new').css('background','#fff');
+									$('.dmlc-new').css('background','#fff');
 								},2000);
 						}
 					}
@@ -122,11 +158,20 @@ $(function() {
 	});
 	$('#last-comments ul').addClass('expandable');
 
-	if (dotclear.dmLastComment_AutoRefresh) {
-		// Auto refresh requested : Set 30 seconds interval between two checks for new comments
+	if (dotclear.dmLastComments_AutoRefresh) {
+		// Auto refresh requested : Set 30 seconds interval between two checks for new comments and spam counter check
 		dotclear.dmLastComments_Timer = setInterval(dotclear.dmLastCommentsCheck,30*1000);
-		if (dotclear.dmLastComment_Badge) {
+		if (dotclear.dmLastComments_Badge) {
 			$('#last-comments').addClass('badgeable');
+			var icon_com = $('#dashboard-main #icons p a[href="comments.php"]');
+			if (icon_com.length) {
+				// Icon exists on dashboard
+				icon_com.parent().addClass('badgeable');
+				// First pass
+				dotclear.dmLastCommentsSpam();
+				// Then fired every 30 seconds
+				dotclear.dmLastComments_TimerSpam = setInterval(dotclear.dmLastCommentsSpam,30*1000);
+			}
 		}
 	}
 });
