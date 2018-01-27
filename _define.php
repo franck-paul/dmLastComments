@@ -10,16 +10,17 @@
 # http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 # -- END LICENSE BLOCK ------------------------------------
 
-if (!defined('DC_RC_PATH')) { return; }
+if (!defined('DC_RC_PATH')) {return;}
 
 $this->registerModule(
-	/* Name */			"Last Comments Dashboard Module",
-	/* Description*/		"Display last comments on dashboard",
-	/* Author */			"Franck Paul",
-	/* Version */			'1.1',
-	array(
-		/* Dependencies */	'requires' =>		array(array('core','2.8')),
-		/* Permissions */	'permissions' =>	'admin',
-		/* Type */			'type' =>			'plugin'
-	)
+    "Last Comments Dashboard Module",     // Name
+    "Display last comments on dashboard", // Description
+    "Franck Paul",                        // Author
+    '1.2',                                // Version
+    array(
+        'requires'    => array(array('core', '2.8')),
+        'permissions' => 'admin',
+        'support'     => 'https://open-time.net/?q=dmlastcomments', // Support URL
+        'type'        => 'plugin'
+    )
 );
