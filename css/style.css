@@ -43,6 +43,9 @@ ul.expandable {
   animation-name: dmlc-new;
   animation-duration: 2s;
 }
+#last-comments li.dmlc-new::after {
+	content: " \02605";	/* ★ */
+}
 @keyframes dmlc-new {
   from {
     background-color: #fff;
