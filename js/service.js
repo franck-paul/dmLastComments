@@ -1,3 +1,6 @@
+/*global $, dotclear */
+'use strict';
+
 dotclear.dmLastCommentsSpam = function() {
   var params = {
     f: 'dmLastCommentsSpam',
@@ -7,7 +10,7 @@ dotclear.dmLastCommentsSpam = function() {
     if ($('rsp[status=failed]', data).length > 0) {
       // For debugging purpose only:
       // console.log($('rsp',data).attr('message'));
-      console.log('Dotclear REST server error');
+      window.console.log('Dotclear REST server error');
     } else {
       var nb_spams = Number($('rsp>check', data).attr('ret'));
       if (nb_spams != dotclear.dmLastComments_SpamCount) {
@@ -24,7 +27,7 @@ dotclear.dmLastCommentsSpam = function() {
           // Add new badge if some spams exist
           if (nb_spams > 0) {
             // Badge on icon
-            xml = '<span class="badge badge-block badge-block-icon">' + nb_spams + '</span>';
+            var xml = '<span class="badge badge-block badge-block-icon">' + nb_spams + '</span>';
             icon_com.append(xml);
           }
         }
@@ -32,7 +35,7 @@ dotclear.dmLastCommentsSpam = function() {
       }
     }
   });
-}
+};
 dotclear.dmLastCommentsCheck = function() {
   var params = {
     f: 'dmLastCommentsCheck',
@@ -43,7 +46,7 @@ dotclear.dmLastCommentsCheck = function() {
     if ($('rsp[status=failed]', data).length > 0) {
       // For debugging purpose only:
       // console.log($('rsp',data).attr('message'));
-      console.log('Dotclear REST server error');
+      window.console.log('Dotclear REST server error');
     } else {
       var new_comments = Number($('rsp>check', data).attr('ret'));
       if (new_comments > 0) {
@@ -61,14 +64,12 @@ dotclear.dmLastCommentsCheck = function() {
           if ($('rsp[status=failed]', data).length > 0) {
             // For debugging purpose only:
             // console.log($('rsp',data).attr('message'));
-            console.log('Dotclear REST server error');
+            window.console.log('Dotclear REST server error');
           } else {
             if (Number($('rsp>rows', data).attr('ret')) > 0) {
               // Display new comments
-              xml = $('rsp>rows', data).attr('list');
+              var xml = $('rsp>rows', data).attr('list');
               // Replace current list with the new one
-              parser = new DOMParser();
-              list = parser.parseFromString(xml, "text/xml");
               if ($('#last-comments span.badge').length) {
                 $('#last-comments span.badge').remove();
               }
@@ -78,7 +79,7 @@ dotclear.dmLastCommentsCheck = function() {
               if ($('#last-comments p').length) {
                 $('#last-comments p').remove();
               }
-              counter = Number($('rsp>rows', data).attr('counter'));
+              var counter = Number($('rsp>rows', data).attr('counter'));
               if (counter > 0) {
                 dotclear.dmLastComments_LastCounter = Number(dotclear.dmLastComments_LastCounter) + counter;
                 if (dotclear.dmLastComments_Badge) {
@@ -88,7 +89,7 @@ dotclear.dmLastCommentsCheck = function() {
                   if ($('#main-menu li span.badge').length) {
                     $('#main-menu li span.badge').remove();
                   }
-                  badge = '<span class="badge badge-inline">' + dotclear.dmLastComments_LastCounter + '</span>';
+                  var badge = '<span class="badge badge-inline">' + dotclear.dmLastComments_LastCounter + '</span>';
                   $('#main-menu li a[href="comments.php"]').after(badge);
                 }
               }
@@ -105,9 +106,9 @@ dotclear.dmLastCommentsCheck = function() {
       }
     }
   });
-}
+};
 dotclear.dmLastCommentsView = function(line, action) {
-  var action = action || 'toggle';
+  action = action || 'toggle';
   var commentId = $(line).attr('id').substr(4);
   var li = document.getElementById('dmlce' + commentId);
   if (!li && (action == 'toggle' || action == 'open')) {
@@ -126,7 +127,7 @@ dotclear.dmLastCommentsView = function(line, action) {
           $(li).append(comment);
         }
       } else {
-        alert($(rsp).find('message').text());
+        window.alert($(rsp).find('message').text());
       }
     });
     $(line).toggleClass('expand');
