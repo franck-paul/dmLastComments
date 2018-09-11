@@ -14,23 +14,15 @@ dotclear.dmLastCommentsSpam = function() {
     } else {
       var nb_spams = Number($('rsp>check', data).attr('ret'));
       if (nb_spams != dotclear.dmLastComments_SpamCount) {
-        // First pass or spam counter changed
-        var icon_com = $('#dashboard-main #icons p a[href="comments.php"]');
-        if (icon_com.length) {
-          // Icon exists on dashboard
-          icon_com = icon_com.parent();
-          // Remove badge if exists
-          var spam_badge = icon_com.children('span.badge');
-          if (spam_badge.length) {
-            spam_badge.remove();
+        dotclear.badge(
+          $('#dashboard-main #icons p a[href="comments.php"]'), {
+            id: 'dmls',
+            remove: (nb_spams == 0),
+            value: nb_spams,
+            sibling: true,
+            icon: true
           }
-          // Add new badge if some spams exist
-          if (nb_spams > 0) {
-            // Badge on icon
-            var xml = '<span class="badge badge-block badge-block-icon">' + nb_spams + '</span>';
-            icon_com.append(xml);
-          }
-        }
+        );
         dotclear.dmLastComments_SpamCount = nb_spams;
       }
     }
@@ -70,9 +62,6 @@ dotclear.dmLastCommentsCheck = function() {
               // Display new comments
               var xml = $('rsp>rows', data).attr('list');
               // Replace current list with the new one
-              if ($('#last-comments span.badge').length) {
-                $('#last-comments span.badge').remove();
-              }
               if ($('#last-comments ul').length) {
                 $('#last-comments ul').remove();
               }
@@ -82,18 +71,28 @@ dotclear.dmLastCommentsCheck = function() {
               var counter = Number($('rsp>rows', data).attr('counter'));
               if (counter > 0) {
                 dotclear.dmLastComments_LastCounter = Number(dotclear.dmLastComments_LastCounter) + counter;
-                if (dotclear.dmLastComments_Badge) {
-                  // Badge on module
-                  xml = '<span class="badge badge-block">' + dotclear.dmLastComments_LastCounter + '</span>' + xml;
-                  // Badge on menu item
-                  if ($('#main-menu li span.badge').length) {
-                    $('#main-menu li span.badge').remove();
-                  }
-                  var badge = '<span class="badge badge-inline">' + dotclear.dmLastComments_LastCounter + '</span>';
-                  $('#main-menu li a[href="comments.php"]').after(badge);
-                }
               }
               $('#last-comments h3').after(xml);
+              if (dotclear.dmLastComments_Badge) {
+                // Badge on module
+                dotclear.badge(
+                  $('#last-comments'), {
+                    id: 'dmlc',
+                    value: dotclear.dmLastComments_LastCounter,
+                    remove: (dotclear.dmLastComments_LastCounter == 0),
+                  }
+                );
+                // Badge on menu item
+                dotclear.badge(
+                  $('#main-menu li a[href="comments.php"]'), {
+                    id: 'dmlc',
+                    value: dotclear.dmLastComments_LastCounter,
+                    remove: (dotclear.dmLastComments_LastCounter == 0),
+                    inline: true,
+                    sibling: true
+                  }
+                );
+              }
               // Bind every new lines for viewing comment content
               $.expandContent({
                 lines: $('#last-comments li.line'),
@@ -150,11 +149,8 @@ $(function() {
     // Auto refresh requested : Set 30 seconds interval between two checks for new comments and spam counter check
     dotclear.dmLastComments_Timer = setInterval(dotclear.dmLastCommentsCheck, 30 * 1000);
     if (dotclear.dmLastComments_Badge) {
-      $('#last-comments').addClass('badgeable');
       var icon_com = $('#dashboard-main #icons p a[href="comments.php"]');
       if (icon_com.length) {
-        // Icon exists on dashboard
-        icon_com.parent().addClass('badgeable');
         // First pass
         dotclear.dmLastCommentsSpam();
         // Then fired every 30 seconds
