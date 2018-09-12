@@ -23,7 +23,7 @@ class dmLastCommentsRest
      */
     public static function getSpamCount($core, $get)
     {
-        $count = $core->blog->getComments(array('comment_status' => -2), true)->f(0);
+        $count = $core->blog->getComments(['comment_status' => -2], true)->f(0);
 
         $rsp      = new xmlTag('check');
         $rsp->ret = $count;

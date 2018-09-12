@@ -17,11 +17,11 @@ if (!defined('DC_CONTEXT_ADMIN')) {return;}
 __('Last Comments Dashboard Module') . __('Display last comments on dashboard');
 
 // Dashboard behaviours
-$core->addBehavior('adminDashboardHeaders', array('dmLastCommentsBehaviors', 'adminDashboardHeaders'));
-$core->addBehavior('adminDashboardContents', array('dmLastCommentsBehaviors', 'adminDashboardContents'));
+$core->addBehavior('adminDashboardHeaders', ['dmLastCommentsBehaviors', 'adminDashboardHeaders']);
+$core->addBehavior('adminDashboardContents', ['dmLastCommentsBehaviors', 'adminDashboardContents']);
 
-$core->addBehavior('adminAfterDashboardOptionsUpdate', array('dmLastCommentsBehaviors', 'adminAfterDashboardOptionsUpdate'));
-$core->addBehavior('adminDashboardOptionsForm', array('dmLastCommentsBehaviors', 'adminDashboardOptionsForm'));
+$core->addBehavior('adminAfterDashboardOptionsUpdate', ['dmLastCommentsBehaviors', 'adminAfterDashboardOptionsUpdate']);
+$core->addBehavior('adminDashboardOptionsForm', ['dmLastCommentsBehaviors', 'adminDashboardOptionsForm']);
 
 # BEHAVIORS
 class dmLastCommentsBehaviors
@@ -65,7 +65,7 @@ class dmLastCommentsBehaviors
         $nb      = (integer) $nb;
 
         // Get last $nb comments
-        $params = array();
+        $params = [];
         if ($nb > 0) {
             $params['limit'] = $nb;
         } else {
@@ -89,7 +89,7 @@ class dmLastCommentsBehaviors
                 }
                 $ret .= '" id="dmlc' . $rs->comment_id . '">';
                 $ret .= '<a href="comment.php?id=' . $rs->comment_id . '">' . $rs->post_title . '</a>';
-                $info = array();
+                $info = [];
                 if ($large) {
                     if ($author) {
                         $info[] = __('by') . ' ' . $rs->comment_author;
@@ -143,7 +143,7 @@ class dmLastCommentsBehaviors
                 $core->auth->user_prefs->dmlastcomments->last_comments_nospam,
                 $core->auth->user_prefs->dmlastcomments->last_comments_recents);
             $ret .= '</div>';
-            $contents[] = new ArrayObject(array($ret));
+            $contents[] = new ArrayObject([$ret]);
         }
     }
 
