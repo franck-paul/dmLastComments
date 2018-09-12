@@ -43,11 +43,11 @@ class dmLastCommentsRest
     {
         $last_id = !empty($get['last_id']) ? $get['last_id'] : -1;
 
-        $sqlp = array(
+        $sqlp = [
             'no_content' => true, // content is not required
             'order'      => 'comment_id ASC',
             'sql'        => 'AND comment_id > ' . $last_id // only new ones
-        );
+        ];
         $core->auth->user_prefs->addWorkspace('dmlastcomments');
         if ($core->auth->user_prefs->dmlastcomments->last_comments_nospam) {
             // Exclude junk comment from list

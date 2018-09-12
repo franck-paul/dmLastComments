@@ -30,11 +30,11 @@ class dmLastCommentsBehaviors
     {
         global $core;
 
-        $sqlp = array(
+        $sqlp = [
             'limit'      => 1,                 // only the last one
             'no_content' => true,              // content is not required
             'order'      => 'comment_id DESC' // get last first
-        );
+        ];
 
         $rs = $core->blog->getComments($sqlp);
 
@@ -174,7 +174,7 @@ class dmLastCommentsBehaviors
         // Add fieldset for plugin options
         $core->auth->user_prefs->addWorkspace('dmlastcomments');
 
-        echo '<div class="fieldset"><h4>' . __('Last comments on dashboard') . '</h4>' .
+        echo '<div class="fieldset" id="dmlastcomments"><h4>' . __('Last comments on dashboard') . '</h4>' .
 
         '<p>' .
         form::checkbox('dmlast_comments', 1, $core->auth->user_prefs->dmlastcomments->last_comments) . ' ' .

@@ -22,6 +22,7 @@ $this->registerModule(
         'requires'    => [['core', '2.8']],
         'permissions' => 'admin',
         'support'     => 'https://open-time.net/?q=dmlastcomments', // Support URL
-        'type'        => 'plugin'
+        'type'        => 'plugin',
+        'settings'    => ['pref' => '#user-favorites.dmlastcomments'] // Settings
     ]
 );
