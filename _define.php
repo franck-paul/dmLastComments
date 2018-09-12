@@ -18,10 +18,10 @@ $this->registerModule(
     "Display last comments on dashboard", // Description
     "Franck Paul",                        // Author
     '1.2',                                // Version
-    array(
+    [
         'requires'    => [['core', '2.8']],
         'permissions' => 'admin',
         'support'     => 'https://open-time.net/?q=dmlastcomments', // Support URL
         'type'        => 'plugin'
-    )
+    ]
 );
