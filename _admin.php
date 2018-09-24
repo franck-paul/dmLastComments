@@ -87,6 +87,9 @@ class dmLastCommentsBehaviors
                     $ret .= ($last_id != -1 && $rs->comment_id > $last_id ? ' dmlc-new' : '');
                     $last_counter++;
                 }
+                if ($rs->comment_status == -2) {
+                    $ret .= ' sts-junk';
+                }
                 $ret .= '" id="dmlc' . $rs->comment_id . '">';
                 $ret .= '<a href="comment.php?id=' . $rs->comment_id . '">' . $rs->post_title . '</a>';
                 $info = [];
