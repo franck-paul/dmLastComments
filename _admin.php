@@ -184,7 +184,7 @@ class dmLastCommentsBehaviors
         '<label for="dmlast_comments" class="classic">' . __('Display last comments') . '</label></p>' .
 
         '<p><label for="dmlast_comments_nb" class="classic">' . __('Number of last comments to display:') . '</label> ' .
-        form::field('dmlast_comments_nb', 2, 3, (integer) $core->auth->user_prefs->dmlastcomments->last_comments_nb) .
+        form::number('dmlast_comments_nb', 1, 999, (integer) $core->auth->user_prefs->dmlastcomments->last_comments_nb) .
         '</p>' .
 
         '<p>' .
@@ -204,7 +204,7 @@ class dmLastCommentsBehaviors
         '<label for="dmlast_comments_nospam" class="classic">' . __('Exclude junk comments') . '</label></p>' .
 
         '<p><label for="dmlast_comments_recents" class="classic">' . __('Max age of comments to display (in hours):') . '</label> ' .
-        form::field('dmlast_comments_recents', 2, 3, (integer) $core->auth->user_prefs->dmlastcomments->last_comments_recents) .
+        form::number('dmlast_comments_recents', 1, 96, (integer) $core->auth->user_prefs->dmlastcomments->last_comments_recents) .
         '</p>' .
         '<p class="form-note">' . __('Leave empty to ignore age of comments') . '</p>' .
 
