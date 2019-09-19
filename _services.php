@@ -23,7 +23,7 @@ class dmLastCommentsRest
      */
     public static function getSpamCount($core, $get)
     {
-        $count = $core->blog->getComments(array('comment_status' => -2), true)->f(0);
+        $count = $core->blog->getComments(['comment_status' => -2], true)->f(0);
 
         $rsp      = new xmlTag('check');
         $rsp->ret = $count;
@@ -43,11 +43,11 @@ class dmLastCommentsRest
     {
         $last_id = !empty($get['last_id']) ? $get['last_id'] : -1;
 
-        $sqlp = array(
+        $sqlp = [
             'no_content' => true, // content is not required
             'order'      => 'comment_id ASC',
             'sql'        => 'AND comment_id > ' . $last_id // only new ones
-        );
+        ];
         $core->auth->user_prefs->addWorkspace('dmlastcomments');
         if ($core->auth->user_prefs->dmlastcomments->last_comments_nospam) {
             // Exclude junk comment from list

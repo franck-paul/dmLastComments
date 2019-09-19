@@ -17,11 +17,11 @@ if (!defined('DC_CONTEXT_ADMIN')) {return;}
 __('Last Comments Dashboard Module') . __('Display last comments on dashboard');
 
 // Dashboard behaviours
-$core->addBehavior('adminDashboardHeaders', array('dmLastCommentsBehaviors', 'adminDashboardHeaders'));
-$core->addBehavior('adminDashboardContents', array('dmLastCommentsBehaviors', 'adminDashboardContents'));
+$core->addBehavior('adminDashboardHeaders', ['dmLastCommentsBehaviors', 'adminDashboardHeaders']);
+$core->addBehavior('adminDashboardContents', ['dmLastCommentsBehaviors', 'adminDashboardContents']);
 
-$core->addBehavior('adminAfterDashboardOptionsUpdate', array('dmLastCommentsBehaviors', 'adminAfterDashboardOptionsUpdate'));
-$core->addBehavior('adminDashboardOptionsForm', array('dmLastCommentsBehaviors', 'adminDashboardOptionsForm'));
+$core->addBehavior('adminAfterDashboardOptionsUpdate', ['dmLastCommentsBehaviors', 'adminAfterDashboardOptionsUpdate']);
+$core->addBehavior('adminDashboardOptionsForm', ['dmLastCommentsBehaviors', 'adminDashboardOptionsForm']);
 
 # BEHAVIORS
 class dmLastCommentsBehaviors
@@ -30,11 +30,11 @@ class dmLastCommentsBehaviors
     {
         global $core;
 
-        $sqlp = array(
+        $sqlp = [
             'limit'      => 1,                 // only the last one
             'no_content' => true,              // content is not required
             'order'      => 'comment_id DESC' // get last first
-        );
+        ];
 
         $rs = $core->blog->getComments($sqlp);
 
@@ -65,7 +65,7 @@ class dmLastCommentsBehaviors
         $nb      = (integer) $nb;
 
         // Get last $nb comments
-        $params = array();
+        $params = [];
         if ($nb > 0) {
             $params['limit'] = $nb;
         } else {
@@ -87,9 +87,12 @@ class dmLastCommentsBehaviors
                     $ret .= ($last_id != -1 && $rs->comment_id > $last_id ? ' dmlc-new' : '');
                     $last_counter++;
                 }
+                if ($rs->comment_status == -2) {
+                    $ret .= ' sts-junk';
+                }
                 $ret .= '" id="dmlc' . $rs->comment_id . '">';
                 $ret .= '<a href="comment.php?id=' . $rs->comment_id . '">' . $rs->post_title . '</a>';
-                $info = array();
+                $info = [];
                 if ($large) {
                     if ($author) {
                         $info[] = __('by') . ' ' . $rs->comment_author;
@@ -143,7 +146,7 @@ class dmLastCommentsBehaviors
                 $core->auth->user_prefs->dmlastcomments->last_comments_nospam,
                 $core->auth->user_prefs->dmlastcomments->last_comments_recents);
             $ret .= '</div>';
-            $contents[] = new ArrayObject(array($ret));
+            $contents[] = new ArrayObject([$ret]);
         }
     }
 
@@ -174,14 +177,14 @@ class dmLastCommentsBehaviors
         // Add fieldset for plugin options
         $core->auth->user_prefs->addWorkspace('dmlastcomments');
 
-        echo '<div class="fieldset"><h4>' . __('Last comments on dashboard') . '</h4>' .
+        echo '<div class="fieldset" id="dmlastcomments"><h4>' . __('Last comments on dashboard') . '</h4>' .
 
         '<p>' .
         form::checkbox('dmlast_comments', 1, $core->auth->user_prefs->dmlastcomments->last_comments) . ' ' .
         '<label for="dmlast_comments" class="classic">' . __('Display last comments') . '</label></p>' .
 
         '<p><label for="dmlast_comments_nb" class="classic">' . __('Number of last comments to display:') . '</label> ' .
-        form::field('dmlast_comments_nb', 2, 3, (integer) $core->auth->user_prefs->dmlastcomments->last_comments_nb) .
+        form::number('dmlast_comments_nb', 1, 999, (integer) $core->auth->user_prefs->dmlastcomments->last_comments_nb) .
         '</p>' .
 
         '<p>' .
@@ -201,7 +204,7 @@ class dmLastCommentsBehaviors
         '<label for="dmlast_comments_nospam" class="classic">' . __('Exclude junk comments') . '</label></p>' .
 
         '<p><label for="dmlast_comments_recents" class="classic">' . __('Max age of comments to display (in hours):') . '</label> ' .
-        form::field('dmlast_comments_recents', 2, 3, (integer) $core->auth->user_prefs->dmlastcomments->last_comments_recents) .
+        form::number('dmlast_comments_recents', 1, 96, (integer) $core->auth->user_prefs->dmlastcomments->last_comments_recents) .
         '</p>' .
         '<p class="form-note">' . __('Leave empty to ignore age of comments') . '</p>' .
 
