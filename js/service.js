@@ -1,4 +1,4 @@
-/*global $, dotclear */
+/*global $, dotclear, getData */
 'use strict';
 
 dotclear.dmLastCommentsSpam = function() {
@@ -152,6 +152,7 @@ dotclear.dmLastCommentsView = function(line, action, e) {
 };
 
 $(function() {
+  Object.assign(dotclear, getData('dm_lastcomments'));
   $.expandContent({
     lines: $('#last-comments li.line'),
     callback: dotclear.dmLastCommentsView

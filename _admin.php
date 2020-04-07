@@ -48,13 +48,13 @@ class dmLastCommentsBehaviors
         $core->auth->user_prefs->addWorkspace('dmlastcomments');
 
         return
-        '<script type="text/javascript">' . "\n" .
-        dcPage::jsVar('dotclear.dmLastComments_LastCommentId', $last_comment_id) .
-        dcPage::jsVar('dotclear.dmLastComments_AutoRefresh', $core->auth->user_prefs->dmlastcomments->last_comments_autorefresh) .
-        dcPage::jsVar('dotclear.dmLastComments_Badge', $core->auth->user_prefs->dmlastcomments->last_comments_badge) .
-        dcPage::jsVar('dotclear.dmLastComments_LastCounter', 0) .
-        dcPage::jsVar('dotclear.dmLastComments_SpamCount', -1) .
-        "</script>\n" .
+        dcPage::jsJson('dm_lastcomments', [
+            'dmLastComments_LastCommentId' => $last_comment_id,
+            'dmLastComments_AutoRefresh'   => $core->auth->user_prefs->dmlastcomments->last_comments_autorefresh,
+            'dmLastComments_Badge'         => $core->auth->user_prefs->dmlastcomments->last_comments_badge,
+            'dmLastComments_LastCounter'   => 0,
+            'dmLastComments_SpamCount'     => -1
+        ]) .
         dcPage::jsLoad(urldecode(dcPage::getPF('dmLastComments/js/service.js')), $core->getVersion('dmLastComments')) .
         dcPage::cssLoad(urldecode(dcPage::getPF('dmLastComments/css/style.css')), 'screen', $core->getVersion('dmLastComments'));
     }
