@@ -13,85 +13,66 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-#: ../git-plugins/dmLastComments/_admin.php:17
 msgid "Display last comments on dashboard"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:17
 msgid "Last Comments Dashboard Module"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:104
 msgid "at"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:111
 msgid "%Y-%m-%d"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:114
 msgid "%H:%M"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:123
 msgid "See all comments"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:128
 #, php-format
 msgid "since %d hour"
 msgid_plural "since %d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../git-plugins/dmLastComments/_admin.php:180
 msgid "Last comments on dashboard"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:184
 msgid "Display last comments"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:186
 msgid "Number of last comments to display:"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:192
 msgid "Show authors"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:196
 msgid "Show dates"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:200
 msgid "Show times"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:204
 msgid "Exclude junk comments"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:206
 msgid "Max age of comments to display (in hours):"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:209
 msgid "Leave empty to ignore age of comments"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:213
 msgid "Small screen"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:217
 msgid "Auto refresh"
 msgstr ""
 
-#: ../git-plugins/dmLastComments/_admin.php:221
 msgid "Display badges (only if Auto refresh is enabled)"
 msgstr ""

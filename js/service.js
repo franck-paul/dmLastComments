@@ -13,7 +13,7 @@ dotclear.dmLastCommentsSpam = function() {
         window.console.log('Dotclear REST server error');
       } else {
         const nb_spams = Number($('rsp>check', data).attr('ret'));
-        if (nb_spams != dotclear.dmLastComments_SpamCount) {
+        if (nb_spams !== undefined && nb_spams != dotclear.dmLastComments_SpamCount) {
           dotclear.badge(
             $('#dashboard-main #icons p a[href="comments.php"]'), {
               id: 'dmls',
