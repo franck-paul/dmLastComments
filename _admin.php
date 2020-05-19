@@ -59,6 +59,26 @@ class dmLastCommentsBehaviors
         dcPage::cssLoad(urldecode(dcPage::getPF('dmLastComments/css/style.css')), 'screen', $core->getVersion('dmLastComments'));
     }
 
+    private static function composeSQLSince($core, $nb, $unit = 'HOUR')
+    {
+        switch ($core->con->syntax()) {
+            case 'sqlite':
+                $ret = 'datetime(\'' .
+                    $core->con->db_escape_string('now') . '\', \'' .
+                    $core->con->db_escape_string('-' . sprintf($nb) . ' ' . $unit) .
+                    '\')';
+                break;
+            case 'postgresql':
+                $ret = '(NOW() - \'' . $core->con->db_escape_string(sprintf($nb) . ' ' . $unit) . '\'::INTERVAL)';
+                break;
+            case 'mysql':
+            default:
+                $ret = '(NOW() - INTERVAL ' . sprintf($nb) . ' ' . $unit . ')';
+                break;
+        }
+        return $ret;
+    }
+
     public static function getLastComments($core, $nb, $large, $author, $date, $time, $nospam, $recents = 0,
         $last_id = -1, &$last_counter = 0) {
         $recents = (integer) $recents;
@@ -76,7 +96,7 @@ class dmLastCommentsBehaviors
             $params['comment_status_not'] = -2;
         }
         if ($recents > 0) {
-            $params['sql'] = ' AND comment_dt >= (NOW() - INTERVAL ' . sprintf($recents) . ' HOUR) ';
+            $params['sql'] = ' AND comment_dt >= ' . dmLastCommentsBehaviors::composeSQLSince($core, $recents) . ' ';
         }
         $rs = $core->blog->getComments($params, false);
         if (!$rs->isEmpty()) {
