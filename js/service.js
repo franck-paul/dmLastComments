@@ -1,12 +1,12 @@
-/*global $, dotclear, getData */
+/*global $, dotclear */
 'use strict';
 
-dotclear.dmLastCommentsSpam = function() {
+dotclear.dmLastCommentsSpam = function () {
   $.get('services.php', {
-      f: 'dmLastCommentsSpam',
-      xd_check: dotclear.nonce
-    })
-    .done(function(data) {
+    f: 'dmLastCommentsSpam',
+    xd_check: dotclear.nonce,
+  })
+    .done(function (data) {
       if ($('rsp[status=failed]', data).length > 0) {
         // For debugging purpose only:
         // console.log($('rsp',data).attr('message'));
@@ -14,34 +14,32 @@ dotclear.dmLastCommentsSpam = function() {
       } else {
         const nb_spams = Number($('rsp>check', data).attr('ret'));
         if (nb_spams !== undefined && nb_spams != dotclear.dmLastComments_SpamCount) {
-          dotclear.badge(
-            $('#dashboard-main #icons p a[href="comments.php"]'), {
-              id: 'dmls',
-              remove: (nb_spams == 0),
-              value: nb_spams,
-              sibling: true,
-              icon: true
-            }
-          );
+          dotclear.badge($('#dashboard-main #icons p a[href="comments.php"]'), {
+            id: 'dmls',
+            remove: nb_spams == 0,
+            value: nb_spams,
+            sibling: true,
+            icon: true,
+          });
           dotclear.dmLastComments_SpamCount = nb_spams;
         }
       }
     })
-    .fail(function(jqXHR, textStatus, errorThrown) {
+    .fail(function (jqXHR, textStatus, errorThrown) {
       window.console.log(`AJAX ${textStatus} (status: ${jqXHR.status} ${errorThrown})`);
     })
-    .always(function() {
+    .always(function () {
       // Nothing here
     });
 };
 
-dotclear.dmLastCommentsCheck = function() {
+dotclear.dmLastCommentsCheck = function () {
   const params = {
     f: 'dmLastCommentsCheck',
     xd_check: dotclear.nonce,
-    last_id: dotclear.dmLastComments_LastCommentId
+    last_id: dotclear.dmLastComments_LastCommentId,
   };
-  $.get('services.php', params, function(data) {
+  $.get('services.php', params, function (data) {
     if ($('rsp[status=failed]', data).length > 0) {
       // For debugging purpose only:
       // console.log($('rsp',data).attr('message'));
@@ -54,12 +52,12 @@ dotclear.dmLastCommentsCheck = function() {
           xd_check: dotclear.nonce,
           stored_id: dotclear.dmLastComments_LastCommentId,
           last_id: $('rsp>check', data).attr('last_id'),
-          last_counter: dotclear.dmLastComments_LastCounter
+          last_counter: dotclear.dmLastComments_LastCounter,
         };
         // Store last comment id
         dotclear.dmLastComments_LastCommentId = $('rsp>check', data).attr('last_id');
         // Get new list
-        $.get('services.php', args, function(data) {
+        $.get('services.php', args, function (data) {
           if ($('rsp[status=failed]', data).length > 0) {
             // For debugging purpose only:
             // console.log($('rsp',data).attr('message'));
@@ -82,28 +80,24 @@ dotclear.dmLastCommentsCheck = function() {
               $('#last-comments h3').after(xml);
               if (dotclear.dmLastComments_Badge) {
                 // Badge on module
-                dotclear.badge(
-                  $('#last-comments'), {
-                    id: 'dmlc',
-                    value: dotclear.dmLastComments_LastCounter,
-                    remove: (dotclear.dmLastComments_LastCounter == 0),
-                  }
-                );
+                dotclear.badge($('#last-comments'), {
+                  id: 'dmlc',
+                  value: dotclear.dmLastComments_LastCounter,
+                  remove: dotclear.dmLastComments_LastCounter == 0,
+                });
                 // Badge on menu item
-                dotclear.badge(
-                  $('#main-menu li a[href="comments.php"]'), {
-                    id: 'dmlc',
-                    value: dotclear.dmLastComments_LastCounter,
-                    remove: (dotclear.dmLastComments_LastCounter == 0),
-                    inline: true,
-                    sibling: true
-                  }
-                );
+                dotclear.badge($('#main-menu li a[href="comments.php"]'), {
+                  id: 'dmlc',
+                  value: dotclear.dmLastComments_LastCounter,
+                  remove: dotclear.dmLastComments_LastCounter == 0,
+                  inline: true,
+                  sibling: true,
+                });
               }
               // Bind every new lines for viewing comment content
               $.expandContent({
                 lines: $('#last-comments li.line'),
-                callback: dotclear.dmLastCommentsView
+                callback: dotclear.dmLastCommentsView,
               });
               $('#last-comments ul').addClass('expandable');
             }
@@ -114,7 +108,7 @@ dotclear.dmLastCommentsCheck = function() {
   });
 };
 
-dotclear.dmLastCommentsView = function(line, action, e) {
+dotclear.dmLastCommentsView = function (line, action, e) {
   action = action || 'toggle';
   if ($(line).attr('id') == undefined) {
     return;
@@ -125,37 +119,41 @@ dotclear.dmLastCommentsView = function(line, action, e) {
   let li = document.getElementById(lineId);
 
   // If meta key down or it's a spam then display content HTML code
-  const clean = (e.metaKey || $(line).hasClass('sts-junk'));
+  const clean = e.metaKey || $(line).hasClass('sts-junk');
 
   if (!li) {
     // Get comment content if possible
-    dotclear.getCommentContent(commentId, function(content) {
-      if (content) {
-        li = document.createElement('li');
-        li.id = lineId;
-        li.className = 'expand';
-        $(li).append(content);
-        $(line).addClass('expand');
-        line.parentNode.insertBefore(li, line.nextSibling);
-      } else {
-        // No content, content not found or server error
-        $(line).removeClass('expand');
+    dotclear.getCommentContent(
+      commentId,
+      function (content) {
+        if (content) {
+          li = document.createElement('li');
+          li.id = lineId;
+          li.className = 'expand';
+          $(li).append(content);
+          $(line).addClass('expand');
+          line.parentNode.insertBefore(li, line.nextSibling);
+        } else {
+          // No content, content not found or server error
+          $(line).removeClass('expand');
+        }
+      },
+      {
+        metadata: false,
+        clean: clean,
       }
-    }, {
-      metadata: false,
-      clean: clean
-    });
+    );
   } else {
     $(li).toggle();
     $(line).toggleClass('expand');
   }
 };
 
-$(function() {
-  Object.assign(dotclear, getData('dm_lastcomments'));
+$(function () {
+  Object.assign(dotclear, dotclear.getData('dm_lastcomments'));
   $.expandContent({
     lines: $('#last-comments li.line'),
-    callback: dotclear.dmLastCommentsView
+    callback: dotclear.dmLastCommentsView,
   });
   $('#last-comments ul').addClass('expandable');
   if (dotclear.dmLastComments_AutoRefresh) {

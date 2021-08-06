@@ -10,8 +10,9 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
-if (!defined('DC_CONTEXT_ADMIN')) {return;}
+if (!defined('DC_CONTEXT_ADMIN')) {
+    return;
+}
 
 // dead but useful code, in order to have translations
 __('Last Comments Dashboard Module') . __('Display last comments on dashboard');
@@ -67,20 +68,25 @@ class dmLastCommentsBehaviors
                     $core->con->db_escape_string('now') . '\', \'' .
                     $core->con->db_escape_string('-' . sprintf($nb) . ' ' . $unit) .
                     '\')';
+
                 break;
             case 'postgresql':
                 $ret = '(NOW() - \'' . $core->con->db_escape_string(sprintf($nb) . ' ' . $unit) . '\'::INTERVAL)';
+
                 break;
             case 'mysql':
             default:
                 $ret = '(NOW() - INTERVAL ' . sprintf($nb) . ' ' . $unit . ')';
+
                 break;
         }
+
         return $ret;
     }
 
     public static function getLastComments($core, $nb, $large, $author, $date, $time, $nospam, $recents = 0,
-        $last_id = -1, &$last_counter = 0) {
+        $last_id = -1, &$last_counter = 0)
+    {
         $recents = (integer) $recents;
         $nb      = (integer) $nb;
 
@@ -143,10 +149,10 @@ class dmLastCommentsBehaviors
             $ret .= '<p><a href="comments.php">' . __('See all comments') . '</a></p>';
 
             return $ret;
-        } else {
-            return '<p>' . __('No comments') .
-                ($recents > 0 ? ' ' . sprintf(__('since %d hour', 'since %d hours', $recents), $recents) : '') . '</p>';
         }
+
+        return '<p>' . __('No comments') .
+                ($recents > 0 ? ' ' . sprintf(__('since %d hour', 'since %d hours', $recents), $recents) : '') . '</p>';
     }
 
     public static function adminDashboardContents($core, $contents)
@@ -176,6 +182,7 @@ class dmLastCommentsBehaviors
 
         // Get and store user's prefs for plugin options
         $core->auth->user_prefs->addWorkspace('dmlastcomments');
+
         try {
             $core->auth->user_prefs->dmlastcomments->put('last_comments', !empty($_POST['dmlast_comments']), 'boolean');
             $core->auth->user_prefs->dmlastcomments->put('last_comments_nb', (integer) $_POST['dmlast_comments_nb'], 'integer');

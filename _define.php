@@ -10,16 +10,17 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-
-if (!defined('DC_RC_PATH')) {return;}
+if (!defined('DC_RC_PATH')) {
+    return;
+}
 
 $this->registerModule(
-    "Last Comments Dashboard Module",     // Name
-    "Display last comments on dashboard", // Description
-    "Franck Paul",                        // Author
-    '1.4.2',                              // Version
+    'Last Comments Dashboard Module',     // Name
+    'Display last comments on dashboard', // Description
+    'Franck Paul',                        // Author
+    '1.5',                                // Version
     [
-        'requires'    => [['core', '2.16']],
+        'requires'    => [['core', '2.19']],
         'permissions' => 'admin',
         'type'        => 'plugin',
         'details'     => 'https://open-time.net/?q=dmlastcomments',       // Details URL
