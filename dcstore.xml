@@ -1,0 +1,12 @@
+<modules xmlns:da="http://dotaddict.org/da/">
+  <module id="dmLastComments">
+    <name>Last Comments Dashboard Module</name>
+    <version>1.5</version>
+    <author>Franck Paul</author>
+    <desc>Display last comments on dashboard</desc>
+    <file>https://github.com/franck-paul/dmLastComments/releases/download/1.5/plugin-dmLastComments.zip</file>
+    <da:dcmin>2.19</da:dcmin>
+    <da:details>https://open-time.net/?q=dmLastComments</da:details>
+    <da:support>https://github.com/franck-paul/dmLastComments</da:support>
+  </module>
+</modules>
