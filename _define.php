@@ -23,10 +23,12 @@ $this->registerModule(
         'requires'    => [['core', '2.19']],
         'permissions' => 'admin',
         'type'        => 'plugin',
-        'details'     => 'https://open-time.net/?q=dmlastcomments',       // Details URL
-        'support'     => 'https://github.com/franck-paul/dmLastComments', // Support URL
         'settings'    => [                                                // Settings
             'pref' => '#user-favorites.dmlastcomments'
-        ]
+        ],
+
+        'details'    => 'https://open-time.net/?q=dmlastcomments',       // Details URL
+        'support'    => 'https://github.com/franck-paul/dmlastcomments', // Support URL
+        'repository' => 'https://raw.githubusercontent.com/franck-paul/dmlastcomments/main/dcstore.xml'
     ]
 );
