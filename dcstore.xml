@@ -6,7 +6,7 @@
     <desc>Display last comments on dashboard</desc>
     <file>https://github.com/franck-paul/dmLastComments/releases/download/1.5/plugin-dmLastComments-1.5.zip</file>
     <da:dcmin>2.19</da:dcmin>
-    <da:details>https://open-time.net/?q=dmLastComments</da:details>
-    <da:support>https://github.com/franck-paul/dmLastComments</da:support>
+    <da:details>https://open-time.net/?q=dmlastcomments</da:details>
+    <da:support>https://github.com/franck-paul/dmlastcomments</da:support>
   </module>
 </modules>
