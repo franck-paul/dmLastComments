@@ -22,9 +22,9 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 
 // Admin mode
 
-$__autoload['dmLastCommentsRest'] = dirname(__FILE__) . '/_services.php';
+$__autoload['dmLastCommentsRest'] = __DIR__ . '/_services.php';
 
 // Register REST methods
-$core->rest->addFunction('dmLastCommentsCheck', ['dmLastCommentsRest', 'checkNewComments']);
-$core->rest->addFunction('dmLastCommentsRows', ['dmLastCommentsRest', 'getLastCommentsRows']);
-$core->rest->addFunction('dmLastCommentsSpam', ['dmLastCommentsRest', 'getSpamCount']);
+dcCore::app()->rest->addFunction('dmLastCommentsCheck', ['dmLastCommentsRest', 'checkNewComments']);
+dcCore::app()->rest->addFunction('dmLastCommentsRows', ['dmLastCommentsRest', 'getLastCommentsRows']);
+dcCore::app()->rest->addFunction('dmLastCommentsSpam', ['dmLastCommentsRest', 'getSpamCount']);

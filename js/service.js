@@ -1,115 +1,141 @@
 /*global $, dotclear */
 'use strict';
 
-dotclear.dmLastCommentsSpam = function () {
-  $.get('services.php', {
-    f: 'dmLastCommentsSpam',
-    xd_check: dotclear.nonce,
-  })
-    .done(function (data) {
-      if ($('rsp[status=failed]', data).length > 0) {
-        // For debugging purpose only:
-        // console.log($('rsp',data).attr('message'));
-        window.console.log('Dotclear REST server error');
-      } else {
-        const nb_spams = Number($('rsp>check', data).attr('ret'));
-        if (nb_spams !== undefined && nb_spams != dotclear.dmLastComments_SpamCount) {
-          dotclear.badge($('#dashboard-main #icons p a[href="comments.php"]'), {
-            id: 'dmls',
-            remove: nb_spams == 0,
-            value: nb_spams,
-            sibling: true,
-            icon: true,
-          });
-          dotclear.dmLastComments_SpamCount = nb_spams;
-        }
-      }
-    })
-    .fail(function (jqXHR, textStatus, errorThrown) {
-      window.console.log(`AJAX ${textStatus} (status: ${jqXHR.status} ${errorThrown})`);
-    })
-    .always(function () {
-      // Nothing here
-    });
-};
-
-dotclear.dmLastCommentsCheck = function () {
-  const params = {
-    f: 'dmLastCommentsCheck',
-    xd_check: dotclear.nonce,
-    last_id: dotclear.dmLastComments_LastCommentId,
-  };
-  $.get('services.php', params, function (data) {
-    if ($('rsp[status=failed]', data).length > 0) {
-      // For debugging purpose only:
-      // console.log($('rsp',data).attr('message'));
-      window.console.log('Dotclear REST server error');
-    } else {
-      const new_comments = Number($('rsp>check', data).attr('ret'));
-      if (new_comments > 0) {
-        const args = {
-          f: 'dmLastCommentsRows',
-          xd_check: dotclear.nonce,
-          stored_id: dotclear.dmLastComments_LastCommentId,
-          last_id: $('rsp>check', data).attr('last_id'),
-          last_counter: dotclear.dmLastComments_LastCounter,
-        };
-        // Store last comment id
-        dotclear.dmLastComments_LastCommentId = $('rsp>check', data).attr('last_id');
-        // Get new list
-        $.get('services.php', args, function (data) {
-          if ($('rsp[status=failed]', data).length > 0) {
-            // For debugging purpose only:
-            // console.log($('rsp',data).attr('message'));
-            window.console.log('Dotclear REST server error');
-          } else {
-            if (Number($('rsp>rows', data).attr('ret')) > 0) {
-              // Display new comments
-              const xml = $('rsp>rows', data).attr('list');
-              // Replace current list with the new one
-              if ($('#last-comments ul').length) {
-                $('#last-comments ul').remove();
-              }
-              if ($('#last-comments p').length) {
-                $('#last-comments p').remove();
-              }
-              const counter = Number($('rsp>rows', data).attr('counter'));
-              if (counter > 0) {
-                dotclear.dmLastComments_LastCounter = Number(dotclear.dmLastComments_LastCounter) + counter;
-              }
-              $('#last-comments h3').after(xml);
-              if (dotclear.dmLastComments_Badge) {
-                // Badge on module
-                dotclear.badge($('#last-comments'), {
-                  id: 'dmlc',
-                  value: dotclear.dmLastComments_LastCounter,
-                  remove: dotclear.dmLastComments_LastCounter == 0,
-                });
-                // Badge on menu item
-                dotclear.badge($('#main-menu li a[href="comments.php"]'), {
-                  id: 'dmlc',
-                  value: dotclear.dmLastComments_LastCounter,
-                  remove: dotclear.dmLastComments_LastCounter == 0,
-                  inline: true,
-                  sibling: true,
-                });
-              }
-              // Bind every new lines for viewing comment content
-              $.expandContent({
-                lines: $('#last-comments li.line'),
-                callback: dotclear.dmLastCommentsView,
+dotclear.dmLastCommentsSpam = () => {
+  dotclear.services(
+    'dmLastCommentsSpam',
+    (data) => {
+      try {
+        const response = JSON.parse(data);
+        if (response?.success) {
+          if (response?.payload.ret) {
+            const nb_spams = response.payload.nb;
+            if (nb_spams !== undefined && nb_spams != dotclear.dmLastComments_SpamCount) {
+              dotclear.badge($('#dashboard-main #icons p a[href="comments.php"]'), {
+                id: 'dmls',
+                remove: nb_spams == 0,
+                value: nb_spams,
+                sibling: true,
+                icon: true,
               });
-              $('#last-comments ul').addClass('expandable');
+              dotclear.dmLastComments_SpamCount = nb_spams;
             }
           }
-        });
+        } else {
+          console.log(dotclear.debug && response?.message ? response.message : 'Dotclear REST server error');
+          return;
+        }
+      } catch (e) {
+        console.log(e);
       }
-    }
-  });
+    },
+    (error) => {
+      console.log(error);
+    },
+    true, // Use GET method
+    { json: 1 },
+  );
 };
 
-dotclear.dmLastCommentsView = function (line, action, e) {
-  action = action || 'toggle';
+dotclear.dmLastCommentsRows = (last_id) => {
+  // Store last comment id
+  dotclear.dmLastComments_LastCommentId = last_id;
+  // Get new list
+  dotclear.services(
+    'dmLastCommentsRows',
+    (data) => {
+      try {
+        const response = JSON.parse(data);
+        if (response?.success) {
+          if (response?.payload.ret) {
+            const counter = response.payload.counter;
+            // Replace current list with the new one
+            if ($('#last-comments ul').length) {
+              $('#last-comments ul').remove();
+            }
+            if ($('#last-comments p').length) {
+              $('#last-comments p').remove();
+            }
+            if (counter > 0) {
+              dotclear.dmLastComments_LastCounter = Number(dotclear.dmLastComments_LastCounter) + counter;
+            }
+            $('#last-comments h3').after(response.payload.list);
+            if (dotclear.dmLastComments_Badge) {
+              // Badge on module
+              dotclear.badge($('#last-comments'), {
+                id: 'dmlc',
+                value: dotclear.dmLastComments_LastCounter,
+                remove: dotclear.dmLastComments_LastCounter == 0,
+              });
+              // Badge on menu item
+              dotclear.badge($('#main-menu li a[href="comments.php"]'), {
+                id: 'dmlc',
+                value: dotclear.dmLastComments_LastCounter,
+                remove: dotclear.dmLastComments_LastCounter == 0,
+                inline: true,
+                sibling: true,
+              });
+            }
+            // Bind every new lines for viewing comment content
+            $.expandContent({
+              lines: $('#last-comments li.line'),
+              callback: dotclear.dmLastCommentsView,
+            });
+            $('#last-comments ul').addClass('expandable');
+          }
+        } else {
+          console.log(dotclear.debug && response?.message ? response.message : 'Dotclear REST server error');
+          return;
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    (error) => {
+      console.log(error);
+    },
+    true, // Use GET method
+    {
+      json: 1,
+      stored_id: dotclear.dmLastComments_LastCommentId,
+      last_id: last_id,
+      last_counter: dotclear.dmLastComments_LastCounter,
+    },
+  );
+};
+
+dotclear.dmLastCommentsCheck = () => {
+  dotclear.services(
+    'dmLastCommentsCheck',
+    (data) => {
+      try {
+        const response = JSON.parse(data);
+        if (response?.success) {
+          if (response?.payload.ret) {
+            if (response.payload.nb > 0) {
+              dotclear.dmLastCommentsRows(response.payload.last_id);
+            }
+          }
+        } else {
+          console.log(dotclear.debug && response?.message ? response.message : 'Dotclear REST server error');
+          return;
+        }
+      } catch (e) {
+        console.log(e);
+      }
+    },
+    (error) => {
+      console.log(error);
+    },
+    true, // Use GET method
+    {
+      json: 1,
+      last_id: dotclear.dmLastComments_LastCommentId,
+    },
+  );
+};
+
+dotclear.dmLastCommentsView = (line, action = 'toggle', e = null) => {
   if ($(line).attr('id') == undefined) {
     return;
   }
@@ -121,11 +147,14 @@ dotclear.dmLastCommentsView = function (line, action, e) {
   // If meta key down or it's a spam then display content HTML code
   const clean = e.metaKey || $(line).hasClass('sts-junk');
 
-  if (!li) {
+  if (li) {
+    $(li).toggle();
+    $(line).toggleClass('expand');
+  } else {
     // Get comment content if possible
     dotclear.getCommentContent(
       commentId,
-      function (content) {
+      (content) => {
         if (content) {
           li = document.createElement('li');
           li.id = lineId;
@@ -140,16 +169,13 @@ dotclear.dmLastCommentsView = function (line, action, e) {
       },
       {
         metadata: false,
-        clean: clean,
-      }
+        clean,
+      },
     );
-  } else {
-    $(li).toggle();
-    $(line).toggleClass('expand');
   }
 };
 
-$(function () {
+$(() => {
   Object.assign(dotclear, dotclear.getData('dm_lastcomments'));
   $.expandContent({
     lines: $('#last-comments li.line'),
@@ -157,6 +183,8 @@ $(function () {
   });
   $('#last-comments ul').addClass('expandable');
   if (dotclear.dmLastComments_AutoRefresh) {
+    // First pass
+    dotclear.dmLastCommentsCheck();
     // Auto refresh requested : Set 30 seconds interval between two checks for new comments and spam counter check
     dotclear.dmLastComments_Timer = setInterval(dotclear.dmLastCommentsCheck, 30 * 1000);
     if (dotclear.dmLastComments_Badge) {

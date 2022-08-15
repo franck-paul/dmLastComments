@@ -17,45 +17,46 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 class dmLastCommentsRest
 {
     /**
-     * Serve method to get number of spams for current blog.
+     * Gets the spam count.
      *
-     * @param     core     <b>dcCore</b>     dcCore instance
-     * @param     get     <b>array</b>     cleaned $_GET
+     * @param      array   $get    The get
+     *
+     * @return     xmlTag  The spam count.
      */
-    public static function getSpamCount($core, $get)
+    public static function getSpamCount($get)
     {
-        $count = $core->blog->getComments(['comment_status' => -2], true)->f(0);
+        $count = dcCore::app()->blog->getComments(['comment_status' => -2], true)->f(0);
 
-        $rsp      = new xmlTag('check');
-        $rsp->ret = $count;
-
-        return $rsp;
+        return [
+            'ret' => true,
+            'nb'  => $count,
+        ];
     }
 
     /**
      * Serve method to check new comments for current blog.
      *
-     * @param    core    <b>dcCore</b>    dcCore instance
-     * @param    get        <b>array</b>    cleaned $_GET
+     * @param      array   $get    The get
      *
-     * @return    <b>xmlTag</b>    XML representation of response
+     * @return     xmlTag  The xml tag.
      */
-    public static function checkNewComments($core, $get)
+    public static function checkNewComments($get)
     {
-        $last_id = !empty($get['last_id']) ? $get['last_id'] : -1;
+        $last_id         = !empty($get['last_id']) ? $get['last_id'] : -1;
+        $last_comment_id = -1;
 
         $sqlp = [
             'no_content' => true, // content is not required
             'order'      => 'comment_id ASC',
-            'sql'        => 'AND comment_id > ' . $last_id // only new ones
+            'sql'        => 'AND comment_id > ' . $last_id, // only new ones
         ];
-        $core->auth->user_prefs->addWorkspace('dmlastcomments');
-        if ($core->auth->user_prefs->dmlastcomments->last_comments_nospam) {
+        dcCore::app()->auth->user_prefs->addWorkspace('dmlastcomments');
+        if (dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_nospam) {
             // Exclude junk comment from list
             $sqlp['comment_status_not'] = -2;
         }
 
-        $rs    = $core->blog->getComments($sqlp);
+        $rs    = dcCore::app()->blog->getComments($sqlp);
         $count = $rs->count();
 
         if ($count) {
@@ -63,54 +64,52 @@ class dmLastCommentsRest
                 $last_comment_id = $rs->comment_id;
             }
         }
-        $rsp      = new xmlTag('check');
-        $rsp->ret = $count;
-        if ($count) {
-            $rsp->last_id = $last_comment_id;
-        }
 
-        return $rsp;
+        return [
+            'ret'     => true,
+            'nb'      => $count,
+            'last_id' => $last_comment_id,
+        ];
     }
 
     /**
-     * Serve method to get new comments rows for current blog.
+     * Gets the last comments rows.
      *
-     * @param    core    <b>dcCore</b>    dcCore instance
-     * @param    get        <b>array</b>    cleaned $_GET
+     * @param      array   $get    The get
      *
-     * @return    <b>xmlTag</b>    XML representation of response
+     * @return     xmlTag  The last comments rows.
      */
-    public static function getLastCommentsRows($core, $get)
+    public static function getLastCommentsRows($get)
     {
-        $rsp      = new xmlTag('rows');
-        $rsp->ret = 0;
-
         $stored_id = !empty($get['stored_id']) ? $get['stored_id'] : -1;
         $last_id   = !empty($get['last_id']) ? $get['last_id'] : -1;
         $counter   = !empty($get['counter']) ? $get['counter'] : 0;
 
-        $rsp->stored_id = $stored_id;
-        $rsp->last_id   = $last_id;
+        $payload = [
+            'ret'       => true,
+            'stored_id' => $stored_id,
+            'last_id'   => $last_id,
+            'counter'   => 0,
+        ];
 
         if ($stored_id == -1) {
-            return $rsp;
+            return $payload;
         }
 
-        $core->auth->user_prefs->addWorkspace('dmlastcomments');
-        $ret = dmLastCommentsBehaviors::getLastComments($core,
-            $core->auth->user_prefs->dmlastcomments->last_comments_nb,
-            $core->auth->user_prefs->dmlastcomments->last_comments_large,
-            $core->auth->user_prefs->dmlastcomments->last_comments_author,
-            $core->auth->user_prefs->dmlastcomments->last_comments_date,
-            $core->auth->user_prefs->dmlastcomments->last_comments_time,
-            $core->auth->user_prefs->dmlastcomments->last_comments_nospam,
-            $core->auth->user_prefs->dmlastcomments->last_comments_recents,
-            $stored_id, $counter);
+        dcCore::app()->auth->user_prefs->addWorkspace('dmlastcomments');
+        $list = dmLastCommentsBehaviors::getLastComments(
+            dcCore::app(),
+            dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_nb,
+            dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_large,
+            dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_author,
+            dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_date,
+            dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_time,
+            dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_nospam,
+            dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_recents,
+            $stored_id,
+            $counter
+        );
 
-        $rsp->list    = $ret;
-        $rsp->counter = $counter;
-        $rsp->ret     = 1;
-
-        return $rsp;
+        return array_merge($payload, ['list' => $list, 'counter' => $counter]);
     }
 }

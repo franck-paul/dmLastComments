@@ -18,26 +18,24 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 __('Last Comments Dashboard Module') . __('Display last comments on dashboard');
 
 // Dashboard behaviours
-$core->addBehavior('adminDashboardHeaders', ['dmLastCommentsBehaviors', 'adminDashboardHeaders']);
-$core->addBehavior('adminDashboardContents', ['dmLastCommentsBehaviors', 'adminDashboardContents']);
+dcCore::app()->addBehavior('adminDashboardHeaders', ['dmLastCommentsBehaviors', 'adminDashboardHeaders']);
+dcCore::app()->addBehavior('adminDashboardContents', ['dmLastCommentsBehaviors', 'adminDashboardContents']);
 
-$core->addBehavior('adminAfterDashboardOptionsUpdate', ['dmLastCommentsBehaviors', 'adminAfterDashboardOptionsUpdate']);
-$core->addBehavior('adminDashboardOptionsForm', ['dmLastCommentsBehaviors', 'adminDashboardOptionsForm']);
+dcCore::app()->addBehavior('adminAfterDashboardOptionsUpdate', ['dmLastCommentsBehaviors', 'adminAfterDashboardOptionsUpdate']);
+dcCore::app()->addBehavior('adminDashboardOptionsForm', ['dmLastCommentsBehaviors', 'adminDashboardOptionsForm']);
 
 # BEHAVIORS
 class dmLastCommentsBehaviors
 {
     public static function adminDashboardHeaders()
     {
-        global $core;
-
         $sqlp = [
             'limit'      => 1,                 // only the last one
             'no_content' => true,              // content is not required
-            'order'      => 'comment_id DESC' // get last first
+            'order'      => 'comment_id DESC', // get last first
         ];
 
-        $rs = $core->blog->getComments($sqlp);
+        $rs = dcCore::app()->blog->getComments($sqlp);
 
         if ($rs->count()) {
             $rs->fetch();
@@ -46,32 +44,32 @@ class dmLastCommentsBehaviors
             $last_comment_id = -1;
         }
 
-        $core->auth->user_prefs->addWorkspace('dmlastcomments');
+        dcCore::app()->auth->user_prefs->addWorkspace('dmlastcomments');
 
         return
         dcPage::jsJson('dm_lastcomments', [
             'dmLastComments_LastCommentId' => $last_comment_id,
-            'dmLastComments_AutoRefresh'   => $core->auth->user_prefs->dmlastcomments->last_comments_autorefresh,
-            'dmLastComments_Badge'         => $core->auth->user_prefs->dmlastcomments->last_comments_badge,
+            'dmLastComments_AutoRefresh'   => dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_autorefresh,
+            'dmLastComments_Badge'         => dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_badge,
             'dmLastComments_LastCounter'   => 0,
-            'dmLastComments_SpamCount'     => -1
+            'dmLastComments_SpamCount'     => -1,
         ]) .
-        dcPage::jsLoad(urldecode(dcPage::getPF('dmLastComments/js/service.js')), $core->getVersion('dmLastComments')) .
-        dcPage::cssLoad(urldecode(dcPage::getPF('dmLastComments/css/style.css')), 'screen', $core->getVersion('dmLastComments'));
+        dcPage::jsModuleLoad('dmLastComments/js/service.js', dcCore::app()->getVersion('dmLastComments')) .
+        dcPage::cssModuleLoad('dmLastComments/css/style.css', 'screen', dcCore::app()->getVersion('dmLastComments'));
     }
 
     private static function composeSQLSince($core, $nb, $unit = 'HOUR')
     {
-        switch ($core->con->syntax()) {
+        switch (dcCore::app()->con->syntax()) {
             case 'sqlite':
                 $ret = 'datetime(\'' .
-                    $core->con->db_escape_string('now') . '\', \'' .
-                    $core->con->db_escape_string('-' . sprintf($nb) . ' ' . $unit) .
+                    dcCore::app()->con->db_escape_string('now') . '\', \'' .
+                    dcCore::app()->con->db_escape_string('-' . sprintf($nb) . ' ' . $unit) .
                     '\')';
 
                 break;
             case 'postgresql':
-                $ret = '(NOW() - \'' . $core->con->db_escape_string(sprintf($nb) . ' ' . $unit) . '\'::INTERVAL)';
+                $ret = '(NOW() - \'' . dcCore::app()->con->db_escape_string(sprintf($nb) . ' ' . $unit) . '\'::INTERVAL)';
 
                 break;
             case 'mysql':
@@ -84,11 +82,20 @@ class dmLastCommentsBehaviors
         return $ret;
     }
 
-    public static function getLastComments($core, $nb, $large, $author, $date, $time, $nospam, $recents = 0,
-        $last_id = -1, &$last_counter = 0)
-    {
-        $recents = (integer) $recents;
-        $nb      = (integer) $nb;
+    public static function getLastComments(
+        $core,
+        $nb,
+        $large,
+        $author,
+        $date,
+        $time,
+        $nospam,
+        $recents = 0,
+        $last_id = -1,
+        &$last_counter = 0
+    ) {
+        $recents = (int) $recents;
+        $nb      = (int) $nb;
 
         // Get last $nb comments
         $params = [];
@@ -102,9 +109,9 @@ class dmLastCommentsBehaviors
             $params['comment_status_not'] = -2;
         }
         if ($recents > 0) {
-            $params['sql'] = ' AND comment_dt >= ' . dmLastCommentsBehaviors::composeSQLSince($core, $recents) . ' ';
+            $params['sql'] = ' AND comment_dt >= ' . dmLastCommentsBehaviors::composeSQLSince(dcCore::app(), $recents) . ' ';
         }
-        $rs = $core->blog->getComments($params, false);
+        $rs = dcCore::app()->blog->getComments($params, false);
         if (!$rs->isEmpty()) {
             $ret = '<ul>';
             while ($rs->fetch()) {
@@ -124,10 +131,10 @@ class dmLastCommentsBehaviors
                         $info[] = __('by') . ' ' . $rs->comment_author;
                     }
                     if ($date) {
-                        $info[] = __('on') . ' ' . dt::dt2str($core->blog->settings->system->date_format, $rs->comment_dt);
+                        $info[] = __('on') . ' ' . dt::dt2str(dcCore::app()->blog->settings->system->date_format, $rs->comment_dt);
                     }
                     if ($time) {
-                        $info[] = __('at') . ' ' . dt::dt2str($core->blog->settings->system->time_format, $rs->comment_dt);
+                        $info[] = __('at') . ' ' . dt::dt2str(dcCore::app()->blog->settings->system->time_format, $rs->comment_dt);
                     }
                 } else {
                     if ($author) {
@@ -158,19 +165,21 @@ class dmLastCommentsBehaviors
     public static function adminDashboardContents($core, $contents)
     {
         // Add modules to the contents stack
-        $core->auth->user_prefs->addWorkspace('dmlastcomments');
-        if ($core->auth->user_prefs->dmlastcomments->last_comments) {
-            $class = ($core->auth->user_prefs->dmlastcomments->last_comments_large ? 'medium' : 'small');
+        dcCore::app()->auth->user_prefs->addWorkspace('dmlastcomments');
+        if (dcCore::app()->auth->user_prefs->dmlastcomments->last_comments) {
+            $class = (dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_large ? 'medium' : 'small');
             $ret   = '<div id="last-comments" class="box ' . $class . '">' .
             '<h3>' . '<img src="' . urldecode(dcPage::getPF('dmLastComments/icon.png')) . '" alt="" />' . ' ' . __('Last comments') . '</h3>';
-            $ret .= dmLastCommentsBehaviors::getLastComments($core,
-                $core->auth->user_prefs->dmlastcomments->last_comments_nb,
-                $core->auth->user_prefs->dmlastcomments->last_comments_large,
-                $core->auth->user_prefs->dmlastcomments->last_comments_author,
-                $core->auth->user_prefs->dmlastcomments->last_comments_date,
-                $core->auth->user_prefs->dmlastcomments->last_comments_time,
-                $core->auth->user_prefs->dmlastcomments->last_comments_nospam,
-                $core->auth->user_prefs->dmlastcomments->last_comments_recents);
+            $ret .= dmLastCommentsBehaviors::getLastComments(
+                dcCore::app(),
+                dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_nb,
+                dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_large,
+                dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_author,
+                dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_date,
+                dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_time,
+                dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_nospam,
+                dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_recents
+            );
             $ret .= '</div>';
             $contents[] = new ArrayObject([$ret]);
         }
@@ -178,73 +187,71 @@ class dmLastCommentsBehaviors
 
     public static function adminAfterDashboardOptionsUpdate($userID)
     {
-        global $core;
-
         // Get and store user's prefs for plugin options
-        $core->auth->user_prefs->addWorkspace('dmlastcomments');
+        dcCore::app()->auth->user_prefs->addWorkspace('dmlastcomments');
 
         try {
-            $core->auth->user_prefs->dmlastcomments->put('last_comments', !empty($_POST['dmlast_comments']), 'boolean');
-            $core->auth->user_prefs->dmlastcomments->put('last_comments_nb', (integer) $_POST['dmlast_comments_nb'], 'integer');
-            $core->auth->user_prefs->dmlastcomments->put('last_comments_large', empty($_POST['dmlast_comments_small']), 'boolean');
-            $core->auth->user_prefs->dmlastcomments->put('last_comments_author', !empty($_POST['dmlast_comments_author']), 'boolean');
-            $core->auth->user_prefs->dmlastcomments->put('last_comments_date', !empty($_POST['dmlast_comments_date']), 'boolean');
-            $core->auth->user_prefs->dmlastcomments->put('last_comments_time', !empty($_POST['dmlast_comments_time']), 'boolean');
-            $core->auth->user_prefs->dmlastcomments->put('last_comments_nospam', !empty($_POST['dmlast_comments_nospam']), 'boolean');
-            $core->auth->user_prefs->dmlastcomments->put('last_comments_recents', (integer) $_POST['dmlast_comments_recents'], 'integer');
-            $core->auth->user_prefs->dmlastcomments->put('last_comments_autorefresh', !empty($_POST['dmlast_comments_autorefresh']), 'boolean');
-            $core->auth->user_prefs->dmlastcomments->put('last_comments_badge', !empty($_POST['dmlast_comments_badge']), 'boolean');
+            dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments', !empty($_POST['dmlast_comments']), 'boolean');
+            dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments_nb', (int) $_POST['dmlast_comments_nb'], 'integer');
+            dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments_large', empty($_POST['dmlast_comments_small']), 'boolean');
+            dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments_author', !empty($_POST['dmlast_comments_author']), 'boolean');
+            dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments_date', !empty($_POST['dmlast_comments_date']), 'boolean');
+            dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments_time', !empty($_POST['dmlast_comments_time']), 'boolean');
+            dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments_nospam', !empty($_POST['dmlast_comments_nospam']), 'boolean');
+            dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments_recents', (int) $_POST['dmlast_comments_recents'], 'integer');
+            dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments_autorefresh', !empty($_POST['dmlast_comments_autorefresh']), 'boolean');
+            dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments_badge', !empty($_POST['dmlast_comments_badge']), 'boolean');
         } catch (Exception $e) {
-            $core->error->add($e->getMessage());
+            dcCore::app()->error->add($e->getMessage());
         }
     }
 
     public static function adminDashboardOptionsForm($core)
     {
         // Add fieldset for plugin options
-        $core->auth->user_prefs->addWorkspace('dmlastcomments');
+        dcCore::app()->auth->user_prefs->addWorkspace('dmlastcomments');
 
         echo '<div class="fieldset" id="dmlastcomments"><h4>' . __('Last comments on dashboard') . '</h4>' .
 
         '<p>' .
-        form::checkbox('dmlast_comments', 1, $core->auth->user_prefs->dmlastcomments->last_comments) . ' ' .
+        form::checkbox('dmlast_comments', 1, dcCore::app()->auth->user_prefs->dmlastcomments->last_comments) . ' ' .
         '<label for="dmlast_comments" class="classic">' . __('Display last comments') . '</label></p>' .
 
         '<p><label for="dmlast_comments_nb" class="classic">' . __('Number of last comments to display:') . '</label> ' .
-        form::number('dmlast_comments_nb', 1, 999, (integer) $core->auth->user_prefs->dmlastcomments->last_comments_nb) .
+        form::number('dmlast_comments_nb', 1, 999, dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_nb) .
         '</p>' .
 
         '<p>' .
-        form::checkbox('dmlast_comments_author', 1, $core->auth->user_prefs->dmlastcomments->last_comments_author) . ' ' .
+        form::checkbox('dmlast_comments_author', 1, dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_author) . ' ' .
         '<label for="dmlast_comments_author" class="classic">' . __('Show authors') . '</label></p>' .
 
         '<p>' .
-        form::checkbox('dmlast_comments_date', 1, $core->auth->user_prefs->dmlastcomments->last_comments_date) . ' ' .
+        form::checkbox('dmlast_comments_date', 1, dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_date) . ' ' .
         '<label for="dmlast_comments_date" class="classic">' . __('Show dates') . '</label></p>' .
 
         '<p>' .
-        form::checkbox('dmlast_comments_time', 1, $core->auth->user_prefs->dmlastcomments->last_comments_time) . ' ' .
+        form::checkbox('dmlast_comments_time', 1, dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_time) . ' ' .
         '<label for="dmlast_comments_time" class="classic">' . __('Show times') . '</label></p>' .
 
         '<p>' .
-        form::checkbox('dmlast_comments_nospam', 1, $core->auth->user_prefs->dmlastcomments->last_comments_nospam) . ' ' .
+        form::checkbox('dmlast_comments_nospam', 1, dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_nospam) . ' ' .
         '<label for="dmlast_comments_nospam" class="classic">' . __('Exclude junk comments') . '</label></p>' .
 
         '<p><label for="dmlast_comments_recents" class="classic">' . __('Max age of comments to display (in hours):') . '</label> ' .
-        form::number('dmlast_comments_recents', 1, 96, (integer) $core->auth->user_prefs->dmlastcomments->last_comments_recents) .
+        form::number('dmlast_comments_recents', 1, 96, dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_recents) .
         '</p>' .
         '<p class="form-note">' . __('Leave empty to ignore age of comments') . '</p>' .
 
         '<p>' .
-        form::checkbox('dmlast_comments_small', 1, !$core->auth->user_prefs->dmlastcomments->last_comments_large) . ' ' .
+        form::checkbox('dmlast_comments_small', 1, !dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_large) . ' ' .
         '<label for="dmlast_comments_small" class="classic">' . __('Small screen') . '</label></p>' .
 
         '<p>' .
-        form::checkbox('dmlast_comments_autorefresh', 1, $core->auth->user_prefs->dmlastcomments->last_comments_autorefresh) . ' ' .
+        form::checkbox('dmlast_comments_autorefresh', 1, dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_autorefresh) . ' ' .
         '<label for="dmlast_comments_autorefresh" class="classic">' . __('Auto refresh') . '</label></p>' .
 
         '<p>' .
-        form::checkbox('dmlast_comments_badge', 1, $core->auth->user_prefs->dmlastcomments->last_comments_badge) . ' ' .
+        form::checkbox('dmlast_comments_badge', 1, dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_badge) . ' ' .
         '<label for="dmlast_comments_badge" class="classic">' . __('Display badges (only if Auto refresh is enabled)') . '</label></p>' .
 
             '</div>';

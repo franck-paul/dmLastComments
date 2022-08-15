@@ -18,17 +18,17 @@ $this->registerModule(
     'Last Comments Dashboard Module',     // Name
     'Display last comments on dashboard', // Description
     'Franck Paul',                        // Author
-    '1.5',                                // Version
+    '1.6',
     [
-        'requires'    => [['core', '2.19']],
+        'requires'    => [['core', '2.23']],
         'permissions' => 'admin',
         'type'        => 'plugin',
         'settings'    => [                                                // Settings
-            'pref' => '#user-favorites.dmlastcomments'
+            'pref' => '#user-favorites.dmlastcomments',
         ],
 
         'details'    => 'https://open-time.net/?q=dmlastcomments',       // Details URL
         'support'    => 'https://github.com/franck-paul/dmlastcomments', // Support URL
-        'repository' => 'https://raw.githubusercontent.com/franck-paul/dmlastcomments/master/dcstore.xml'
+        'repository' => 'https://raw.githubusercontent.com/franck-paul/dmlastcomments/master/dcstore.xml',
     ]
 );
