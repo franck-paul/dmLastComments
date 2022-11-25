@@ -15,20 +15,22 @@ if (!defined('DC_RC_PATH')) {
 }
 
 $this->registerModule(
-    'Last Comments Dashboard Module',     // Name
-    'Display last comments on dashboard', // Description
-    'Franck Paul',                        // Author
-    '1.6',
+    'Last Comments Dashboard Module',
+    'Display last comments on dashboard',
+    'Franck Paul',
+    '1.7',
     [
-        'requires'    => [['core', '2.23']],
-        'permissions' => 'admin',
-        'type'        => 'plugin',
-        'settings'    => [                                                // Settings
+        'requires'    => [['core', '2.24']],
+        'permissions' => dcCore::app()->auth->makePermissions([
+            dcAuth::PERMISSION_ADMIN,
+        ]),
+        'type'     => 'plugin',
+        'settings' => [
             'pref' => '#user-favorites.dmlastcomments',
         ],
 
-        'details'    => 'https://open-time.net/?q=dmlastcomments',       // Details URL
-        'support'    => 'https://github.com/franck-paul/dmlastcomments', // Support URL
+        'details'    => 'https://open-time.net/?q=dmlastcomments',
+        'support'    => 'https://github.com/franck-paul/dmlastcomments',
         'repository' => 'https://raw.githubusercontent.com/franck-paul/dmlastcomments/master/dcstore.xml',
     ]
 );

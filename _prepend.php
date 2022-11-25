@@ -22,9 +22,9 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 
 // Admin mode
 
-$__autoload['dmLastCommentsRest'] = __DIR__ . '/_services.php';
+Clearbricks::lib()->autoload(['dmLastCommentsRest' => __DIR__ . '/_services.php']);
 
 // Register REST methods
-dcCore::app()->rest->addFunction('dmLastCommentsCheck', ['dmLastCommentsRest', 'checkNewComments']);
-dcCore::app()->rest->addFunction('dmLastCommentsRows', ['dmLastCommentsRest', 'getLastCommentsRows']);
-dcCore::app()->rest->addFunction('dmLastCommentsSpam', ['dmLastCommentsRest', 'getSpamCount']);
+dcCore::app()->rest->addFunction('dmLastCommentsCheck', [dmLastCommentsRest::class, 'checkNewComments']);
+dcCore::app()->rest->addFunction('dmLastCommentsRows', [dmLastCommentsRest::class, 'getLastCommentsRows']);
+dcCore::app()->rest->addFunction('dmLastCommentsSpam', [dmLastCommentsRest::class, 'getSpamCount']);

@@ -17,13 +17,6 @@ if (!defined('DC_CONTEXT_ADMIN')) {
 // dead but useful code, in order to have translations
 __('Last Comments Dashboard Module') . __('Display last comments on dashboard');
 
-// Dashboard behaviours
-dcCore::app()->addBehavior('adminDashboardHeaders', ['dmLastCommentsBehaviors', 'adminDashboardHeaders']);
-dcCore::app()->addBehavior('adminDashboardContents', ['dmLastCommentsBehaviors', 'adminDashboardContents']);
-
-dcCore::app()->addBehavior('adminAfterDashboardOptionsUpdate', ['dmLastCommentsBehaviors', 'adminAfterDashboardOptionsUpdate']);
-dcCore::app()->addBehavior('adminDashboardOptionsForm', ['dmLastCommentsBehaviors', 'adminDashboardOptionsForm']);
-
 # BEHAVIORS
 class dmLastCommentsBehaviors
 {
@@ -106,7 +99,7 @@ class dmLastCommentsBehaviors
         }
         if ($nospam) {
             // Exclude junk comment from list
-            $params['comment_status_not'] = -2;
+            $params['comment_status_not'] = dcBlog::COMMENT_JUNK;
         }
         if ($recents > 0) {
             $params['sql'] = ' AND comment_dt >= ' . dmLastCommentsBehaviors::composeSQLSince(dcCore::app(), $recents) . ' ';
@@ -120,7 +113,7 @@ class dmLastCommentsBehaviors
                     $ret .= ($last_id != -1 && $rs->comment_id > $last_id ? ' dmlc-new' : '');
                     $last_counter++;
                 }
-                if ($rs->comment_status == -2) {
+                if ($rs->comment_status == dcBlog::COMMENT_JUNK) {
                     $ret .= ' sts-junk';
                 }
                 $ret .= '" id="dmlc' . $rs->comment_id . '">';
@@ -162,7 +155,7 @@ class dmLastCommentsBehaviors
                 ($recents > 0 ? ' ' . sprintf(__('since %d hour', 'since %d hours', $recents), $recents) : '') . '</p>';
     }
 
-    public static function adminDashboardContents($core, $contents)
+    public static function adminDashboardContents($contents)
     {
         // Add modules to the contents stack
         dcCore::app()->auth->user_prefs->addWorkspace('dmlastcomments');
@@ -185,7 +178,7 @@ class dmLastCommentsBehaviors
         }
     }
 
-    public static function adminAfterDashboardOptionsUpdate($userID)
+    public static function adminAfterDashboardOptionsUpdate()
     {
         // Get and store user's prefs for plugin options
         dcCore::app()->auth->user_prefs->addWorkspace('dmlastcomments');
@@ -206,7 +199,7 @@ class dmLastCommentsBehaviors
         }
     }
 
-    public static function adminDashboardOptionsForm($core)
+    public static function adminDashboardOptionsForm()
     {
         // Add fieldset for plugin options
         dcCore::app()->auth->user_prefs->addWorkspace('dmlastcomments');
@@ -257,3 +250,10 @@ class dmLastCommentsBehaviors
             '</div>';
     }
 }
+
+// Dashboard behaviours
+dcCore::app()->addBehavior('adminDashboardHeaders', [dmLastCommentsBehaviors::class, 'adminDashboardHeaders']);
+dcCore::app()->addBehavior('adminDashboardContentsV2', [dmLastCommentsBehaviors::class, 'adminDashboardContents']);
+
+dcCore::app()->addBehavior('adminAfterDashboardOptionsUpdate', [dmLastCommentsBehaviors::class, 'adminAfterDashboardOptionsUpdate']);
+dcCore::app()->addBehavior('adminDashboardOptionsFormV2', [dmLastCommentsBehaviors::class, 'adminDashboardOptionsForm']);

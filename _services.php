@@ -19,13 +19,11 @@ class dmLastCommentsRest
     /**
      * Gets the spam count.
      *
-     * @param      array   $get    The get
-     *
-     * @return     xmlTag  The spam count.
+     * @return     array   The payload.
      */
-    public static function getSpamCount($get)
+    public static function getSpamCount(): array
     {
-        $count = dcCore::app()->blog->getComments(['comment_status' => -2], true)->f(0);
+        $count = dcCore::app()->blog->getComments(['comment_status' => dcBlog::COMMENT_JUNK], true)->f(0);
 
         return [
             'ret' => true,
@@ -38,9 +36,9 @@ class dmLastCommentsRest
      *
      * @param      array   $get    The get
      *
-     * @return     xmlTag  The xml tag.
+     * @return     array   The payload.
      */
-    public static function checkNewComments($get)
+    public static function checkNewComments($get): array
     {
         $last_id         = !empty($get['last_id']) ? $get['last_id'] : -1;
         $last_comment_id = -1;
@@ -53,7 +51,7 @@ class dmLastCommentsRest
         dcCore::app()->auth->user_prefs->addWorkspace('dmlastcomments');
         if (dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_nospam) {
             // Exclude junk comment from list
-            $sqlp['comment_status_not'] = -2;
+            $sqlp['comment_status_not'] = dcBlog::COMMENT_JUNK;
         }
 
         $rs    = dcCore::app()->blog->getComments($sqlp);
@@ -77,9 +75,9 @@ class dmLastCommentsRest
      *
      * @param      array   $get    The get
      *
-     * @return     xmlTag  The last comments rows.
+     * @return     array   The payload.
      */
-    public static function getLastCommentsRows($get)
+    public static function getLastCommentsRows($get): array
     {
         $stored_id = !empty($get['stored_id']) ? $get['stored_id'] : -1;
         $last_id   = !empty($get['last_id']) ? $get['last_id'] : -1;
