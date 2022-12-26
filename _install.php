@@ -14,16 +14,11 @@ if (!defined('DC_CONTEXT_ADMIN')) {
     return;
 }
 
-$new_version = dcCore::app()->plugins->moduleInfo('dmLastComments', 'version');
-$old_version = dcCore::app()->getVersion('dmLastComments');
-
-if (version_compare((string) $old_version, $new_version, '>=')) {
+if (!dcCore::app()->newVersion(basename(__DIR__), dcCore::app()->plugins->moduleInfo(basename(__DIR__), 'version'))) {
     return;
 }
 
 try {
-    dcCore::app()->auth->user_prefs->addWorkspace('dmlastcomments');
-
     // Default prefs for last comments
     dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments', false, 'boolean', 'Display last comments', false, true);
     dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments_nb', 5, 'integer', 'Number of last comments displayed', false, true);
@@ -35,8 +30,6 @@ try {
     dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments_recents', 0, 'integer', 'Max age of comments (in hours)', false, true);
     dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments_autorefresh', false, 'boolean', 'Auto refresh', false, true);
     dcCore::app()->auth->user_prefs->dmlastcomments->put('last_comments_badge', true, 'boolean', 'Display counter (Auto refresh only)', false, true);
-
-    dcCore::app()->setVersion('dmLastComments', $new_version);
 
     return true;
 } catch (Exception $e) {
