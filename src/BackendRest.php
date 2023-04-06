@@ -10,11 +10,14 @@
  * @copyright Franck Paul carnet.franck.paul@gmail.com
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-if (!defined('DC_CONTEXT_ADMIN')) {
-    return;
-}
+declare(strict_types=1);
 
-class dmLastCommentsRest
+namespace Dotclear\Plugin\dmLastComments;
+
+use dcBlog;
+use dcCore;
+
+class BackendRest
 {
     /**
      * Gets the spam count.
@@ -40,6 +43,8 @@ class dmLastCommentsRest
      */
     public static function checkNewComments($get): array
     {
+        $settings = dcCore::app()->auth->user_prefs->dmlastcomments;
+
         $last_id         = !empty($get['last_id']) ? $get['last_id'] : -1;
         $last_comment_id = -1;
 
@@ -48,8 +53,7 @@ class dmLastCommentsRest
             'order'      => 'comment_id ASC',
             'sql'        => 'AND comment_id > ' . $last_id, // only new ones
         ];
-        dcCore::app()->auth->user_prefs->addWorkspace('dmlastcomments');
-        if (dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_nospam) {
+        if ($settings->last_comments_nospam) {
             // Exclude junk comment from list
             $sqlp['comment_status_not'] = dcBlog::COMMENT_JUNK;
         }
@@ -94,16 +98,17 @@ class dmLastCommentsRest
             return $payload;
         }
 
-        dcCore::app()->auth->user_prefs->addWorkspace('dmlastcomments');
-        $list = dmLastCommentsBehaviors::getLastComments(
+        $settings = dcCore::app()->auth->user_prefs->dmlastcomments;
+
+        $list = BackendBehaviors::getLastComments(
             dcCore::app(),
-            dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_nb,
-            dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_large,
-            dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_author,
-            dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_date,
-            dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_time,
-            dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_nospam,
-            dcCore::app()->auth->user_prefs->dmlastcomments->last_comments_recents,
+            $settings->last_comments_nb,
+            $settings->last_comments_large,
+            $settings->last_comments_author,
+            $settings->last_comments_date,
+            $settings->last_comments_time,
+            $settings->last_comments_nospam,
+            $settings->last_comments_recents,
             $stored_id,
             $counter
         );
