@@ -30,15 +30,15 @@ msgstr "%H:%M"
 msgid "See all comments"
 msgstr "Voir tous les commentaires"
 
-#, fuzzy
 msgid "No comments"
-msgstr "Voir tous les commentaires"
+msgstr "Pas de commentaires"
 
 #, php-format
 msgid "since %d hour"
 msgid_plural "since %d hours"
 msgstr[0] "depuis %d heure"
 msgstr[1] "depuis %d heures"
+msgstr[2] "depuis %d heures"
 
 msgid "Last comments on dashboard"
 msgstr "Derniers commentaires sur le tableau de bord"
