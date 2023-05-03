@@ -17,6 +17,7 @@ L10n::$locales['at'] = '';
 L10n::$locales['%Y-%m-%d'] = '';
 L10n::$locales['%H:%M'] = '';
 L10n::$locales['See all comments'] = '';
+L10n::$locales['No comments'] = '';
 L10n::$locales['since %d hour'] = [
 	'',
 	'',
