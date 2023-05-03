@@ -17,9 +17,10 @@ L10n::$locales['at'] = 'à';
 L10n::$locales['%Y-%m-%d'] = '%d/%m/%Y';
 L10n::$locales['%H:%M'] = '%H:%M';
 L10n::$locales['See all comments'] = 'Voir tous les commentaires';
-L10n::$locales['No comments'] = 'Voir tous les commentaires';
+L10n::$locales['No comments'] = 'Pas de commentaires';
 L10n::$locales['since %d hour'] = [
 	'depuis %d heure',
+	'depuis %d heures',
 	'depuis %d heures',
 ];
 L10n::$locales['Last comments on dashboard'] = 'Derniers commentaires sur le tableau de bord';
