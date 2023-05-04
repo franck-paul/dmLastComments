@@ -57,8 +57,8 @@ class BackendBehaviors
             'dmLastComments_LastCounter'   => 0,
             'dmLastComments_SpamCount'     => -1,
         ]) .
-        dcPage::jsModuleLoad('dmLastComments/js/service.js', dcCore::app()->getVersion('dmLastComments')) .
-        dcPage::cssModuleLoad('dmLastComments/css/style.css', 'screen', dcCore::app()->getVersion('dmLastComments'));
+        dcPage::jsModuleLoad(My::id() . '/js/service.js', dcCore::app()->getVersion(My::id())) .
+        dcPage::cssModuleLoad(My::id() . '/css/style.css', 'screen', dcCore::app()->getVersion(My::id()));
     }
 
     private static function composeSQLSince(int $nb, string $unit = 'HOUR')
@@ -174,7 +174,7 @@ class BackendBehaviors
         if ($settings->last_comments) {
             $class = ($settings->last_comments_large ? 'medium' : 'small');
             $ret   = '<div id="last-comments" class="box ' . $class . '">' .
-            '<h3>' . '<img src="' . urldecode(dcPage::getPF('dmLastComments/icon.png')) . '" alt="" />' . ' ' . __('Last comments') . '</h3>';
+            '<h3>' . '<img src="' . urldecode(dcPage::getPF(My::id() . '/icon.png')) . '" alt="" />' . ' ' . __('Last comments') . '</h3>';
             $ret .= self::getLastComments(
                 dcCore::app(),
                 $settings->last_comments_nb,
