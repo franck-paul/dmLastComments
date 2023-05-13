@@ -43,7 +43,7 @@ class BackendRest
      */
     public static function checkNewComments($get): array
     {
-        $settings = dcCore::app()->auth->user_prefs->dmlastcomments;
+        $preferences = dcCore::app()->auth->user_prefs->get(My::id());
 
         $last_id         = !empty($get['last_id']) ? $get['last_id'] : -1;
         $last_comment_id = -1;
@@ -53,7 +53,7 @@ class BackendRest
             'order'      => 'comment_id ASC',
             'sql'        => 'AND comment_id > ' . $last_id, // only new ones
         ];
-        if ($settings->last_comments_nospam) {
+        if ($preferences->nospam) {
             // Exclude junk comment from list
             $sqlp['comment_status_not'] = dcBlog::COMMENT_JUNK;
         }
@@ -98,17 +98,17 @@ class BackendRest
             return $payload;
         }
 
-        $settings = dcCore::app()->auth->user_prefs->dmlastcomments;
+        $preferences = dcCore::app()->auth->user_prefs->get(My::id());
 
         $list = BackendBehaviors::getLastComments(
             dcCore::app(),
-            $settings->last_comments_nb,
-            $settings->last_comments_large,
-            $settings->last_comments_author,
-            $settings->last_comments_date,
-            $settings->last_comments_time,
-            $settings->last_comments_nospam,
-            $settings->last_comments_recents,
+            $preferences->nb,
+            $preferences->large,
+            $preferences->author,
+            $preferences->date,
+            $preferences->time,
+            $preferences->nospam,
+            $preferences->recents,
             $stored_id,
             $counter
         );

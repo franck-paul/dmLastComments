@@ -16,15 +16,14 @@ namespace Dotclear\Plugin\dmLastComments;
 
 use dcCore;
 use dcNsProcess;
+use dcWorkspace;
 use Exception;
 
 class Install extends dcNsProcess
 {
     public static function init(): bool
     {
-        static::$init = defined('DC_CONTEXT_ADMIN')
-            && My::phpCompliant()
-            && dcCore::app()->newVersion(My::id(), dcCore::app()->plugins->moduleInfo(My::id(), 'version'));
+        static::$init = My::checkContext(My::INSTALL);
 
         return static::$init;
     }
@@ -36,21 +35,41 @@ class Install extends dcNsProcess
         }
 
         try {
+            $old_version = dcCore::app()->getVersion(My::id());
+            if (version_compare((string) $old_version, '3.1', '<')) {
+                // Rename settings workspace
+                if (dcCore::app()->auth->user_prefs->exists('dmlastcomments')) {
+                    dcCore::app()->auth->user_prefs->delWorkspace(My::id());
+                    dcCore::app()->auth->user_prefs->renWorkspace('dmlastcomments', My::id());
+                }
+
+                // Change settings names (remove last_comments_ prefix in them)
+                $rename = function (string $name, dcWorkspace $preferences): void {
+                    if ($preferences->prefExists('last_comments_' . $name, true)) {
+                        $preferences->rename('last_comments_' . $name, $name);
+                    }
+                };
+
+                $preferences = dcCore::app()->auth->user_prefs->get(My::id());
+                foreach (['nb', 'large', 'author', 'date', 'time', 'nospam', 'recents', 'autorefresh', 'badge'] as $pref) {
+                    $rename($pref, $preferences);
+                }
+                $preferences->rename('last_comments', 'active');
+            }
+
             // Default prefs for last comments
-            $settings = dcCore::app()->auth->user_prefs->dmlastcomments;
+            $preferences = dcCore::app()->auth->user_prefs->get(My::id());
 
-            $settings->put('last_comments', false, 'boolean', 'Display last comments', false, true);
-            $settings->put('last_comments_nb', 5, 'integer', 'Number of last comments displayed', false, true);
-            $settings->put('last_comments_large', true, 'boolean', 'Large display', false, true);
-            $settings->put('last_comments_author', true, 'boolean', 'Show authors', false, true);
-            $settings->put('last_comments_date', true, 'boolean', 'Show dates', false, true);
-            $settings->put('last_comments_time', true, 'boolean', 'Show times', false, true);
-            $settings->put('last_comments_nospam', false, 'boolean', 'Exclude junk comments', false, true);
-            $settings->put('last_comments_recents', 0, 'integer', 'Max age of comments (in hours)', false, true);
-            $settings->put('last_comments_autorefresh', false, 'boolean', 'Auto refresh', false, true);
-            $settings->put('last_comments_badge', true, 'boolean', 'Display counter (Auto refresh only)', false, true);
-
-            return true;
+            $preferences->put('active', false, dcWorkspace::WS_BOOL, 'Display last comments', false, true);
+            $preferences->put('nb', 5, dcWorkspace::WS_INT, 'Number of last comments displayed', false, true);
+            $preferences->put('large', true, dcWorkspace::WS_BOOL, 'Large display', false, true);
+            $preferences->put('author', true, dcWorkspace::WS_BOOL, 'Show authors', false, true);
+            $preferences->put('date', true, dcWorkspace::WS_BOOL, 'Show dates', false, true);
+            $preferences->put('time', true, dcWorkspace::WS_BOOL, 'Show times', false, true);
+            $preferences->put('nospam', false, dcWorkspace::WS_BOOL, 'Exclude junk comments', false, true);
+            $preferences->put('recents', 0, dcWorkspace::WS_INT, 'Max age of comments (in hours)', false, true);
+            $preferences->put('autorefresh', false, dcWorkspace::WS_BOOL, 'Auto refresh', false, true);
+            $preferences->put('badge', true, dcWorkspace::WS_BOOL, 'Display counter (Auto refresh only)', false, true);
         } catch (Exception $e) {
             dcCore::app()->error->add($e->getMessage());
         }

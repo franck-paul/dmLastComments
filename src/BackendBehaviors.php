@@ -18,6 +18,7 @@ use ArrayObject;
 use dcBlog;
 use dcCore;
 use dcPage;
+use dcWorkspace;
 use Dotclear\Helper\Date;
 use Dotclear\Helper\Html\Form\Checkbox;
 use Dotclear\Helper\Html\Form\Fieldset;
@@ -47,13 +48,13 @@ class BackendBehaviors
             $last_comment_id = -1;
         }
 
-        $settings = dcCore::app()->auth->user_prefs->dmlastcomments;
+        $preferences = dcCore::app()->auth->user_prefs->get(My::id());
 
         return
         dcPage::jsJson('dm_lastcomments', [
             'dmLastComments_LastCommentId' => $last_comment_id,
-            'dmLastComments_AutoRefresh'   => $settings->last_comments_autorefresh,
-            'dmLastComments_Badge'         => $settings->last_comments_badge,
+            'dmLastComments_AutoRefresh'   => $preferences->autorefresh,
+            'dmLastComments_Badge'         => $preferences->badge,
             'dmLastComments_LastCounter'   => 0,
             'dmLastComments_SpamCount'     => -1,
         ]) .
@@ -168,22 +169,22 @@ class BackendBehaviors
 
     public static function adminDashboardContents($contents)
     {
-        $settings = dcCore::app()->auth->user_prefs->dmlastcomments;
+        $preferences = dcCore::app()->auth->user_prefs->get(My::id());
 
         // Add modules to the contents stack
-        if ($settings->last_comments) {
-            $class = ($settings->last_comments_large ? 'medium' : 'small');
+        if ($preferences->active) {
+            $class = ($preferences->large ? 'medium' : 'small');
             $ret   = '<div id="last-comments" class="box ' . $class . '">' .
             '<h3>' . '<img src="' . urldecode(dcPage::getPF(My::id() . '/icon.png')) . '" alt="" />' . ' ' . __('Last comments') . '</h3>';
             $ret .= self::getLastComments(
                 dcCore::app(),
-                $settings->last_comments_nb,
-                $settings->last_comments_large,
-                $settings->last_comments_author,
-                $settings->last_comments_date,
-                $settings->last_comments_time,
-                $settings->last_comments_nospam,
-                $settings->last_comments_recents
+                $preferences->nb,
+                $preferences->large,
+                $preferences->author,
+                $preferences->date,
+                $preferences->time,
+                $preferences->nospam,
+                $preferences->recents
             );
             $ret .= '</div>';
             $contents[] = new ArrayObject([$ret]);
@@ -192,20 +193,20 @@ class BackendBehaviors
 
     public static function adminAfterDashboardOptionsUpdate()
     {
-        $settings = dcCore::app()->auth->user_prefs->dmlastcomments;
+        $preferences = dcCore::app()->auth->user_prefs->get(My::id());
 
         // Get and store user's prefs for plugin options
         try {
-            $settings->put('last_comments', !empty($_POST['dmlast_comments']), 'boolean');
-            $settings->put('last_comments_nb', (int) $_POST['dmlast_comments_nb'], 'integer');
-            $settings->put('last_comments_large', empty($_POST['dmlast_comments_small']), 'boolean');
-            $settings->put('last_comments_author', !empty($_POST['dmlast_comments_author']), 'boolean');
-            $settings->put('last_comments_date', !empty($_POST['dmlast_comments_date']), 'boolean');
-            $settings->put('last_comments_time', !empty($_POST['dmlast_comments_time']), 'boolean');
-            $settings->put('last_comments_nospam', !empty($_POST['dmlast_comments_nospam']), 'boolean');
-            $settings->put('last_comments_recents', (int) $_POST['dmlast_comments_recents'], 'integer');
-            $settings->put('last_comments_autorefresh', !empty($_POST['dmlast_comments_autorefresh']), 'boolean');
-            $settings->put('last_comments_badge', !empty($_POST['dmlast_comments_badge']), 'boolean');
+            $preferences->put('active', !empty($_POST['dmlast_comments']), dcWorkspace::WS_BOOL);
+            $preferences->put('nb', (int) $_POST['dmlast_comments_nb'], dcWorkspace::WS_INT);
+            $preferences->put('large', empty($_POST['dmlast_comments_small']), dcWorkspace::WS_BOOL);
+            $preferences->put('author', !empty($_POST['dmlast_comments_author']), dcWorkspace::WS_BOOL);
+            $preferences->put('date', !empty($_POST['dmlast_comments_date']), dcWorkspace::WS_BOOL);
+            $preferences->put('time', !empty($_POST['dmlast_comments_time']), dcWorkspace::WS_BOOL);
+            $preferences->put('nospam', !empty($_POST['dmlast_comments_nospam']), dcWorkspace::WS_BOOL);
+            $preferences->put('recents', (int) $_POST['dmlast_comments_recents'], dcWorkspace::WS_INT);
+            $preferences->put('autorefresh', !empty($_POST['dmlast_comments_autorefresh']), dcWorkspace::WS_BOOL);
+            $preferences->put('badge', !empty($_POST['dmlast_comments_badge']), dcWorkspace::WS_BOOL);
         } catch (Exception $e) {
             dcCore::app()->error->add($e->getMessage());
         }
@@ -213,62 +214,61 @@ class BackendBehaviors
 
     public static function adminDashboardOptionsForm()
     {
-        $settings = dcCore::app()->auth->user_prefs->dmlastcomments;
+        $preferences = dcCore::app()->auth->user_prefs->get(My::id());
 
-        // Add fieldset for plugin options
         // Add fieldset for plugin options
         echo
         (new Fieldset('dmlastcomments'))
         ->legend((new Legend(__('Last comments on dashboard'))))
         ->fields([
             (new Para())->items([
-                (new Checkbox('dmlast_comments', $settings->last_comments))
+                (new Checkbox('dmlast_comments', $preferences->active))
                     ->value(1)
                     ->label((new Label(__('Display last comments'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Number('dmlast_comments_nb', 1, 999, $settings->last_comments_nb))
+                (new Number('dmlast_comments_nb', 1, 999, $preferences->nb))
                     ->label((new Label(__('Number of last comments to display:'), Label::INSIDE_TEXT_BEFORE))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_author', $settings->last_comments_author))
+                (new Checkbox('dmlast_comments_author', $preferences->author))
                     ->value(1)
                     ->label((new Label(__('Show authors'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_date', $settings->last_comments_date))
+                (new Checkbox('dmlast_comments_date', $preferences->date))
                     ->value(1)
                     ->label((new Label(__('Show dates'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_time', $settings->last_comments_time))
+                (new Checkbox('dmlast_comments_time', $preferences->time))
                     ->value(1)
                     ->label((new Label(__('Show times'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_nospam', $settings->last_comments_nospam))
+                (new Checkbox('dmlast_comments_nospam', $preferences->nospam))
                     ->value(1)
                     ->label((new Label(__('Exclude junk comments'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Number('dmlast_comments_recents', 1, 96, $settings->last_comments_recents))
+                (new Number('dmlast_comments_recents', 0, 96, $preferences->recents))
                     ->label((new Label(__('Max age of comments to display (in hours):'), Label::INSIDE_TEXT_BEFORE))),
             ]),
             (new Para())->class('form-note')->items([
                 (new Text(null, __('Leave empty to ignore age of comments'))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_small', $settings->last_comments_large))
+                (new Checkbox('dmlast_comments_small', $preferences->large))
                     ->value(1)
                     ->label((new Label(__('Small screen'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_autorefresh', $settings->last_comments_autorefresh))
+                (new Checkbox('dmlast_comments_autorefresh', $preferences->autorefresh))
                     ->value(1)
                     ->label((new Label(__('Auto refresh'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_badge', $settings->last_comments_badge))
+                (new Checkbox('dmlast_comments_badge', $preferences->badge))
                     ->value(1)
                     ->label((new Label(__('Display badges (only if Auto refresh is enabled)'), Label::INSIDE_TEXT_AFTER))),
             ]),
