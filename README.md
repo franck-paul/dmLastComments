@@ -14,4 +14,4 @@ Provides a dashboard module to list last comments.
 
 ## Configuration
 
-Settings: see “My preferences”, “My dashboard” tab.
+Settings: in “My preferences” → “My dashboard” tab.
