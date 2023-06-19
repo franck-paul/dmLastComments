@@ -94,10 +94,6 @@ class BackendRest
             'counter'   => 0,
         ];
 
-        if ($stored_id == -1) {
-            return $payload;
-        }
-
         $preferences = dcCore::app()->auth->user_prefs->get(My::id());
 
         $list = BackendBehaviors::getLastComments(

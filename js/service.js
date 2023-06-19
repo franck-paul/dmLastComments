@@ -1,7 +1,7 @@
 /*global $, dotclear */
 'use strict';
 
-dotclear.dmLastCommentsSpam = () => {
+dotclear.dmLastCommentsSpam = (icon) => {
   dotclear.services(
     'dmLastCommentsSpam',
     (data) => {
@@ -11,7 +11,7 @@ dotclear.dmLastCommentsSpam = () => {
           if (response?.payload.ret) {
             const nb_spams = response.payload.nb;
             if (nb_spams !== undefined && nb_spams != dotclear.dmLastComments_SpamCount) {
-              dotclear.badge($('#dashboard-main #icons p a[href="comments.php"]'), {
+              dotclear.badge(icon, {
                 id: 'dmls',
                 remove: nb_spams == 0,
                 value: nb_spams,
@@ -37,9 +37,7 @@ dotclear.dmLastCommentsSpam = () => {
   );
 };
 
-dotclear.dmLastCommentsRows = (last_id) => {
-  // Store last comment id
-  dotclear.dmLastComments_LastCommentId = last_id;
+dotclear.dmLastCommentsRows = (last_id, menu) => {
   // Get new list
   dotclear.services(
     'dmLastCommentsRows',
@@ -60,6 +58,7 @@ dotclear.dmLastCommentsRows = (last_id) => {
               dotclear.dmLastComments_LastCounter = Number(dotclear.dmLastComments_LastCounter) + counter;
             }
             $('#last-comments h3').after(response.payload.list);
+
             if (dotclear.dmLastComments_Badge) {
               // Badge on module
               dotclear.badge($('#last-comments'), {
@@ -67,13 +66,14 @@ dotclear.dmLastCommentsRows = (last_id) => {
                 value: dotclear.dmLastComments_LastCounter,
                 remove: dotclear.dmLastComments_LastCounter == 0,
               });
-              // Badge on menu item
-              dotclear.badge($('#main-menu li a[href="comments.php"]'), {
-                id: 'dmlc',
-                value: dotclear.dmLastComments_LastCounter,
-                remove: dotclear.dmLastComments_LastCounter == 0,
-                inline: true,
-                sibling: true,
+              // Badge on each menu items
+              menu.each((item) => {
+                dotclear.badge(menu[item], {
+                  id: 'dmlc',
+                  value: dotclear.dmLastComments_LastCounter,
+                  remove: dotclear.dmLastComments_LastCounter == 0,
+                  inline: true,
+                });
               });
             }
             // Bind every new lines for viewing comment content
@@ -98,13 +98,13 @@ dotclear.dmLastCommentsRows = (last_id) => {
     {
       json: 1,
       stored_id: dotclear.dmLastComments_LastCommentId,
-      last_id: last_id,
+      last_id,
       last_counter: dotclear.dmLastComments_LastCounter,
     },
   );
 };
 
-dotclear.dmLastCommentsCheck = () => {
+dotclear.dmLastCommentsCheck = (menu) => {
   dotclear.services(
     'dmLastCommentsCheck',
     (data) => {
@@ -113,7 +113,9 @@ dotclear.dmLastCommentsCheck = () => {
         if (response?.success) {
           if (response?.payload.ret) {
             if (response.payload.nb > 0) {
-              dotclear.dmLastCommentsRows(response.payload.last_id);
+              dotclear.dmLastCommentsRows(response.payload.last_id, menu);
+              // Store last comment id
+              dotclear.dmLastComments_LastCommentId = response.payload.last_id;
             }
           }
         } else {
@@ -182,19 +184,35 @@ $(() => {
     callback: dotclear.dmLastCommentsView,
   });
   $('#last-comments ul').addClass('expandable');
-  if (dotclear.dmLastComments_AutoRefresh) {
-    // First pass
-    dotclear.dmLastCommentsCheck();
-    // Auto refresh requested : Set 30 seconds interval between two checks for new comments and spam counter check
-    dotclear.dmLastComments_Timer = setInterval(dotclear.dmLastCommentsCheck, 30 * 1000);
-    if (dotclear.dmLastComments_Badge) {
-      const icon_com = $('#dashboard-main #icons p a[href="comments.php"]');
-      if (icon_com.length) {
-        // First pass
-        dotclear.dmLastCommentsSpam();
-        // Then fired every 30 seconds
-        dotclear.dmLastComments_TimerSpam = setInterval(dotclear.dmLastCommentsSpam, 30 * 1000);
-      }
+  if (!dotclear.dmLastComments_AutoRefresh) {
+    return;
+  }
+
+  // Auto refresh
+
+  // Comments
+  // First pass
+  let menu_com = $('#main-menu li a[href="comments.php"]');
+  if (!menu_com.length) {
+    menu_com = $('#main-menu li #menu-process-comments-fav, #main-menu li #menu-process-Comments');
+  }
+  dotclear.dmLastComments_LastCommentId = -1;
+  dotclear.dmLastComments_LastCounter = 0;
+  dotclear.dmLastCommentsCheck(menu_com);
+  // Set 30 seconds interval between two checks for new comments and spam counter check
+  dotclear.dmLastComments_Timer = setInterval(dotclear.dmLastCommentsCheck, 30 * 1000, menu_com);
+
+  // Spams
+  if (dotclear.dmLastComments_Badge) {
+    let icon_com = $('#dashboard-main #icons p a[href="comments.php"]');
+    if (!icon_com.length) {
+      icon_com = $('#dashboard-main #icons p #icon-process-comments-fav');
+    }
+    if (icon_com.length) {
+      // First pass
+      dotclear.dmLastCommentsSpam(icon_com);
+      // Then fired every 30 seconds
+      dotclear.dmLastComments_TimerSpam = setInterval(dotclear.dmLastCommentsSpam, 30 * 1000, icon_com);
     }
   }
 });
