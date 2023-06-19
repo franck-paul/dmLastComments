@@ -46,7 +46,7 @@ dotclear.dmLastCommentsRows = (last_id, menu) => {
         const response = JSON.parse(data);
         if (response?.success) {
           if (response?.payload.ret) {
-            const counter = response.payload.counter;
+            const { counter } = response.payload;
             // Replace current list with the new one
             if ($('#last-comments ul').length) {
               $('#last-comments ul').remove();
@@ -111,12 +111,10 @@ dotclear.dmLastCommentsCheck = (menu) => {
       try {
         const response = JSON.parse(data);
         if (response?.success) {
-          if (response?.payload.ret) {
-            if (response.payload.nb > 0) {
-              dotclear.dmLastCommentsRows(response.payload.last_id, menu);
-              // Store last comment id
-              dotclear.dmLastComments_LastCommentId = response.payload.last_id;
-            }
+          if (response?.payload.ret && response.payload.nb > 0) {
+            dotclear.dmLastCommentsRows(response.payload.last_id, menu);
+            // Store last comment id
+            dotclear.dmLastComments_LastCommentId = response.payload.last_id;
           }
         } else {
           console.log(dotclear.debug && response?.message ? response.message : 'Dotclear REST server error');
@@ -164,10 +162,10 @@ dotclear.dmLastCommentsView = (line, action = 'toggle', e = null) => {
           $(li).append(content);
           $(line).addClass('expand');
           line.parentNode.insertBefore(li, line.nextSibling);
-        } else {
-          // No content, content not found or server error
-          $(line).removeClass('expand');
+          return;
         }
+        // No content, content not found or server error
+        $(line).removeClass('expand');
       },
       {
         metadata: false,
@@ -203,16 +201,17 @@ $(() => {
   dotclear.dmLastComments_Timer = setInterval(dotclear.dmLastCommentsCheck, 30 * 1000, menu_com);
 
   // Spams
-  if (dotclear.dmLastComments_Badge) {
-    let icon_com = $('#dashboard-main #icons p a[href="comments.php"]');
-    if (!icon_com.length) {
-      icon_com = $('#dashboard-main #icons p #icon-process-comments-fav');
-    }
-    if (icon_com.length) {
-      // First pass
-      dotclear.dmLastCommentsSpam(icon_com);
-      // Then fired every 30 seconds
-      dotclear.dmLastComments_TimerSpam = setInterval(dotclear.dmLastCommentsSpam, 30 * 1000, icon_com);
-    }
+  if (!dotclear.dmLastComments_Badge) {
+    return;
+  }
+  let icon_com = $('#dashboard-main #icons p a[href="comments.php"]');
+  if (!icon_com.length) {
+    icon_com = $('#dashboard-main #icons p #icon-process-comments-fav');
+  }
+  if (icon_com.length) {
+    // First pass
+    dotclear.dmLastCommentsSpam(icon_com);
+    // Then fired every 30 seconds
+    dotclear.dmLastComments_TimerSpam = setInterval(dotclear.dmLastCommentsSpam, 30 * 1000, icon_com);
   }
 });

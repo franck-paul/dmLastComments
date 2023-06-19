@@ -128,7 +128,7 @@ class BackendBehaviors
                     $ret .= ' sts-junk';
                 }
                 $ret .= '" id="dmlc' . $rs->comment_id . '">';
-                $ret .= '<a href="comment.php?id=' . $rs->comment_id . '">' . $rs->post_title . '</a>';
+                $ret .= '<a href="' . dcCore::app()->adminurl->get('admin.comment', ['id' => $rs->comment_id]) . '">' . $rs->post_title . '</a>';
                 $info = [];
                 $dt   = '<time datetime="' . Date::iso8601(strtotime($rs->comment_dt), dcCore::app()->auth->getInfo('user_tz')) . '">%s</time>';
                 if ($large) {
@@ -158,7 +158,7 @@ class BackendBehaviors
                 $ret .= '</li>';
             }
             $ret .= '</ul>';
-            $ret .= '<p><a href="comments.php">' . __('See all comments') . '</a></p>';
+            $ret .= '<p><a href="' . dcCore::app()->adminurl->get('admin.comments') . '">' . __('See all comments') . '</a></p>';
 
             return $ret;
         }
