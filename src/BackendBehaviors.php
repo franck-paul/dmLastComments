@@ -175,7 +175,7 @@ class BackendBehaviors
         if ($preferences->active) {
             $class = ($preferences->large ? 'medium' : 'small');
             $ret   = '<div id="last-comments" class="box ' . $class . '">' .
-            '<h3>' . '<img src="' . urldecode(dcPage::getPF(My::id() . '/icon.png')) . '" alt="" />' . ' ' . __('Last comments') . '</h3>';
+            '<h3>' . '<img src="' . urldecode(dcPage::getPF(My::id() . '/icon.svg')) . '" alt="" class="icon-small" />' . ' ' . __('Last comments') . '</h3>';
             $ret .= self::getLastComments(
                 dcCore::app(),
                 $preferences->nb,

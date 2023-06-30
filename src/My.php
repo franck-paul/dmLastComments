@@ -158,7 +158,7 @@ class My
     {
         return [
             urldecode(dcPage::getPF(self::id() . '/icon.svg')),
-            urldecode(dcPage::getPF(self::id() . '/icon-dark.svg')),
+            //urldecode(dcPage::getPF(self::id() . '/icon-dark.svg')),
         ];
     }
 
