@@ -17,8 +17,8 @@ namespace Dotclear\Plugin\dmLastComments;
 use ArrayObject;
 use dcBlog;
 use dcCore;
-use dcPage;
 use dcWorkspace;
+use Dotclear\Core\Backend\Page;
 use Dotclear\Helper\Date;
 use Dotclear\Helper\Html\Form\Checkbox;
 use Dotclear\Helper\Html\Form\Fieldset;
@@ -51,7 +51,7 @@ class BackendBehaviors
         $preferences = dcCore::app()->auth->user_prefs->get(My::id());
 
         return
-        dcPage::jsJson('dm_lastcomments', [
+        Page::jsJson('dm_lastcomments', [
             'dmLastComments_LastCommentId' => $last_comment_id,
             'dmLastComments_AutoRefresh'   => $preferences->autorefresh,
             'dmLastComments_Badge'         => $preferences->badge,
@@ -59,8 +59,8 @@ class BackendBehaviors
             'dmLastComments_SpamCount'     => -1,
             'dmLastComments_Interval'      => ($preferences->interval ?? 30),
         ]) .
-        dcPage::jsModuleLoad(My::id() . '/js/service.js', dcCore::app()->getVersion(My::id())) .
-        dcPage::cssModuleLoad(My::id() . '/css/style.css', 'screen', dcCore::app()->getVersion(My::id()));
+        My::jsLoad('service.js') .
+        My::cssLoad('style.css');
     }
 
     private static function composeSQLSince(int $nb, string $unit = 'HOUR')
@@ -129,7 +129,7 @@ class BackendBehaviors
                     $ret .= ' sts-junk';
                 }
                 $ret .= '" id="dmlc' . $rs->comment_id . '">';
-                $ret .= '<a href="' . dcCore::app()->adminurl->get('admin.comment', ['id' => $rs->comment_id]) . '">' . $rs->post_title . '</a>';
+                $ret .= '<a href="' . dcCore::app()->admin->url->get('admin.comment', ['id' => $rs->comment_id]) . '">' . $rs->post_title . '</a>';
                 $info = [];
                 $dt   = '<time datetime="' . Date::iso8601(strtotime($rs->comment_dt), dcCore::app()->auth->getInfo('user_tz')) . '">%s</time>';
                 if ($large) {
@@ -159,7 +159,7 @@ class BackendBehaviors
                 $ret .= '</li>';
             }
             $ret .= '</ul>';
-            $ret .= '<p><a href="' . dcCore::app()->adminurl->get('admin.comments') . '">' . __('See all comments') . '</a></p>';
+            $ret .= '<p><a href="' . dcCore::app()->admin->url->get('admin.comments') . '">' . __('See all comments') . '</a></p>';
 
             return $ret;
         }
@@ -176,7 +176,7 @@ class BackendBehaviors
         if ($preferences->active) {
             $class = ($preferences->large ? 'medium' : 'small');
             $ret   = '<div id="last-comments" class="box ' . $class . '">' .
-            '<h3>' . '<img src="' . urldecode(dcPage::getPF(My::id() . '/icon.svg')) . '" alt="" class="icon-small" />' . ' ' . __('Last comments') . '</h3>';
+            '<h3>' . '<img src="' . urldecode(Page::getPF(My::id() . '/icon.svg')) . '" alt="" class="icon-small" />' . ' ' . __('Last comments') . '</h3>';
             $ret .= self::getLastComments(
                 dcCore::app(),
                 $preferences->nb,
