@@ -43,7 +43,7 @@ class BackendRest
      */
     public static function checkNewComments($get): array
     {
-        $preferences = dcCore::app()->auth->user_prefs->get(My::id());
+        $preferences = My::prefs();
 
         $last_id         = !empty($get['last_id']) ? $get['last_id'] : -1;
         $last_comment_id = -1;
@@ -94,7 +94,7 @@ class BackendRest
             'counter'   => 0,
         ];
 
-        $preferences = dcCore::app()->auth->user_prefs->get(My::id());
+        $preferences = My::prefs();
 
         $list = BackendBehaviors::getLastComments(
             dcCore::app(),

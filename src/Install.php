@@ -48,7 +48,7 @@ class Install extends Process
                     }
                 };
 
-                $preferences = dcCore::app()->auth->user_prefs->get(My::id());
+                $preferences = My::prefs();
                 foreach (['nb', 'large', 'author', 'date', 'time', 'nospam', 'recents', 'autorefresh', 'badge'] as $pref) {
                     $rename($pref, $preferences);
                 }
@@ -56,7 +56,7 @@ class Install extends Process
             }
 
             // Default prefs for last comments
-            $preferences = dcCore::app()->auth->user_prefs->get(My::id());
+            $preferences = My::prefs();
 
             $preferences->put('active', false, dcWorkspace::WS_BOOL, 'Display last comments', false, true);
             $preferences->put('nb', 5, dcWorkspace::WS_INT, 'Number of last comments displayed', false, true);
