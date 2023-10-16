@@ -31,7 +31,7 @@ use Exception;
 
 class BackendBehaviors
 {
-    public static function adminDashboardHeaders()
+    public static function adminDashboardHeaders(): string
     {
         $sqlp = [
             'limit'      => 1,                 // only the last one
@@ -63,7 +63,7 @@ class BackendBehaviors
         My::cssLoad('style.css');
     }
 
-    private static function composeSQLSince(int $nb, string $unit = 'HOUR')
+    private static function composeSQLSince(int $nb, string $unit = 'HOUR'): string
     {
         switch (dcCore::app()->con->syntax()) {
             case 'sqlite':
@@ -88,17 +88,16 @@ class BackendBehaviors
     }
 
     public static function getLastComments(
-        $core,
-        $nb,
-        $large,
-        $author,
-        $date,
-        $time,
-        $nospam,
-        $recents = 0,
-        $last_id = -1,
-        &$last_counter = 0
-    ) {
+        int $nb,
+        bool $large,
+        bool $author,
+        bool $date,
+        bool $time,
+        bool $nospam,
+        int $recents = 0,
+        int $last_id = -1,
+        int &$last_counter = 0
+    ): string {
         $recents = (int) $recents;
         $nb      = (int) $nb;
 
@@ -121,15 +120,15 @@ class BackendBehaviors
             $ret = '<ul>';
             while ($rs->fetch()) {
                 $ret .= '<li class="line';
-                if ($last_id != -1 && $rs->comment_id > $last_id) {
-                    $ret .= ($last_id != -1 && $rs->comment_id > $last_id ? ' dmlc-new' : '');
+                if ($last_id !== -1 && $rs->comment_id > $last_id) {
+                    $ret .= ' dmlc-new';
                     $last_counter++;
                 }
                 if ($rs->comment_status == dcBlog::COMMENT_JUNK) {
                     $ret .= ' sts-junk';
                 }
                 $ret .= '" id="dmlc' . $rs->comment_id . '">';
-                $ret .= '<a href="' . dcCore::app()->admin->url->get('admin.comment', ['id' => $rs->comment_id]) . '">' . $rs->post_title . '</a>';
+                $ret .= '<a href="' . dcCore::app()->adminurl->get('admin.comment', ['id' => $rs->comment_id]) . '">' . $rs->post_title . '</a>';
                 $info = [];
                 $dt   = '<time datetime="' . Date::iso8601(strtotime($rs->comment_dt), dcCore::app()->auth->getInfo('user_tz')) . '">%s</time>';
                 if ($large) {
@@ -159,7 +158,7 @@ class BackendBehaviors
                 $ret .= '</li>';
             }
             $ret .= '</ul>';
-            $ret .= '<p><a href="' . dcCore::app()->admin->url->get('admin.comments') . '">' . __('See all comments') . '</a></p>';
+            $ret .= '<p><a href="' . dcCore::app()->adminurl->get('admin.comments') . '">' . __('See all comments') . '</a></p>';
 
             return $ret;
         }
@@ -168,7 +167,12 @@ class BackendBehaviors
                 ($recents > 0 ? ' ' . sprintf(__('since %d hour', 'since %d hours', $recents), $recents) : '') . '</p>';
     }
 
-    public static function adminDashboardContents($contents)
+    /**
+     * @param      ArrayObject<int, ArrayObject<int, string>>  $contents  The contents
+     *
+     * @return     string
+     */
+    public static function adminDashboardContents(ArrayObject $contents): string
     {
         $preferences = My::prefs();
 
@@ -178,7 +182,6 @@ class BackendBehaviors
             $ret   = '<div id="last-comments" class="box ' . $class . '">' .
             '<h3>' . '<img src="' . urldecode(Page::getPF(My::id() . '/icon.svg')) . '" alt="" class="icon-small" />' . ' ' . __('Last comments') . '</h3>';
             $ret .= self::getLastComments(
-                dcCore::app(),
                 $preferences->nb,
                 $preferences->large,
                 $preferences->author,
@@ -190,9 +193,11 @@ class BackendBehaviors
             $ret .= '</div>';
             $contents[] = new ArrayObject([$ret]);
         }
+
+        return '';
     }
 
-    public static function adminAfterDashboardOptionsUpdate()
+    public static function adminAfterDashboardOptionsUpdate(): string
     {
         $preferences = My::prefs();
 
@@ -212,9 +217,11 @@ class BackendBehaviors
         } catch (Exception $e) {
             dcCore::app()->error->add($e->getMessage());
         }
+
+        return '';
     }
 
-    public static function adminDashboardOptionsForm()
+    public static function adminDashboardOptionsForm(): string
     {
         $preferences = My::prefs();
 
@@ -280,5 +287,7 @@ class BackendBehaviors
             ]),
         ])
         ->render();
+
+        return '';
     }
 }

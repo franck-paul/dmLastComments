@@ -22,7 +22,7 @@ class BackendRest
     /**
      * Gets the spam count.
      *
-     * @return     array   The payload.
+     * @return     array<string, mixed>   The payload.
      */
     public static function getSpamCount(): array
     {
@@ -37,9 +37,9 @@ class BackendRest
     /**
      * Serve method to check new comments for current blog.
      *
-     * @param      array   $get    The get
+     * @param      array<string, string>   $get    The get
      *
-     * @return     array   The payload.
+     * @return     array<string, mixed>   The payload.
      */
     public static function checkNewComments($get): array
     {
@@ -77,9 +77,9 @@ class BackendRest
     /**
      * Gets the last comments rows.
      *
-     * @param      array   $get    The get
+     * @param      array<string, string>   $get    The get
      *
-     * @return     array   The payload.
+     * @return     array<string, mixed>   The payload.
      */
     public static function getLastCommentsRows($get): array
     {
@@ -97,7 +97,6 @@ class BackendRest
         $preferences = My::prefs();
 
         $list = BackendBehaviors::getLastComments(
-            dcCore::app(),
             $preferences->nb,
             $preferences->large,
             $preferences->author,
