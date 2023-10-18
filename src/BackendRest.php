@@ -63,7 +63,7 @@ class BackendRest
 
         if ($count) {
             while ($rs->fetch()) {
-                $last_comment_id = $rs->comment_id;
+                $last_comment_id = (int) $rs->comment_id;
             }
         }
 
@@ -83,9 +83,9 @@ class BackendRest
      */
     public static function getLastCommentsRows($get): array
     {
-        $stored_id = !empty($get['stored_id']) ? $get['stored_id'] : -1;
-        $last_id   = !empty($get['last_id']) ? $get['last_id'] : -1;
-        $counter   = !empty($get['counter']) ? $get['counter'] : 0;
+        $stored_id = !empty($get['stored_id']) ? (int) $get['stored_id'] : -1;
+        $last_id   = !empty($get['last_id']) ? (int) $get['last_id'] : -1;
+        $counter   = !empty($get['counter']) ? (int) $get['counter'] : 0;
 
         $payload = [
             'ret'       => true,

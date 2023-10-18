@@ -68,13 +68,13 @@ class BackendBehaviors
         switch (dcCore::app()->con->syntax()) {
             case 'sqlite':
                 $ret = 'datetime(\'' .
-                    dcCore::app()->con->escape('now') . '\', \'' .
-                    dcCore::app()->con->escape('-' . sprintf('%d', $nb) . ' ' . $unit) .
+                    dcCore::app()->con->escapeStr('now') . '\', \'' .
+                    dcCore::app()->con->escapeStr('-' . sprintf('%d', $nb) . ' ' . $unit) .
                     '\')';
 
                 break;
             case 'postgresql':
-                $ret = '(NOW() - \'' . dcCore::app()->con->escape(sprintf('%d', $nb) . ' ' . $unit) . '\'::INTERVAL)';
+                $ret = '(NOW() - \'' . dcCore::app()->con->escapeStr(sprintf('%d', $nb) . ' ' . $unit) . '\'::INTERVAL)';
 
                 break;
             case 'mysql':
