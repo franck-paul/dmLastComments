@@ -49,26 +49,30 @@ class Install extends Process
                 };
 
                 $preferences = My::prefs();
-                foreach (['nb', 'large', 'author', 'date', 'time', 'nospam', 'recents', 'autorefresh', 'badge'] as $pref) {
-                    $rename($pref, $preferences);
+                if ($preferences) {
+                    foreach (['nb', 'large', 'author', 'date', 'time', 'nospam', 'recents', 'autorefresh', 'badge'] as $pref) {
+                        $rename($pref, $preferences);
+                    }
+                    $preferences->rename('last_comments', 'active');
                 }
-                $preferences->rename('last_comments', 'active');
             }
 
             // Default prefs for last comments
             $preferences = My::prefs();
 
-            $preferences->put('active', false, dcWorkspace::WS_BOOL, 'Display last comments', false, true);
-            $preferences->put('nb', 5, dcWorkspace::WS_INT, 'Number of last comments displayed', false, true);
-            $preferences->put('large', true, dcWorkspace::WS_BOOL, 'Large display', false, true);
-            $preferences->put('author', true, dcWorkspace::WS_BOOL, 'Show authors', false, true);
-            $preferences->put('date', true, dcWorkspace::WS_BOOL, 'Show dates', false, true);
-            $preferences->put('time', true, dcWorkspace::WS_BOOL, 'Show times', false, true);
-            $preferences->put('nospam', false, dcWorkspace::WS_BOOL, 'Exclude junk comments', false, true);
-            $preferences->put('recents', 0, dcWorkspace::WS_INT, 'Max age of comments (in hours)', false, true);
-            $preferences->put('autorefresh', false, dcWorkspace::WS_BOOL, 'Auto refresh', false, true);
-            $preferences->put('interval', 30, dcWorkspace::WS_INT, 'Interval between two refreshes', false, true);
-            $preferences->put('badge', true, dcWorkspace::WS_BOOL, 'Display counter (Auto refresh only)', false, true);
+            if ($preferences) {
+                $preferences->put('active', false, dcWorkspace::WS_BOOL, 'Display last comments', false, true);
+                $preferences->put('nb', 5, dcWorkspace::WS_INT, 'Number of last comments displayed', false, true);
+                $preferences->put('large', true, dcWorkspace::WS_BOOL, 'Large display', false, true);
+                $preferences->put('author', true, dcWorkspace::WS_BOOL, 'Show authors', false, true);
+                $preferences->put('date', true, dcWorkspace::WS_BOOL, 'Show dates', false, true);
+                $preferences->put('time', true, dcWorkspace::WS_BOOL, 'Show times', false, true);
+                $preferences->put('nospam', false, dcWorkspace::WS_BOOL, 'Exclude junk comments', false, true);
+                $preferences->put('recents', 0, dcWorkspace::WS_INT, 'Max age of comments (in hours)', false, true);
+                $preferences->put('autorefresh', false, dcWorkspace::WS_BOOL, 'Auto refresh', false, true);
+                $preferences->put('interval', 30, dcWorkspace::WS_INT, 'Interval between two refreshes', false, true);
+                $preferences->put('badge', true, dcWorkspace::WS_BOOL, 'Display counter (Auto refresh only)', false, true);
+            }
         } catch (Exception $e) {
             dcCore::app()->error->add($e->getMessage());
         }

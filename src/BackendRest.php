@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\dmLastComments;
 
 use dcBlog;
-use dcCore;
+use Dotclear\App;
 
 class BackendRest
 {
@@ -26,7 +26,7 @@ class BackendRest
      */
     public static function getSpamCount(): array
     {
-        $count = dcCore::app()->blog->getComments(['comment_status' => dcBlog::COMMENT_JUNK], true)->f(0);
+        $count = App::blog()->getComments(['comment_status' => dcBlog::COMMENT_JUNK], true)->f(0);
 
         return [
             'ret' => true,
@@ -44,6 +44,11 @@ class BackendRest
     public static function checkNewComments($get): array
     {
         $preferences = My::prefs();
+        if (!$preferences) {
+            return [
+                'ret' => false,
+            ];
+        }
 
         $last_id         = !empty($get['last_id']) ? $get['last_id'] : -1;
         $last_comment_id = -1;
@@ -58,7 +63,7 @@ class BackendRest
             $sqlp['comment_status_not'] = dcBlog::COMMENT_JUNK;
         }
 
-        $rs    = dcCore::app()->blog->getComments($sqlp);
+        $rs    = App::blog()->getComments($sqlp);
         $count = $rs->count();
 
         if ($count) {
@@ -95,6 +100,9 @@ class BackendRest
         ];
 
         $preferences = My::prefs();
+        if (!$preferences) {
+            return $payload;
+        }
 
         $list = BackendBehaviors::getLastComments(
             $preferences->nb,
