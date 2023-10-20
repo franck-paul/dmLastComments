@@ -14,7 +14,7 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\dmLastComments;
 
-use dcCore;
+use Dotclear\App;
 use Dotclear\Core\Process;
 
 class Backend extends Process
@@ -33,7 +33,7 @@ class Backend extends Process
             return false;
         }
 
-        dcCore::app()->addBehaviors([
+        App::behavior()->addBehaviors([
             // Dashboard behaviours
             'adminDashboardHeaders'    => BackendBehaviors::adminDashboardHeaders(...),
             'adminDashboardContentsV2' => BackendBehaviors::adminDashboardContents(...),
@@ -43,9 +43,9 @@ class Backend extends Process
         ]);
 
         // Register REST methods
-        dcCore::app()->rest->addFunction('dmLastCommentsCheck', BackendRest::checkNewComments(...));
-        dcCore::app()->rest->addFunction('dmLastCommentsRows', BackendRest::getLastCommentsRows(...));
-        dcCore::app()->rest->addFunction('dmLastCommentsSpam', BackendRest::getSpamCount(...));
+        App::rest()->addFunction('dmLastCommentsCheck', BackendRest::checkNewComments(...));
+        App::rest()->addFunction('dmLastCommentsRows', BackendRest::getLastCommentsRows(...));
+        App::rest()->addFunction('dmLastCommentsSpam', BackendRest::getSpamCount(...));
 
         return true;
     }

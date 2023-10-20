@@ -14,8 +14,8 @@ declare(strict_types=1);
 
 namespace Dotclear\Plugin\dmLastComments;
 
-use dcBlog;
 use Dotclear\App;
+use Dotclear\Interface\Core\BlogInterface;
 
 class BackendRest
 {
@@ -26,7 +26,7 @@ class BackendRest
      */
     public static function getSpamCount(): array
     {
-        $count = App::blog()->getComments(['comment_status' => dcBlog::COMMENT_JUNK], true)->f(0);
+        $count = App::blog()->getComments(['comment_status' => BlogInterface::COMMENT_JUNK], true)->f(0);
 
         return [
             'ret' => true,
@@ -60,7 +60,7 @@ class BackendRest
         ];
         if ($preferences->nospam) {
             // Exclude junk comment from list
-            $sqlp['comment_status_not'] = dcBlog::COMMENT_JUNK;
+            $sqlp['comment_status_not'] = BlogInterface::COMMENT_JUNK;
         }
 
         $rs    = App::blog()->getComments($sqlp);

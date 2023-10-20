@@ -15,9 +15,6 @@ declare(strict_types=1);
 namespace Dotclear\Plugin\dmLastComments;
 
 use ArrayObject;
-use dcBlog;
-use dcCore;
-use dcWorkspace;
 use Dotclear\App;
 use Dotclear\Core\Backend\Page;
 use Dotclear\Helper\Date;
@@ -28,6 +25,7 @@ use Dotclear\Helper\Html\Form\Legend;
 use Dotclear\Helper\Html\Form\Number;
 use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Text;
+use Dotclear\Interface\Core\BlogInterface;
 use Exception;
 
 class BackendBehaviors
@@ -66,16 +64,16 @@ class BackendBehaviors
 
     private static function composeSQLSince(int $nb, string $unit = 'HOUR'): string
     {
-        switch (dcCore::app()->con->syntax()) {
+        switch (App::con()->syntax()) {
             case 'sqlite':
                 $ret = 'datetime(\'' .
-                    dcCore::app()->con->escapeStr('now') . '\', \'' .
-                    dcCore::app()->con->escapeStr('-' . sprintf('%d', $nb) . ' ' . $unit) .
+                    App::con()->escapeStr('now') . '\', \'' .
+                    App::con()->escapeStr('-' . sprintf('%d', $nb) . ' ' . $unit) .
                     '\')';
 
                 break;
             case 'postgresql':
-                $ret = '(NOW() - \'' . dcCore::app()->con->escapeStr(sprintf('%d', $nb) . ' ' . $unit) . '\'::INTERVAL)';
+                $ret = '(NOW() - \'' . App::con()->escapeStr(sprintf('%d', $nb) . ' ' . $unit) . '\'::INTERVAL)';
 
                 break;
             case 'mysql':
@@ -111,7 +109,7 @@ class BackendBehaviors
         }
         if ($nospam) {
             // Exclude junk comment from list
-            $params['comment_status_not'] = dcBlog::COMMENT_JUNK;
+            $params['comment_status_not'] = BlogInterface::COMMENT_JUNK;
         }
         if ($recents > 0) {
             $params['sql'] = ' AND comment_dt >= ' . self::composeSQLSince($recents) . ' ';
@@ -125,13 +123,13 @@ class BackendBehaviors
                     $ret .= ' dmlc-new';
                     $last_counter++;
                 }
-                if ($rs->comment_status == dcBlog::COMMENT_JUNK) {
+                if ($rs->comment_status == BlogInterface::COMMENT_JUNK) {
                     $ret .= ' sts-junk';
                 }
                 $ret .= '" id="dmlc' . $rs->comment_id . '">';
-                $ret .= '<a href="' . dcCore::app()->adminurl->get('admin.comment', ['id' => $rs->comment_id]) . '">' . $rs->post_title . '</a>';
+                $ret .= '<a href="' . App::backend()->url()->get('admin.comment', ['id' => $rs->comment_id]) . '">' . $rs->post_title . '</a>';
                 $info = [];
-                $dt   = '<time datetime="' . Date::iso8601(strtotime($rs->comment_dt), dcCore::app()->auth->getInfo('user_tz')) . '">%s</time>';
+                $dt   = '<time datetime="' . Date::iso8601(strtotime($rs->comment_dt), App::auth()->getInfo('user_tz')) . '">%s</time>';
                 if ($large) {
                     if ($author) {
                         $info[] = __('by') . ' ' . $rs->comment_author;
@@ -159,7 +157,7 @@ class BackendBehaviors
                 $ret .= '</li>';
             }
             $ret .= '</ul>';
-            $ret .= '<p><a href="' . dcCore::app()->adminurl->get('admin.comments') . '">' . __('See all comments') . '</a></p>';
+            $ret .= '<p><a href="' . App::backend()->url()->get('admin.comments') . '">' . __('See all comments') . '</a></p>';
 
             return $ret;
         }
@@ -205,19 +203,19 @@ class BackendBehaviors
         // Get and store user's prefs for plugin options
         if ($preferences) {
             try {
-                $preferences->put('active', !empty($_POST['dmlast_comments']), dcWorkspace::WS_BOOL);
-                $preferences->put('nb', (int) $_POST['dmlast_comments_nb'], dcWorkspace::WS_INT);
-                $preferences->put('large', empty($_POST['dmlast_comments_small']), dcWorkspace::WS_BOOL);
-                $preferences->put('author', !empty($_POST['dmlast_comments_author']), dcWorkspace::WS_BOOL);
-                $preferences->put('date', !empty($_POST['dmlast_comments_date']), dcWorkspace::WS_BOOL);
-                $preferences->put('time', !empty($_POST['dmlast_comments_time']), dcWorkspace::WS_BOOL);
-                $preferences->put('nospam', !empty($_POST['dmlast_comments_nospam']), dcWorkspace::WS_BOOL);
-                $preferences->put('recents', (int) $_POST['dmlast_comments_recents'], dcWorkspace::WS_INT);
-                $preferences->put('autorefresh', !empty($_POST['dmlast_comments_autorefresh']), dcWorkspace::WS_BOOL);
-                $preferences->put('interval', (int) $_POST['dmlast_comments_interval'], dcWorkspace::WS_INT);
-                $preferences->put('badge', !empty($_POST['dmlast_comments_badge']), dcWorkspace::WS_BOOL);
+                $preferences->put('active', !empty($_POST['dmlast_comments']), App::userWorkspace()::WS_BOOL);
+                $preferences->put('nb', (int) $_POST['dmlast_comments_nb'], App::userWorkspace()::WS_INT);
+                $preferences->put('large', empty($_POST['dmlast_comments_small']), App::userWorkspace()::WS_BOOL);
+                $preferences->put('author', !empty($_POST['dmlast_comments_author']), App::userWorkspace()::WS_BOOL);
+                $preferences->put('date', !empty($_POST['dmlast_comments_date']), App::userWorkspace()::WS_BOOL);
+                $preferences->put('time', !empty($_POST['dmlast_comments_time']), App::userWorkspace()::WS_BOOL);
+                $preferences->put('nospam', !empty($_POST['dmlast_comments_nospam']), App::userWorkspace()::WS_BOOL);
+                $preferences->put('recents', (int) $_POST['dmlast_comments_recents'], App::userWorkspace()::WS_INT);
+                $preferences->put('autorefresh', !empty($_POST['dmlast_comments_autorefresh']), App::userWorkspace()::WS_BOOL);
+                $preferences->put('interval', (int) $_POST['dmlast_comments_interval'], App::userWorkspace()::WS_INT);
+                $preferences->put('badge', !empty($_POST['dmlast_comments_badge']), App::userWorkspace()::WS_BOOL);
             } catch (Exception $e) {
-                dcCore::app()->error->add($e->getMessage());
+                App::error()->add($e->getMessage());
             }
         }
 
