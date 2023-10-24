@@ -25,7 +25,6 @@ use Dotclear\Helper\Html\Form\Legend;
 use Dotclear\Helper\Html\Form\Number;
 use Dotclear\Helper\Html\Form\Para;
 use Dotclear\Helper\Html\Form\Text;
-use Dotclear\Interface\Core\BlogInterface;
 use Exception;
 
 class BackendBehaviors
@@ -109,7 +108,7 @@ class BackendBehaviors
         }
         if ($nospam) {
             // Exclude junk comment from list
-            $params['comment_status_not'] = BlogInterface::COMMENT_JUNK;
+            $params['comment_status_not'] = App::blog()::COMMENT_JUNK;
         }
         if ($recents > 0) {
             $params['sql'] = ' AND comment_dt >= ' . self::composeSQLSince($recents) . ' ';
@@ -123,7 +122,7 @@ class BackendBehaviors
                     $ret .= ' dmlc-new';
                     $last_counter++;
                 }
-                if ($rs->comment_status == BlogInterface::COMMENT_JUNK) {
+                if ($rs->comment_status == App::blog()::COMMENT_JUNK) {
                     $ret .= ' sts-junk';
                 }
                 $ret .= '" id="dmlc' . $rs->comment_id . '">';
