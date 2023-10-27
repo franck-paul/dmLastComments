@@ -42,7 +42,7 @@ class Install extends Process
                 }
 
                 // Change settings names (remove last_comments_ prefix in them)
-                $rename = function (string $name, UserWorkspaceInterface $preferences): void {
+                $rename = static function (string $name, UserWorkspaceInterface $preferences) : void {
                     if ($preferences->prefExists('last_comments_' . $name, true)) {
                         $preferences->rename('last_comments_' . $name, $name);
                     }
@@ -53,6 +53,7 @@ class Install extends Process
                     foreach (['nb', 'large', 'author', 'date', 'time', 'nospam', 'recents', 'autorefresh', 'badge'] as $pref) {
                         $rename($pref, $preferences);
                     }
+
                     $preferences->rename('last_comments', 'active');
                 }
             }
@@ -73,8 +74,8 @@ class Install extends Process
                 $preferences->put('interval', 30, App::userWorkspace()::WS_INT, 'Interval between two refreshes', false, true);
                 $preferences->put('badge', true, App::userWorkspace()::WS_BOOL, 'Display counter (Auto refresh only)', false, true);
             }
-        } catch (Exception $e) {
-            App::error()->add($e->getMessage());
+        } catch (Exception $exception) {
+            App::error()->add($exception->getMessage());
         }
 
         return true;

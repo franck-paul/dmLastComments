@@ -49,7 +49,7 @@ class BackendRest
             ];
         }
 
-        $last_id         = !empty($get['last_id']) ? $get['last_id'] : -1;
+        $last_id         = empty($get['last_id']) ? -1 : $get['last_id'];
         $last_comment_id = -1;
 
         $sqlp = [
@@ -87,9 +87,9 @@ class BackendRest
      */
     public static function getLastCommentsRows($get): array
     {
-        $stored_id = !empty($get['stored_id']) ? (int) $get['stored_id'] : -1;
-        $last_id   = !empty($get['last_id']) ? (int) $get['last_id'] : -1;
-        $counter   = !empty($get['counter']) ? (int) $get['counter'] : 0;
+        $stored_id = empty($get['stored_id']) ? -1 : (int) $get['stored_id'];
+        $last_id   = empty($get['last_id']) ? -1 : (int) $get['last_id'];
+        $counter   = empty($get['counter']) ? 0 : (int) $get['counter'];
 
         $payload = [
             'ret'       => true,
@@ -115,6 +115,6 @@ class BackendRest
             $counter
         );
 
-        return array_merge($payload, ['list' => $list, 'counter' => $counter]);
+        return [...$payload, 'list' => $list, 'counter' => $counter];
     }
 }

@@ -106,13 +106,16 @@ class BackendBehaviors
         } else {
             $params['limit'] = 30; // As in first page of comments' list
         }
+
         if ($nospam) {
             // Exclude junk comment from list
             $params['comment_status_not'] = App::blog()::COMMENT_JUNK;
         }
+
         if ($recents > 0) {
             $params['sql'] = ' AND comment_dt >= ' . self::composeSQLSince($recents) . ' ';
         }
+
         $rs = App::blog()->getComments($params, false);
         if (!$rs->isEmpty()) {
             $ret = '<ul>';
@@ -120,11 +123,13 @@ class BackendBehaviors
                 $ret .= '<li class="line';
                 if ($last_id !== -1 && $rs->comment_id > $last_id) {
                     $ret .= ' dmlc-new';
-                    $last_counter++;
+                    ++$last_counter;
                 }
+
                 if ($rs->comment_status == App::blog()::COMMENT_JUNK) {
                     $ret .= ' sts-junk';
                 }
+
                 $ret .= '" id="dmlc' . $rs->comment_id . '">';
                 $ret .= '<a href="' . App::backend()->url()->get('admin.comment', ['id' => $rs->comment_id]) . '">' . $rs->post_title . '</a>';
                 $info = [];
@@ -133,9 +138,11 @@ class BackendBehaviors
                     if ($author) {
                         $info[] = __('by') . ' ' . $rs->comment_author;
                     }
+
                     if ($date) {
                         $info[] = sprintf($dt, __('on') . ' ' . Date::dt2str(App::blog()->settings()->system->date_format, $rs->comment_dt));
                     }
+
                     if ($time) {
                         $info[] = sprintf($dt, __('at') . ' ' . Date::dt2str(App::blog()->settings()->system->time_format, $rs->comment_dt));
                     }
@@ -143,22 +150,26 @@ class BackendBehaviors
                     if ($author) {
                         $info[] = $rs->comment_author;
                     }
+
                     if ($date) {
                         $info[] = sprintf($dt, Date::dt2str(__('%Y-%m-%d'), $rs->comment_dt));
                     }
+
                     if ($time) {
                         $info[] = sprintf($dt, Date::dt2str(__('%H:%M'), $rs->comment_dt));
                     }
                 }
-                if (count($info)) {
+
+                if ($info !== []) {
                     $ret .= ' (' . implode(' ', $info) . ')';
                 }
+
                 $ret .= '</li>';
             }
-            $ret .= '</ul>';
-            $ret .= '<p><a href="' . App::backend()->url()->get('admin.comments') . '">' . __('See all comments') . '</a></p>';
 
-            return $ret;
+            $ret .= '</ul>';
+
+            return $ret . ('<p><a href="' . App::backend()->url()->get('admin.comments') . '">' . __('See all comments') . '</a></p>');
         }
 
         return '<p>' . __('No comments') .
