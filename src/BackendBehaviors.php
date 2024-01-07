@@ -177,7 +177,7 @@ class BackendBehaviors
     }
 
     /**
-     * @param      ArrayObject<int, ArrayObject<int, string>>  $contents  The contents
+     * @param      ArrayObject<int, ArrayObject<int, non-falsy-string>>  $contents  The contents
      *
      * @return     string
      */
@@ -189,7 +189,7 @@ class BackendBehaviors
         if ($preferences?->active) {
             $class = ($preferences->large ? 'medium' : 'small');
             $ret   = '<div id="last-comments" class="box ' . $class . '">' .
-            '<h3>' . '<img src="' . urldecode(Page::getPF(My::id() . '/icon.svg')) . '" alt="" class="icon-small" />' . ' ' . __('Last comments') . '</h3>';
+            '<h3>' . '<img src="' . urldecode(Page::getPF(My::id() . '/icon.svg')) . '" alt="" class="icon-small">' . ' ' . __('Last comments') . '</h3>';
             $ret .= self::getLastComments(
                 $preferences->nb,
                 $preferences->large,
@@ -200,7 +200,7 @@ class BackendBehaviors
                 $preferences->recents
             );
             $ret .= '</div>';
-            $contents[] = new ArrayObject([$ret]);
+            $contents->append(new ArrayObject([$ret]));
         }
 
         return '';
