@@ -140,7 +140,7 @@ dotclear.dmLastCommentsView = (line, action = 'toggle', e = null) => {
     return;
   }
 
-  const commentId = $(line).attr('id').substr(4);
+  const commentId = $(line).attr('id').substring(4);
   const lineId = `dmlce${commentId}`;
   let li = document.getElementById(lineId);
 

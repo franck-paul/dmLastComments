@@ -1,1 +1,1 @@
-ul.expandable{list-style-type:none;padding-left:.5em}#last-comments li{word-break:break-all}#last-comments li.dmlc-new{animation-name:dmlc-new;animation-duration:2s}#last-comments li.dmlc-new::after{content:' \02605'}@keyframes dmlc-new{from{opacity:.2}to{opacity:1}}
+ul.expandable{list-style-type:none;padding-left:.5em}#last-comments li{word-break:break-all}&.sts-unpublished{text-decoration:line-through}#last-comments li.dmlc-new::after{content:' \02605'}@keyframes dmlc-new{from{opacity:.2}to{opacity:1}}
