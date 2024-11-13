@@ -10,11 +10,11 @@ dotclear.dmLastCommentsSpam = (icon) => {
         if (response?.success) {
           if (response?.payload.ret) {
             const nb_spams = response.payload.nb;
-            if (nb_spams !== undefined && nb_spams != dotclear.dmLastComments_SpamCount) {
+            if (nb_spams !== undefined && nb_spams !== dotclear.dmLastComments_SpamCount) {
               dotclear.badge(icon, {
                 id: 'dmls',
-                remove: nb_spams == 0,
                 value: nb_spams,
+                remove: !nb_spams,
                 sibling: true,
                 icon: true,
               });
@@ -64,14 +64,14 @@ dotclear.dmLastCommentsRows = (last_id, menu) => {
               dotclear.badge($('#last-comments'), {
                 id: 'dmlc',
                 value: dotclear.dmLastComments_LastCounter,
-                remove: dotclear.dmLastComments_LastCounter == 0,
+                remove: !dotclear.dmLastComments_LastCounter,
               });
               // Badge on each menu items
               menu.each((item) => {
                 dotclear.badge(menu[item], {
                   id: 'dmlc',
                   value: dotclear.dmLastComments_LastCounter,
-                  remove: dotclear.dmLastComments_LastCounter == 0,
+                  remove: !dotclear.dmLastComments_LastCounter,
                   inline: true,
                 });
               });
@@ -136,7 +136,7 @@ dotclear.dmLastCommentsCheck = (menu) => {
 };
 
 dotclear.dmLastCommentsView = (line, action = 'toggle', e = null) => {
-  if ($(line).attr('id') == undefined) {
+  if ($(line).attr('id') === undefined) {
     return;
   }
 
@@ -175,7 +175,7 @@ dotclear.dmLastCommentsView = (line, action = 'toggle', e = null) => {
   }
 };
 
-$(() => {
+dotclear.ready(() => {
   Object.assign(dotclear, dotclear.getData('dm_lastcomments'));
   $.expandContent({
     lines: $('#last-comments li.line'),
