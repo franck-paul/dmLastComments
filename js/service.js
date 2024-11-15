@@ -1,4 +1,4 @@
-/*global $, dotclear */
+/*global jQuery, dotclear */
 'use strict';
 
 dotclear.dmLastCommentsSpam = (icon) => {
@@ -48,40 +48,37 @@ dotclear.dmLastCommentsRows = (last_id, menu) => {
           if (response?.payload.ret) {
             const { counter } = response.payload;
             // Replace current list with the new one
-            if ($('#last-comments ul').length) {
-              $('#last-comments ul').remove();
-            }
-            if ($('#last-comments p').length) {
-              $('#last-comments p').remove();
-            }
+            for (const item of document.querySelectorAll('#last-comments ul')) item.remove();
+            for (const item of document.querySelectorAll('#last-comments p')) item.remove();
             if (counter > 0) {
               dotclear.dmLastComments_LastCounter = Number(dotclear.dmLastComments_LastCounter) + counter;
             }
-            $('#last-comments h3').after(response.payload.list);
+            const title = document.querySelector('#last-comments h3');
+            title?.insertAdjacentHTML('afterend', response.payload.list);
 
             if (dotclear.dmLastComments_Badge) {
               // Badge on module
-              dotclear.badge($('#last-comments'), {
+              dotclear.badge(document.querySelector('#last-comments'), {
                 id: 'dmlc',
                 value: dotclear.dmLastComments_LastCounter,
                 remove: !dotclear.dmLastComments_LastCounter,
               });
               // Badge on each menu items
-              menu.each((item) => {
-                dotclear.badge(menu[item], {
+              for (const item of menu) {
+                dotclear.badge(item, {
                   id: 'dmlc',
                   value: dotclear.dmLastComments_LastCounter,
                   remove: !dotclear.dmLastComments_LastCounter,
                   inline: true,
                 });
-              });
+              }
             }
-            // Bind every new lines for viewing comment content
-            $.expandContent({
-              lines: $('#last-comments li.line'),
+            // Bind every new lines for viewing comment content (jQuery)
+            jQuery.expandContent({
+              lines: jQuery('#last-comments li.line'),
               callback: dotclear.dmLastCommentsView,
             });
-            $('#last-comments ul').addClass('expandable');
+            for (const item of document.querySelectorAll('#last-comments ul')) item.classList.add('expandable');
           }
         } else {
           console.log(dotclear.debug && response?.message ? response.message : 'Dotclear REST server error');
@@ -136,20 +133,20 @@ dotclear.dmLastCommentsCheck = (menu) => {
 };
 
 dotclear.dmLastCommentsView = (line, action = 'toggle', e = null) => {
-  if ($(line).attr('id') === undefined) {
+  if (line.getAttribute('id') === null) {
     return;
   }
 
-  const commentId = $(line).attr('id').substring(4);
+  const commentId = line.getAttribute('id').substring(4);
   const lineId = `dmlce${commentId}`;
   let li = document.getElementById(lineId);
 
   // If meta key down or it's a spam then display content HTML code
-  const clean = e.metaKey || $(line).hasClass('sts-junk');
+  const clean = e.metaKey || line.classList.contains('sts-junk');
 
   if (li) {
-    $(li).toggle();
-    $(line).toggleClass('expand');
+    li.style.display = li.style.display === 'none' ? '' : 'none';
+    line.classList.toggle('expand');
   } else {
     // Get comment content if possible
     dotclear.getCommentContent(
@@ -159,13 +156,13 @@ dotclear.dmLastCommentsView = (line, action = 'toggle', e = null) => {
           li = document.createElement('li');
           li.id = lineId;
           li.className = 'expand';
-          $(li).append(content);
-          $(line).addClass('expand');
+          li.insertAdjacentHTML('afterbegin', content);
+          line.classList.add('expand');
           line.parentNode.insertBefore(li, line.nextSibling);
           return;
         }
         // No content, content not found or server error
-        $(line).removeClass('expand');
+        line.classList.remove('expand');
       },
       {
         metadata: false,
@@ -177,11 +174,14 @@ dotclear.dmLastCommentsView = (line, action = 'toggle', e = null) => {
 
 dotclear.ready(() => {
   Object.assign(dotclear, dotclear.getData('dm_lastcomments'));
-  $.expandContent({
-    lines: $('#last-comments li.line'),
+
+  jQuery.expandContent({
+    lines: jQuery('#last-comments li.line'),
     callback: dotclear.dmLastCommentsView,
   });
-  $('#last-comments ul').addClass('expandable');
+
+  for (const item of document.querySelectorAll('#last-comments ul')) item.classList.add('expandable');
+
   if (!dotclear.dmLastComments_AutoRefresh) {
     return;
   }
@@ -189,14 +189,17 @@ dotclear.ready(() => {
   // Auto refresh
 
   // Comments
+
   // First pass
-  let menu_com = $('#main-menu li a[href="comments.php"]');
+  let menu_com = document.querySelectorAll('#main-menu li a[href="comments.php"]');
   if (!menu_com.length) {
-    menu_com = $('#main-menu li #menu-process-comments-fav, #main-menu li #menu-process-Comments');
+    menu_com = document.querySelectorAll('#main-menu li #menu-process-comments-fav, #main-menu li #menu-process-Comments');
   }
+
   dotclear.dmLastComments_LastCommentId = -1;
   dotclear.dmLastComments_LastCounter = 0;
   dotclear.dmLastCommentsCheck(menu_com);
+
   // Set interval between two checks for new comments and spam counter check
   dotclear.dmLastComments_Timer = setInterval(
     dotclear.dmLastCommentsCheck,
@@ -208,13 +211,14 @@ dotclear.ready(() => {
   if (!dotclear.dmLastComments_Badge) {
     return;
   }
-  let icon_com = $('#dashboard-main #icons p a[href="comments.php"]');
+  let icon_com = document.querySelectorAll('#dashboard-main #icons p a[href="comments.php"]');
   if (!icon_com.length) {
-    icon_com = $('#dashboard-main #icons p #icon-process-comments-fav');
+    icon_com = document.querySelectorAll('#dashboard-main #icons p #icon-process-comments-fav');
   }
   if (icon_com.length) {
     // First pass
     dotclear.dmLastCommentsSpam(icon_com);
+
     // Then fired every X seconds
     dotclear.dmLastComments_TimerSpam = setInterval(
       dotclear.dmLastCommentsSpam,
