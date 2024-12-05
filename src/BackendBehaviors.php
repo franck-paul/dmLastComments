@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief dmLastComments, a plugin for Dotclear 2
  *
@@ -51,8 +52,8 @@ class BackendBehaviors
         return
         Page::jsJson('dm_lastcomments', [
             'dmLastComments_LastCommentId' => $last_comment_id,
-            'dmLastComments_AutoRefresh'   => $preferences?->autorefresh,
-            'dmLastComments_Badge'         => $preferences?->badge,
+            'dmLastComments_AutoRefresh'   => $preferences->autorefresh,
+            'dmLastComments_Badge'         => $preferences->badge,
             'dmLastComments_LastCounter'   => 0,
             'dmLastComments_SpamCount'     => -1,
             'dmLastComments_Interval'      => ($preferences->interval ?? 30),
@@ -198,7 +199,7 @@ class BackendBehaviors
         $preferences = My::prefs();
 
         // Add modules to the contents stack
-        if ($preferences?->active) {
+        if ($preferences->active) {
             $class = ($preferences->large ? 'medium' : 'small');
             $ret   = '<div id="last-comments" class="box ' . $class . '">' .
             '<h3>' . '<img src="' . urldecode(Page::getPF(My::id() . '/icon.svg')) . '" alt="" class="icon-small">' . ' ' . __('Last comments') . '</h3>';
@@ -223,22 +224,20 @@ class BackendBehaviors
         $preferences = My::prefs();
 
         // Get and store user's prefs for plugin options
-        if ($preferences) {
-            try {
-                $preferences->put('active', !empty($_POST['dmlast_comments']), App::userWorkspace()::WS_BOOL);
-                $preferences->put('nb', (int) $_POST['dmlast_comments_nb'], App::userWorkspace()::WS_INT);
-                $preferences->put('large', empty($_POST['dmlast_comments_small']), App::userWorkspace()::WS_BOOL);
-                $preferences->put('author', !empty($_POST['dmlast_comments_author']), App::userWorkspace()::WS_BOOL);
-                $preferences->put('date', !empty($_POST['dmlast_comments_date']), App::userWorkspace()::WS_BOOL);
-                $preferences->put('time', !empty($_POST['dmlast_comments_time']), App::userWorkspace()::WS_BOOL);
-                $preferences->put('nospam', !empty($_POST['dmlast_comments_nospam']), App::userWorkspace()::WS_BOOL);
-                $preferences->put('recents', (int) $_POST['dmlast_comments_recents'], App::userWorkspace()::WS_INT);
-                $preferences->put('autorefresh', !empty($_POST['dmlast_comments_autorefresh']), App::userWorkspace()::WS_BOOL);
-                $preferences->put('interval', (int) $_POST['dmlast_comments_interval'], App::userWorkspace()::WS_INT);
-                $preferences->put('badge', !empty($_POST['dmlast_comments_badge']), App::userWorkspace()::WS_BOOL);
-            } catch (Exception $e) {
-                App::error()->add($e->getMessage());
-            }
+        try {
+            $preferences->put('active', !empty($_POST['dmlast_comments']), App::userWorkspace()::WS_BOOL);
+            $preferences->put('nb', (int) $_POST['dmlast_comments_nb'], App::userWorkspace()::WS_INT);
+            $preferences->put('large', empty($_POST['dmlast_comments_small']), App::userWorkspace()::WS_BOOL);
+            $preferences->put('author', !empty($_POST['dmlast_comments_author']), App::userWorkspace()::WS_BOOL);
+            $preferences->put('date', !empty($_POST['dmlast_comments_date']), App::userWorkspace()::WS_BOOL);
+            $preferences->put('time', !empty($_POST['dmlast_comments_time']), App::userWorkspace()::WS_BOOL);
+            $preferences->put('nospam', !empty($_POST['dmlast_comments_nospam']), App::userWorkspace()::WS_BOOL);
+            $preferences->put('recents', (int) $_POST['dmlast_comments_recents'], App::userWorkspace()::WS_INT);
+            $preferences->put('autorefresh', !empty($_POST['dmlast_comments_autorefresh']), App::userWorkspace()::WS_BOOL);
+            $preferences->put('interval', (int) $_POST['dmlast_comments_interval'], App::userWorkspace()::WS_INT);
+            $preferences->put('badge', !empty($_POST['dmlast_comments_badge']), App::userWorkspace()::WS_BOOL);
+        } catch (Exception $e) {
+            App::error()->add($e->getMessage());
         }
 
         return '';
@@ -254,57 +253,57 @@ class BackendBehaviors
         ->legend((new Legend(__('Last comments on dashboard'))))
         ->fields([
             (new Para())->items([
-                (new Checkbox('dmlast_comments', $preferences?->active))
+                (new Checkbox('dmlast_comments', $preferences->active))
                     ->value(1)
                     ->label((new Label(__('Display last comments'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Number('dmlast_comments_nb', 1, 999, $preferences?->nb))
+                (new Number('dmlast_comments_nb', 1, 999, $preferences->nb))
                     ->label((new Label(__('Number of last comments to display:'), Label::INSIDE_TEXT_BEFORE))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_author', $preferences?->author))
+                (new Checkbox('dmlast_comments_author', $preferences->author))
                     ->value(1)
                     ->label((new Label(__('Show authors'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_date', $preferences?->date))
+                (new Checkbox('dmlast_comments_date', $preferences->date))
                     ->value(1)
                     ->label((new Label(__('Show dates'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_time', $preferences?->time))
+                (new Checkbox('dmlast_comments_time', $preferences->time))
                     ->value(1)
                     ->label((new Label(__('Show times'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_nospam', $preferences?->nospam))
+                (new Checkbox('dmlast_comments_nospam', $preferences->nospam))
                     ->value(1)
                     ->label((new Label(__('Exclude junk comments'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Number('dmlast_comments_recents', 0, 96, $preferences?->recents))
+                (new Number('dmlast_comments_recents', 0, 96, $preferences->recents))
                     ->label((new Label(__('Max age of comments to display (in hours):'), Label::INSIDE_TEXT_BEFORE))),
             ]),
             (new Para())->class('form-note')->items([
                 (new Text(null, __('Leave empty to ignore age of comments'))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_small', !$preferences?->large))
+                (new Checkbox('dmlast_comments_small', !$preferences->large))
                     ->value(1)
                     ->label((new Label(__('Small screen'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_autorefresh', $preferences?->autorefresh))
+                (new Checkbox('dmlast_comments_autorefresh', $preferences->autorefresh))
                     ->value(1)
                     ->label((new Label(__('Auto refresh'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Number('dmlast_comments_interval', 0, 9_999_999, $preferences?->interval))
+                (new Number('dmlast_comments_interval', 0, 9_999_999, $preferences->interval))
                     ->label((new Label(__('Interval in seconds between two refreshes:'), Label::INSIDE_TEXT_BEFORE))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_badge', $preferences?->badge))
+                (new Checkbox('dmlast_comments_badge', $preferences->badge))
                     ->value(1)
                     ->label((new Label(__('Display badges (only if Auto refresh is enabled)'), Label::INSIDE_TEXT_AFTER))),
             ]),

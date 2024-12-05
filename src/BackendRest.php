@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @brief dmLastComments, a plugin for Dotclear 2
  *
@@ -43,11 +44,6 @@ class BackendRest
     public static function checkNewComments($get): array
     {
         $preferences = My::prefs();
-        if (!$preferences) {
-            return [
-                'ret' => false,
-            ];
-        }
 
         $last_id         = empty($get['last_id']) ? -1 : $get['last_id'];
         $last_comment_id = -1;
@@ -99,9 +95,6 @@ class BackendRest
         ];
 
         $preferences = My::prefs();
-        if (!$preferences) {
-            return $payload;
-        }
 
         $list = BackendBehaviors::getLastComments(
             $preferences->nb,
