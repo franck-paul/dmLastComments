@@ -14,7 +14,7 @@ $this->registerModule(
     'Last Comments Dashboard Module',
     'Display last comments on dashboard',
     'Franck Paul',
-    '5.5.1',
+    '6.0',
     [
         'requires'    => [['core', '2.33']],
         'permissions' => 'My',
