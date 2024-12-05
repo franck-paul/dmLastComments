@@ -26,7 +26,7 @@ class BackendRest
      */
     public static function getSpamCount(): array
     {
-        $count = App::blog()->getComments(['comment_status' => App::blog()::COMMENT_JUNK], true)->f(0);
+        $count = (int) App::blog()->getComments(['comment_status' => App::blog()::COMMENT_JUNK], true)->f(0);
 
         return [
             'ret' => true,

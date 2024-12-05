@@ -14,7 +14,7 @@ dotclear.dmLastCommentsSpam = (icon) => {
               dotclear.badge(icon, {
                 id: 'dmls',
                 value: nb_spams,
-                remove: !nb_spams,
+                remove: nb_spams <= 0,
                 sibling: true,
                 icon: true,
               });
@@ -61,14 +61,14 @@ dotclear.dmLastCommentsRows = (last_id, menu) => {
               dotclear.badge(document.querySelector('#last-comments'), {
                 id: 'dmlc',
                 value: dotclear.dmLastComments_LastCounter,
-                remove: !dotclear.dmLastComments_LastCounter,
+                remove: dotclear.dmLastComments_LastCounter <= 0,
               });
               // Badge on each menu items
               for (const item of menu) {
                 dotclear.badge(item, {
                   id: 'dmlc',
                   value: dotclear.dmLastComments_LastCounter,
-                  remove: !dotclear.dmLastComments_LastCounter,
+                  remove: dotclear.dmLastComments_LastCounter <= 0,
                   inline: true,
                 });
               }
