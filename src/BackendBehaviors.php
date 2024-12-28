@@ -64,17 +64,17 @@ class BackendBehaviors
 
     private static function composeSQLSince(int $nb, string $unit = 'HOUR'): string
     {
-        $ret = match (App::con()->syntax()) {
+        return match (App::con()->syntax()) {
             'sqlite' => 'datetime(\'' .
                 App::con()->escapeStr('now') . '\', \'' .
                 App::con()->escapeStr('-' . sprintf('%d', $nb) . ' ' . $unit) .
                 '\')',
+
             'postgresql' => '(NOW() - \'' . App::con()->escapeStr(sprintf('%d', $nb) . ' ' . $unit) . '\'::INTERVAL)',
+
             // default also stands for MySQL
             default => '(NOW() - INTERVAL ' . sprintf('%d', $nb) . ' ' . $unit . ')',
         };
-
-        return $ret;
     }
 
     public static function getLastComments(
@@ -88,9 +88,6 @@ class BackendBehaviors
         int $last_id = -1,
         int &$last_counter = 0
     ): string {
-        $recents = (int) $recents;
-        $nb      = (int) $nb;
-
         // Get last $nb comments
         $params = [];
         if ($nb > 0) {
@@ -182,8 +179,6 @@ class BackendBehaviors
 
     /**
      * @param      ArrayObject<int, ArrayObject<int, non-falsy-string>>  $contents  The contents
-     *
-     * @return     string
      */
     public static function adminDashboardContents(ArrayObject $contents): string
     {
