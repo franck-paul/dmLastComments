@@ -26,7 +26,7 @@ class BackendRest
      */
     public static function getSpamCount(): array
     {
-        $count = (int) App::blog()->getComments(['comment_status' => App::blog()::COMMENT_JUNK], true)->f(0);
+        $count = (int) App::blog()->getComments(['comment_status' => App::status()->comment()::JUNK], true)->f(0);
 
         return [
             'ret' => true,
@@ -55,7 +55,7 @@ class BackendRest
         ];
         if ($preferences->nospam) {
             // Exclude junk comment from list
-            $sqlp['comment_status_not'] = App::blog()::COMMENT_JUNK;
+            $sqlp['comment_status_not'] = App::status()->comment()::JUNK;
         }
 
         $rs    = App::blog()->getComments($sqlp);

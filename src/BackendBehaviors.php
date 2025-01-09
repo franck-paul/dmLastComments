@@ -98,7 +98,7 @@ class BackendBehaviors
 
         if ($nospam) {
             // Exclude junk comment from list
-            $params['comment_status_not'] = App::blog()::COMMENT_JUNK;
+            $params['comment_status_not'] = App::status()->comment()::JUNK;
         }
 
         if ($recents > 0) {
@@ -116,19 +116,19 @@ class BackendBehaviors
                 }
 
                 $ret .= ' sts-' . match ((int) $rs->comment_status) {
-                    App::blog()::COMMENT_JUNK        => 'junk',
-                    App::blog()::COMMENT_PENDING     => 'pending',
-                    App::blog()::COMMENT_PUBLISHED   => 'published',
-                    App::blog()::COMMENT_UNPUBLISHED => 'unpublished',
-                    default                          => 'unknown',
+                    App::status()->comment()::JUNK        => 'junk',
+                    App::status()->comment()::PENDING     => 'pending',
+                    App::status()->comment()::PUBLISHED   => 'published',
+                    App::status()->comment()::UNPUBLISHED => 'unpublished',
+                    default                               => 'unknown',
                 };
 
                 $title = match ((int) $rs->comment_status) {
-                    App::blog()::COMMENT_JUNK        => __('Junk'),
-                    App::blog()::COMMENT_PENDING     => __('Pending'),
-                    App::blog()::COMMENT_PUBLISHED   => __('Published'),
-                    App::blog()::COMMENT_UNPUBLISHED => __('Unpublished'),
-                    default                          => '',
+                    App::status()->comment()::JUNK        => __('Junk'),
+                    App::status()->comment()::PENDING     => __('Pending'),
+                    App::status()->comment()::PUBLISHED   => __('Published'),
+                    App::status()->comment()::UNPUBLISHED => __('Unpublished'),
+                    default                               => '',
                 };
 
                 $ret .= '" id="dmlc' . $rs->comment_id . '">';
