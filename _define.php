@@ -15,9 +15,9 @@ $this->registerModule(
     'Last Comments Dashboard Module',
     'Display last comments on dashboard',
     'Franck Paul',
-    '7.1',
+    '7.2',
     [
-        'date'        => '2025-02-24T12:49:00+0100',
+        'date'        => '2025-03-06T00:22:39+0100',
         'requires'    => [['core', '2.33']],
         'permissions' => 'My',
         'type'        => 'plugin',
@@ -28,5 +28,6 @@ $this->registerModule(
         'details'    => 'https://open-time.net/?q=dmlastcomments',
         'support'    => 'https://github.com/franck-paul/dmlastcomments',
         'repository' => 'https://raw.githubusercontent.com/franck-paul/dmlastcomments/main/dcstore.xml',
+        'license'    => 'gpl2',
     ]
 );
