@@ -4,44 +4,8 @@
 dotclear.ready(() => {
   dotclear.dmLastComments = dotclear.getData('dm_lastcomments');
 
-  const viewComment = (line, action = 'toggle', e = null) => {
-    if (line.getAttribute('id') === null) {
-      return;
-    }
-
-    const commentId = line.getAttribute('id').substring(4);
-    const lineId = `dmlce${commentId}`;
-    let li = document.getElementById(lineId);
-
-    // If meta key down or it's a spam then display content HTML code
-    const clean = e.metaKey || line.classList.contains('sts-junk');
-
-    if (li) {
-      li.style.display = li.style.display === 'none' ? '' : 'none';
-      line.classList.toggle('expand');
-    } else {
-      // Get comment content if possible
-      dotclear.getCommentContent(
-        commentId,
-        (content) => {
-          if (content) {
-            li = document.createElement('li');
-            li.id = lineId;
-            li.className = 'expand';
-            li.insertAdjacentHTML('afterbegin', content);
-            line.classList.add('expand');
-            line.parentNode.insertBefore(li, line.nextSibling);
-            return;
-          }
-          // No content, content not found or server error
-          line.classList.remove('expand');
-        },
-        {
-          metadata: false,
-          clean,
-        },
-      );
-    }
+  const viewComment = (line, _action = 'toggle', event = null) => {
+    dotclear.dmViewComment(line, 'dmlce', event.metaKey || line.classList.contains('sts-junk'));
   };
 
   const getSpamCount = (icon) => {
@@ -198,11 +162,11 @@ dotclear.ready(() => {
   if (!dotclear.dmLastComments.badge) {
     return;
   }
-  let icon_com = document.querySelectorAll('#dashboard-main #icons p a[href="comments.php"]');
-  if (!icon_com.length) {
-    icon_com = document.querySelectorAll('#dashboard-main #icons p #icon-process-comments-fav');
+  let icon_com = document.querySelector('#dashboard-main #icons p a[href="comments.php"]');
+  if (!icon_com) {
+    icon_com = document.querySelector('#dashboard-main #icons p #icon-process-comments-fav');
   }
-  if (icon_com.length) {
+  if (icon_com) {
     // First pass
     getSpamCount(icon_com);
 

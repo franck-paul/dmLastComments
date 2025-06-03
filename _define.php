@@ -17,8 +17,11 @@ $this->registerModule(
     'Franck Paul',
     '8.1',
     [
-        'date'        => '2025-06-03T12:00:11+0200',
-        'requires'    => [['core', '2.34']],
+        'date'     => '2025-06-03T12:00:11+0200',
+        'requires' => [
+            ['core', '2.34'],
+            ['dmHelper', '5.0'],
+        ],
         'permissions' => 'My',
         'type'        => 'plugin',
         'settings'    => [
