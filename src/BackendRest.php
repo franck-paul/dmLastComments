@@ -108,6 +108,10 @@ class BackendRest
             $counter
         );
 
-        return [...$payload, 'list' => $list, 'counter' => $counter];
+        return [
+            ...$payload,
+            'list'    => $list,
+            'counter' => $counter,
+        ];
     }
 }

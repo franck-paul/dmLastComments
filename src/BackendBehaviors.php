@@ -60,12 +60,12 @@ class BackendBehaviors
 
         return
         Page::jsJson('dm_lastcomments', [
-            'dmLastComments_LastCommentId' => $last_comment_id,
-            'dmLastComments_AutoRefresh'   => $preferences->autorefresh,
-            'dmLastComments_Badge'         => $preferences->badge,
-            'dmLastComments_LastCounter'   => 0,
-            'dmLastComments_SpamCount'     => -1,
-            'dmLastComments_Interval'      => ($preferences->interval ?? 30),
+            'lastCommentId' => $last_comment_id,
+            'autoRefresh'   => $preferences->autorefresh,
+            'badge'         => $preferences->badge,
+            'lastCounter'   => 0,
+            'spamCount'     => -1,
+            'interval'      => ($preferences->interval ?? 30),
         ]) .
         My::jsLoad('service.js') .
         My::cssLoad('style.css');
