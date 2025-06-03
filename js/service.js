@@ -185,10 +185,6 @@ dotclear.ready(() => {
     return;
   }
 
-  // Auto refresh
-
-  // Comments
-
   // First pass
   const menu_com = document.querySelectorAll('#main-menu li #menu-process-comments-fav, #main-menu li #menu-process-Comments');
   dotclear.dmLastComments.lastCommentId = -1;
