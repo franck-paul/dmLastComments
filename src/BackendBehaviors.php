@@ -73,13 +73,13 @@ class BackendBehaviors
 
     private static function composeSQLSince(int $nb, string $unit = 'HOUR'): string
     {
-        return match (App::con()->syntax()) {
+        return match (App::db()->con()->syntax()) {
             'sqlite' => 'datetime(\'' .
-                App::con()->escapeStr('now') . '\', \'' .
-                App::con()->escapeStr('-' . sprintf('%d', $nb) . ' ' . $unit) .
+                App::db()->con()->escapeStr('now') . '\', \'' .
+                App::db()->con()->escapeStr('-' . sprintf('%d', $nb) . ' ' . $unit) .
                 '\')',
 
-            'postgresql' => '(NOW() - \'' . App::con()->escapeStr(sprintf('%d', $nb) . ' ' . $unit) . '\'::INTERVAL)',
+            'postgresql' => '(NOW() - \'' . App::db()->con()->escapeStr(sprintf('%d', $nb) . ' ' . $unit) . '\'::INTERVAL)',
 
             // default also stands for MySQL
             default => '(NOW() - INTERVAL ' . sprintf('%d', $nb) . ' ' . $unit . ')',
