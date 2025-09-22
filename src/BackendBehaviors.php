@@ -17,7 +17,6 @@ namespace Dotclear\Plugin\dmLastComments;
 
 use ArrayObject;
 use Dotclear\App;
-use Dotclear\Core\Backend\Page;
 use Dotclear\Database\MetaRecord;
 use Dotclear\Helper\Date;
 use Dotclear\Helper\Html\Form\Checkbox;
@@ -59,7 +58,7 @@ class BackendBehaviors
         $preferences = My::prefs();
 
         return
-        Page::jsJson('dm_lastcomments', [
+        App::backend()->page()->jsJson('dm_lastcomments', [
             'lastCommentId' => $last_comment_id,
             'autoRefresh'   => $preferences->autorefresh,
             'badge'         => $preferences->badge,
@@ -215,7 +214,7 @@ class BackendBehaviors
                 ->items([
                     (new Text(
                         'h3',
-                        (new Img(urldecode(Page::getPF(My::id() . '/icon.svg'))))
+                        (new Img(urldecode((string) App::backend()->page()->getPF(My::id() . '/icon.svg'))))
                             ->class('icon-small')
                         ->render() .
                         ' ' . __('Last comments')
