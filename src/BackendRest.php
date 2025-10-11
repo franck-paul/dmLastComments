@@ -41,7 +41,7 @@ class BackendRest
      *
      * @return     array<string, mixed>   The payload.
      */
-    public static function checkNewComments($get): array
+    public static function checkNewComments(array $get): array
     {
         $preferences = My::prefs();
 
@@ -81,7 +81,7 @@ class BackendRest
      *
      * @return     array<string, mixed>   The payload.
      */
-    public static function getLastCommentsRows($get): array
+    public static function getLastCommentsRows(array $get): array
     {
         $stored_id = empty($get['stored_id']) ? -1 : (int) $get['stored_id'];
         $last_id   = empty($get['last_id']) ? -1 : (int) $get['last_id'];
