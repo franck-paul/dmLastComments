@@ -162,10 +162,7 @@ dotclear.ready(() => {
   if (!dotclear.dmLastComments.badge) {
     return;
   }
-  let icon_com = document.querySelector('#dashboard-main #icons p a[href="comments.php"]');
-  if (!icon_com) {
-    icon_com = document.querySelector('#dashboard-main #icons p #icon-process-comments-fav');
-  }
+  icon_com = document.querySelector('#dashboard-main #icons p #icon-process-comments-fav');
   if (icon_com) {
     // First pass
     getSpamCount(icon_com);
