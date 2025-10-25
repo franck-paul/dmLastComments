@@ -162,7 +162,7 @@ dotclear.ready(() => {
   if (!dotclear.dmLastComments.badge) {
     return;
   }
-  icon_com = document.querySelector('#dashboard-main #icons p #icon-process-comments-fav');
+  const icon_com = document.querySelector('#dashboard-main #icons p #icon-process-comments-fav');
   if (icon_com) {
     // First pass
     getSpamCount(icon_com);
