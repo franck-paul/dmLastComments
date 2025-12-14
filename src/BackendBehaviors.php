@@ -215,6 +215,7 @@ class BackendBehaviors
                     (new Text(
                         'h3',
                         (new Img(urldecode((string) App::backend()->page()->getPF(My::id() . '/icon.svg'))))
+                            ->alt('')
                             ->class('icon-small')
                         ->render() .
                         ' ' . __('Last comments')
