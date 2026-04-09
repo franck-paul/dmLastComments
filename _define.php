@@ -15,9 +15,9 @@ $this->registerModule(
     'Last Comments Dashboard Module',
     'Display last comments on dashboard',
     'Franck Paul',
-    '10.5',
+    '10.6',
     [
-        'date'     => '2025-12-14T08:57:22+0100',
+        'date'     => '2026-04-09T18:28:22+0200',
         'requires' => [
             ['core', '2.36'],
             ['dmHelper', '5.0'],
