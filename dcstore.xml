@@ -1,12 +1,12 @@
 <modules xmlns:da="http://dotaddict.org/da/">
   <module id="dmLastComments">
     <name>Last Comments Dashboard Module</name>
-    <version>10.6</version>
+    <version>11.0</version>
     <author>Franck Paul</author>
     <desc>Display last comments on dashboard</desc>
-    <date>2026-04-09T18:28:22+0200</date>
-    <file>https://github.com/franck-paul/dmLastComments/releases/download/10.6/plugin-dmLastComments-10.6.zip</file>
-    <da:dcmin>2.36</da:dcmin>
+    <date>2026-04-29T14:23:42+0200</date>
+    <file>https://github.com/franck-paul/dmLastComments/releases/download/11.0/plugin-dmLastComments-11.0.zip</file>
+    <da:dcmin>2.38</da:dcmin>
     <da:details>https://dotclear.org/plugin/detail/dmlastcomments</da:details>
     <da:support>https://github.com/franck-paul/dmlastcomments</da:support>
   </module>
