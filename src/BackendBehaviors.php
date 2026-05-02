@@ -146,16 +146,19 @@ class BackendBehaviors
                         $new = 'dmlc-new';
                         ++$last_counter;
                     }
+
                     $infos = [];
                     if ($large) {
                         if ($author) {
                             $infos[] = (new Text(null, __('by') . ' ' . $comment_author));
                         }
+
                         if ($date) {
                             $details = __('on') . ' ' . Date::dt2str($date_format, $comment_dt);
                             $infos[] = (new Timestamp($details))
                                 ->datetime(Date::iso8601((int) strtotime($comment_dt), $user_tz));
                         }
+
                         if ($time) {
                             $details = __('at') . ' ' . Date::dt2str($time_format, $comment_dt);
                             $infos[] = (new Timestamp($details))
@@ -165,15 +168,18 @@ class BackendBehaviors
                         if ($author) {
                             $infos[] = (new Text(null, $comment_author));
                         }
+
                         if ($date) {
                             $infos[] = (new Timestamp(Date::dt2str(__('%Y-%m-%d'), $comment_dt)))
                                 ->datetime(Date::iso8601((int) strtotime($comment_dt), $user_tz));
                         }
+
                         if ($time) {
                             $infos[] = (new Timestamp(Date::dt2str(__('%H:%M'), $comment_dt)))
                                 ->datetime(Date::iso8601((int) strtotime($comment_dt), $user_tz));
                         }
                     }
+
                     yield (new Li('dmlc' . $comment_id))
                         ->class(['line', $status, $new])
                         ->separator(' ')
@@ -273,8 +279,8 @@ class BackendBehaviors
             $preferences->put('autorefresh', $_Bool('dmlast_comments_autorefresh'), App::userWorkspace()::WS_BOOL);
             $preferences->put('interval', $_Int('dmlast_comments_interval'), App::userWorkspace()::WS_INT);
             $preferences->put('badge', $_Bool('dmlast_comments_badge'), App::userWorkspace()::WS_BOOL);
-        } catch (Exception $e) {
-            App::error()->add($e->getMessage());
+        } catch (Exception $exception) {
+            App::error()->add($exception->getMessage());
         }
 
         return '';
