@@ -63,7 +63,7 @@ class BackendRest
 
         if ($count) {
             while ($rs->fetch()) {
-                $last_comment_id = is_numeric($last_comment_id = $rs->comment_id) ? (int) $last_comment_id : -1;
+                $last_comment_id = $rs->intField('comment_id');
             }
         }
 
