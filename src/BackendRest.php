@@ -53,7 +53,7 @@ class BackendRest
             'order'      => 'comment_id ASC',
             'sql'        => 'AND comment_id > ' . $last_id, // only new ones
         ];
-        if ($preferences->nospam) {
+        if ($preferences->getBool('nospam')) {
             // Exclude junk comment from list
             $sqlp['comment_status_not'] = App::status()->comment()::JUNK;
         }
@@ -94,21 +94,17 @@ class BackendRest
             'counter'   => 0,
         ];
 
-        // Variable data helpers
-        $_Bool = fn (mixed $var): bool => (bool) $var;
-        $_Int  = fn (mixed $var, int $default = 0): int => $var !== null && is_numeric($val = $var) ? (int) $val : $default;
-
         $preferences = My::prefs();
 
         $list = BackendBehaviors::getLastComments(
-            $_Int($preferences->nb),
-            $_Bool($preferences->large),
-            $_Bool($preferences->author),
-            $_Bool($preferences->date),
-            $_Bool($preferences->time),
-            $_Bool($preferences->nospam),
-            $_Int($preferences->recents),
-            $_Int($stored_id),
+            $preferences->getInt('nb', false),
+            $preferences->getBool('large', false),
+            $preferences->getBool('author', false),
+            $preferences->getBool('date', false),
+            $preferences->getBool('time', false),
+            $preferences->getBool('nospam', false),
+            $preferences->getInt('recents', false),
+            $stored_id,
             $counter
         );
 

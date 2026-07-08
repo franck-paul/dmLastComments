@@ -60,11 +60,11 @@ class BackendBehaviors
         return
         App::backend()->page()->jsJson('dm_lastcomments', [
             'lastCommentId' => $last_comment_id,
-            'autoRefresh'   => $preferences->autorefresh,
-            'badge'         => $preferences->badge,
+            'autoRefresh'   => $preferences->getBool('autorefresh'),
+            'badge'         => $preferences->getBool('badge'),
             'lastCounter'   => 0,
             'spamCount'     => -1,
-            'interval'      => ($preferences->interval ?? 30),
+            'interval'      => $preferences->getInt('interval', false) ?: 30,
         ]) .
         My::jsLoad('service.js') .
         My::cssLoad('style.css');
@@ -116,8 +116,8 @@ class BackendBehaviors
         $rs = App::blog()->getComments($params, false);
         if (!$rs->isEmpty()) {
             $lines = function (MetaRecord $rs, bool $large) use ($author, $date, $time, $last_id, &$last_counter) {
-                $date_format = is_string($date_format = App::blog()->settings()->system->date_format) ? $date_format : '%F';
-                $time_format = is_string($time_format = App::blog()->settings()->system->time_format) ? $time_format : '%T';
+                $date_format = App::blog()->settings()->get('system')->getStr('date_format', false) ?: '%F';
+                $time_format = App::blog()->settings()->get('system')->getStr('time_format', false) ?: '%T';
                 $user_tz     = is_string($user_tz = App::auth()->getInfo('user_tz')) ? $user_tz : 'UTC';
 
                 while ($rs->fetch()) {
@@ -219,15 +219,11 @@ class BackendBehaviors
      */
     public static function adminDashboardContents(ArrayObject $contents): string
     {
-        // Variable data helpers
-        $_Bool = fn (mixed $var): bool => (bool) $var;
-        $_Int  = fn (mixed $var, int $default = 0): int => $var !== null && is_numeric($val = $var) ? (int) $val : $default;
-
         $preferences = My::prefs();
 
         // Add modules to the contents stack
-        if ($preferences->active) {
-            $class = ($_Bool($preferences->large) ? 'medium' : 'small');
+        if ($preferences->getBool('active')) {
+            $class = ($preferences->getBool('large', false) ? 'medium' : 'small');
 
             $ret = (new Div('last-comments'))
                 ->class(['box', $class])
@@ -241,13 +237,13 @@ class BackendBehaviors
                         ' ' . __('Last comments')
                     )),
                     (new Text(null, self::getLastComments(
-                        $_Int($preferences->nb),
-                        $_Bool($preferences->large),
-                        $_Bool($preferences->author),
-                        $_Bool($preferences->date),
-                        $_Bool($preferences->time),
-                        $_Bool($preferences->nospam),
-                        $_Int($preferences->recents)
+                        $preferences->getInt('nb', false),
+                        $preferences->getBool('large', false),
+                        $preferences->getBool('author', false),
+                        $preferences->getBool('date', false),
+                        $preferences->getBool('time', false),
+                        $preferences->getBool('nospam', false),
+                        $preferences->getInt('recents', false)
                     ))),
                 ])
             ->render();
@@ -288,10 +284,6 @@ class BackendBehaviors
 
     public static function adminDashboardOptionsForm(): string
     {
-        // Variable data helpers
-        $_Bool = fn (mixed $var): bool => (bool) $var;
-        $_Int  = fn (mixed $var, int $default = 0): int => $var !== null && is_numeric($val = $var) ? (int) $val : $default;
-
         $preferences = My::prefs();
 
         // Add fieldset for plugin options
@@ -300,57 +292,57 @@ class BackendBehaviors
         ->legend((new Legend(__('Last comments on dashboard'))))
         ->fields([
             (new Para())->items([
-                (new Checkbox('dmlast_comments', $_Bool($preferences->active)))
+                (new Checkbox('dmlast_comments', $preferences->getBool('active', false)))
                     ->value(1)
                     ->label((new Label(__('Display last comments'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Number('dmlast_comments_nb', 1, 999, $_Int($preferences->nb, 5)))
+                (new Number('dmlast_comments_nb', 1, 999, $preferences->getInt('nb', false) ?: 5))
                     ->label((new Label(__('Number of last comments to display:'), Label::INSIDE_TEXT_BEFORE))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_author', $_Bool($preferences->author)))
+                (new Checkbox('dmlast_comments_author', $preferences->getBool('author', false)))
                     ->value(1)
                     ->label((new Label(__('Show authors'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_date', $_Bool($preferences->date)))
+                (new Checkbox('dmlast_comments_date', $preferences->getBool('date', false)))
                     ->value(1)
                     ->label((new Label(__('Show dates'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_time', $_Bool($preferences->time)))
+                (new Checkbox('dmlast_comments_time', $preferences->getBool('time', false)))
                     ->value(1)
                     ->label((new Label(__('Show times'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_nospam', $_Bool($preferences->nospam)))
+                (new Checkbox('dmlast_comments_nospam', $preferences->getBool('nospam', false)))
                     ->value(1)
                     ->label((new Label(__('Exclude junk comments'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Number('dmlast_comments_recents', 0, 96, $_Int($preferences->recents)))
+                (new Number('dmlast_comments_recents', 0, 96, $preferences->getInt('recents', false)))
                     ->label((new Label(__('Max age of comments to display (in hours):'), Label::INSIDE_TEXT_BEFORE))),
             ]),
             (new Para())->class('form-note')->items([
                 (new Text(null, __('Leave empty to ignore age of comments'))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_small', !$_Bool($preferences->large)))
+                (new Checkbox('dmlast_comments_small', !$preferences->getBool('large', false)))
                     ->value(1)
                     ->label((new Label(__('Small screen'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_autorefresh', $_Bool($preferences->autorefresh)))
+                (new Checkbox('dmlast_comments_autorefresh', $preferences->getBool('autorefresh', false)))
                     ->value(1)
                     ->label((new Label(__('Auto refresh'), Label::INSIDE_TEXT_AFTER))),
             ]),
             (new Para())->items([
-                (new Number('dmlast_comments_interval', 0, 9_999_999, $_Int($preferences->interval)))
+                (new Number('dmlast_comments_interval', 0, 9_999_999, $preferences->getInt('interval', false)))
                     ->label((new Label(__('Interval in seconds between two refreshes:'), Label::INSIDE_TEXT_BEFORE))),
             ]),
             (new Para())->items([
-                (new Checkbox('dmlast_comments_badge', $_Bool($preferences->badge)))
+                (new Checkbox('dmlast_comments_badge', $preferences->getBool('badge', false)))
                     ->value(1)
                     ->label((new Label(__('Display badges (only if Auto refresh is enabled)'), Label::INSIDE_TEXT_AFTER))),
             ]),
