@@ -50,7 +50,7 @@ class BackendBehaviors
 
         if ($rs->count()) {
             $rs->fetch();
-            $last_comment_id = $rs->comment_id;
+            $last_comment_id = $rs->intField('comment_id');
         } else {
             $last_comment_id = -1;
         }
