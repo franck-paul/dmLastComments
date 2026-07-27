@@ -2,6 +2,13 @@
 'use strict';
 
 dotclear.ready(() => {
+  /**
+   * Check connection
+   *
+   * @return     {?boolean}  true/false depending on connection, null if cannot be tested
+   */
+  dotclear.dmOnline = () => ('onLine' in navigator ? navigator.onLine : null);
+
   dotclear.dmLastComments = dotclear.getData('dm_lastcomments');
 
   const viewComment = (line, _action = 'toggle', event = null) => {
@@ -9,6 +16,8 @@ dotclear.ready(() => {
   };
 
   const getSpamCount = (icon) => {
+    if (dotclear.dmOnline() === false) return;
+
     dotclear.services(
       'dmLastCommentsSpam',
       (data) => {
@@ -45,6 +54,8 @@ dotclear.ready(() => {
   };
 
   const getCommentsRows = (last_id, menu) => {
+    if (dotclear.dmOnline() === false) return;
+
     // Get new list
     dotclear.services(
       'dmLastCommentsRows',
