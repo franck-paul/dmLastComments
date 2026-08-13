@@ -11,26 +11,30 @@
  * @copyright Franck Paul contact@open-time.net
  * @copyright GPL-2.0 https://www.gnu.org/licenses/gpl-2.0.html
  */
-$this->registerModule(
-    'Last Comments Dashboard Module',
-    'Display last comments on dashboard',
-    'Franck Paul',
-    '12.0',
-    [
-        'date'     => '2026-08-03T09:52:49+0200',
-        'requires' => [
-            ['core', '2.39'],
-            ['dmHelper', '5.0'],
-        ],
-        'permissions' => 'My',
-        'type'        => 'plugin',
-        'settings'    => [
-            'pref' => '#user-favorites.dmlastcomments',
-        ],
+declare(strict_types=1);
 
-        'details'    => 'https://open-time.net/?q=dmlastcomments',
-        'support'    => 'https://github.com/franck-paul/dmlastcomments',
-        'repository' => 'https://raw.githubusercontent.com/franck-paul/dmlastcomments/main/dcstore.xml',
-        'license'    => 'gpl2',
-    ]
-);
+if (isset($this) && is_object($this) && method_exists($this, 'registerModule') && isset($this->id) && is_string($this->id)) {
+    $this->registerModule(
+        'Last Comments Dashboard Module',
+        'Display last comments on dashboard',
+        'Franck Paul',
+        '12.0',
+        [
+            'date'     => '2026-08-03T09:52:49+0200',
+            'requires' => [
+                ['core', '2.39'],
+                ['dmHelper', '5.0'],
+            ],
+            'permissions' => 'My',
+            'type'        => 'plugin',
+            'settings'    => [
+                'pref' => '#user-favorites.dmlastcomments',
+            ],
+
+            'details'    => 'https://open-time.net/?q=dmlastcomments',
+            'support'    => 'https://github.com/franck-paul/dmlastcomments',
+            'repository' => 'https://raw.githubusercontent.com/franck-paul/dmlastcomments/main/dcstore.xml',
+            'license'    => 'gpl2',
+        ]
+    );
+}
