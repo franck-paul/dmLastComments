@@ -45,9 +45,9 @@ class Install
                 }
 
                 // Change settings names (remove last_comments_ prefix in them)
-                $rename = static function (string $name, UserWorkspaceInterface $preferences): void {
-                    if ($preferences->prefExists('last_comments_' . $name, true)) {
-                        $preferences->rename('last_comments_' . $name, $name);
+                $rename = static function (string $name, UserWorkspaceInterface $userWorkspace): void {
+                    if ($userWorkspace->prefExists('last_comments_' . $name, true)) {
+                        $userWorkspace->rename('last_comments_' . $name, $name);
                     }
                 };
 
