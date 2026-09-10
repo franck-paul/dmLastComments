@@ -324,9 +324,9 @@ class BackendBehaviors
                 (new Number('dmlast_comments_recents', 0, 96, $preferences->getInt('recents', false)))
                     ->label((new Label(__('Max age of comments to display (in hours):'), Label::INSIDE_TEXT_BEFORE))),
             ]),
-            (new Para())->class('form-note')->items([
-                (new Text(null, __('Leave empty to ignore age of comments'))),
-            ]),
+            (new Note())
+                ->class('form-note')
+                ->text(__('Leave empty to ignore age of comments')),
             (new Para())->items([
                 (new Checkbox('dmlast_comments_small', !$preferences->getBool('large', false)))
                     ->value(1)
