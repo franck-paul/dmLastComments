@@ -91,7 +91,6 @@ class BackendRest
             'ret'       => true,
             'stored_id' => $stored_id,
             'last_id'   => $last_id,
-            'counter'   => 0,
         ];
 
         $preferences = My::prefs();
