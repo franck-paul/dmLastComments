@@ -3,7 +3,7 @@
 [![Release](https://img.shields.io/github/v/release/franck-paul/dmLastComments)](https://github.com/franck-paul/dmLastComments/releases)
 [![Date](https://img.shields.io/github/release-date/franck-paul/dmLastComments)](https://github.com/franck-paul/dmLastComments/releases)
 [![Issues](https://img.shields.io/github/issues/franck-paul/dmLastComments)](https://github.com/franck-paul/dmLastComments/issues)
-[![License](https://img.shields.io/github/license/franck-paul/dmLastComments)](https://github.com/franck-paul/dmLastComments/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/franck-paul/dmLastComments)](https://github.com/franck-paul/dmLastComments/blob/main/LICENSE)
 
 Dotclear 2 plugin
 
