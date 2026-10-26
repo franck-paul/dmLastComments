@@ -37,7 +37,7 @@ class Install
 
         try {
             $old_version = App::version()->getVersion(My::id());
-            if (version_compare((string) $old_version, '3.1', '<')) {
+            if (version_compare($old_version, '3.1', '<')) {
                 // Rename settings workspace
                 if (App::auth()->prefs()->exists('dmlastcomments')) {
                     App::auth()->prefs()->delWorkspace(My::id());
