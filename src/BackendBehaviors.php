@@ -48,7 +48,7 @@ class BackendBehaviors
 
         $rs = App::blog()->getComments($sqlp);
 
-        if ($rs->count()) {
+        if ($rs->count() > 0) {
             $rs->fetch();
             $last_comment_id = $rs->intField('comment_id');
         } else {
@@ -222,7 +222,7 @@ class BackendBehaviors
         $preferences = My::prefs();
 
         // Add modules to the contents stack
-        if ($preferences->getBool('active')) {
+        if ($preferences->getBool('active', false)) {
             $class = ($preferences->getBool('large', false) ? 'medium' : 'small');
 
             $ret = (new Div('last-comments'))

@@ -53,7 +53,7 @@ class BackendRest
             'order'      => 'comment_id ASC',
             'sql'        => 'AND comment_id > ' . $last_id, // only new ones
         ];
-        if ($preferences->getBool('nospam')) {
+        if ($preferences->getBool('nospam', false)) {
             // Exclude junk comment from list
             $sqlp['comment_status_not'] = App::status()->comment()::JUNK;
         }
@@ -61,7 +61,7 @@ class BackendRest
         $rs    = App::blog()->getComments($sqlp);
         $count = $rs->count();
 
-        if ($count) {
+        if ($count > 0) {
             while ($rs->fetch()) {
                 $last_comment_id = $rs->intField('comment_id');
             }
